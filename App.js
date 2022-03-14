@@ -8,6 +8,8 @@ import VideoDisplay from './src/screens/VideoDisplayScreen';
 import Login from './src/screens/Authentication/Login';
 import Register from './src/screens/Authentication/Register';
 import MusicPlayer from './src/screens/MusicPlayer';
+import { Provider } from 'react-redux';
+import {store} from './services/store'
 
 
 const Stack = createStackNavigator();
@@ -42,15 +44,17 @@ export default function App(){
   
 
   return (
-    <NavigationContainer theme={MyTheme}>
-      <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Login'>
-        <Stack.Screen name='Login' component={Login}></Stack.Screen>
-        <Stack.Screen name='Register' component={Register}></Stack.Screen>
-        <Stack.Screen name='Main' component={MainPage}></Stack.Screen>
-        <Stack.Screen name='VideoScreen' component={VideoDisplay}></Stack.Screen>
-        <Stack.Screen name='MusicScreen' component={MusicPlayer}></Stack.Screen>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer theme={MyTheme}>
+        <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Login'>
+          <Stack.Screen name='Login' component={Login}></Stack.Screen>
+          <Stack.Screen name='Register' component={Register}></Stack.Screen>
+          <Stack.Screen name='Main' component={MainPage}></Stack.Screen>
+          <Stack.Screen name='VideoScreen' component={VideoDisplay}></Stack.Screen>
+          <Stack.Screen name='MusicScreen' component={MusicPlayer}></Stack.Screen>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
   
 }

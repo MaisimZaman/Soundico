@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Audio } from 'expo-av';
 
 import {
   Container,
@@ -18,12 +19,68 @@ import {
   DescriptionDevices,
   Controller,
 } from './styles';
+import { useSelector } from 'react-redux';
+import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectDownloadData, selectSoundOBJ} from '../../../services/slices/navSlice';
 
-export default function Player({Title="Intersteller", Artist="Hanz Zimmer", ThumbNail="https://m.media-amazon.com/images/I/71otC8duVIL._SL1367_.jpg", navigation}) {
-  const [playMusic, setPlayMusic] = useState(false);
+
+export default function Player({Artist="Hanz Zimmer", navigation}) {
+  const [playMusic, setPlayMusic] = useState(true);
+
+  const Title = useSelector(selectTitle)
+  const ThumbNail = useSelector(selectThumbNail)
+  const audiouURI = useSelector(selectAudioURI)
+  const audioID = useSelector(selectAudioID)
+  const downloadData = useSelector(selectDownloadData)
+
+  const sound = useSelector(selectSoundOBJ)
+  
+  useEffect(() => {
+    Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+      staysActiveInBackground: true,
+      interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS,
+      playsInSilentModeIOS: true,
+      shouldDuckAndroid: true,
+      interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
+      playThroughEarpieceAndroid: false
+   });
+  }, [])
+
+  useEffect(() => {
+    async function main(){
+      if (playMusic){
+        
+
+        console.log('Playing Sound');
+         await sound.playAsync(); 
+      }
+      else if (sound != null && playMusic == false){
+       sound.pauseAsync()
+    
+      }
+
+    }
+
+    main()
+    
+
+  }, [playMusic, audioID])
+
+  useEffect(() => {
+    return sound
+      ? () => {
+          console.log('Unloading Sound');
+          sound.unloadAsync(); }
+      : undefined;
+  }, [sound, audioID]);
+  
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('MusicScreen')}>
+    <TouchableOpacity onPress={() => navigation.navigate('MusicScreen', {thumbNail: ThumbNail,
+      audioURI: audiouURI, 
+      title: Title,
+      downloadData: downloadData,
+      audioID: audioID})}>
       <Container>
         <BarStatus>
           <Line />

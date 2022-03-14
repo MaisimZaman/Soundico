@@ -10,19 +10,23 @@ import { colors, device, func, gStyle } from './constants/index';
 // components
 import ModalHeader from './ModalHeader';
 import TouchIcon from './TouchIcon';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-
-
+import { useDispatch } from 'react-redux';
+import { setThumbNail,  setAudioURI, setTitle, setAudioID, setDownloadData, setSoundOBJ} from '../../../services/slices/navSlice';
+import { useSelector } from 'react-redux';
+import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectSoundOBJ} from '../../../services/slices/navSlice';
 
 
 export default function MusicPlayer(props){
 
+  const dispatch = useDispatch();
+
   const {thumbNail, audioURI, title,audioID, downloadData} = props.route.params
 
-  const [currentThumbNail, setCurrentThumbNail] = useState(thumbNail);
-  const [currentAudioURI, setCurrentAudioURI] = useState(audioURI);
-  const [currentTitle, setCurrentTitle] = useState(title);
-  const [currentAudioID, setCurrentAudioID] = useState(audioID);
+  const currentThumbNail = useSelector(selectThumbNail)
+  const currentAudioURI = useSelector(selectAudioURI)
+  const currentTitle = useSelector(selectTitle)
+  const currentAudioID = useSelector(selectAudioID)
+
 
     const screenProps = {
       length: 20,
@@ -37,7 +41,9 @@ export default function MusicPlayer(props){
     const  currentSongData  = screenProps;
     const [favorited, setFavourited] = useState(false)
     const [paused, setPaused] = useState(false)
+    //const sound = JSON.parse(useSelector(selectSoundOBJ))
     const [sound, setSound] = useState(null)
+    
     
 
     const favoriteColor = favorited ? colors.brandPrimary : colors.white;
@@ -46,6 +52,17 @@ export default function MusicPlayer(props){
 
     const timePast = func.formatTime(0);
     const timeLeft = func.formatTime(20);
+
+    useEffect(() => {   
+      async function run(){
+        const { sound } = await Audio.Sound.createAsync({uri: currentAudioURI});
+        setSound(sound)
+        dispatch(setSoundOBJ(sound))
+      }
+      run()
+
+      
+    }, [currentAudioID])
 
     useEffect(() => {
       Audio.setAudioModeAsync({
@@ -57,14 +74,14 @@ export default function MusicPlayer(props){
         interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
         playThroughEarpieceAndroid: false
      });
+     setNewSongData(thumbNail, audioURI, title,audioID)
+      dispatch(setDownloadData(downloadData))
     }, [])
 
     useEffect(() => {
       async function main(){
         if (paused == false){
-          console.log('Loading Sound');
-          const { sound } =  await Audio.Sound.createAsync({uri: currentAudioURI});
-          setSound(sound);
+          
   
           console.log('Playing Sound');
            await sound.playAsync(); 
@@ -79,7 +96,7 @@ export default function MusicPlayer(props){
       main()
       
 
-    }, [paused, currentAudioID])
+    }, [paused, currentAudioID, sound])
 
     useEffect(() => {
       return sound
@@ -88,6 +105,14 @@ export default function MusicPlayer(props){
             sound.unloadAsync(); }
         : undefined;
     }, [sound, currentAudioID]);
+
+    function setNewSongData(thumbNail, audioURI, title,audioID){
+          dispatch(setThumbNail(thumbNail))
+          dispatch(setAudioURI(audioURI))
+          dispatch(setAudioID(audioID))
+          dispatch(setTitle(title))
+         
+    }
     
     function toggleFavorite() {
 
@@ -106,13 +131,10 @@ export default function MusicPlayer(props){
 
       if (index < downloadData.length){
         const forwardThumbNail = downloadData[index + 1].data.thumbNail
-        setCurrentThumbNail(forwardThumbNail)
         const forwardAudioURI = downloadData[index + 1].data.audio
-        setCurrentAudioURI(forwardAudioURI)
         const forwardTitle = downloadData[index + 1].data.title
-        setCurrentTitle(forwardTitle)
         const forwardID = downloadData[index + 1].id
-        setCurrentAudioID(forwardID)
+        setNewSongData(forwardThumbNail, forwardAudioURI, forwardTitle, forwardID)
         setPaused(false)
 
       }
@@ -123,18 +145,26 @@ export default function MusicPlayer(props){
         return object.id === currentAudioID;
       });
 
-      if (index > 0){
-        const forwardThumbNail = downloadData[index - 1].data.thumbNail
-        setCurrentThumbNail(forwardThumbNail)
-        const forwardAudioURI = downloadData[index - 1].data.audio
-        setCurrentAudioURI(forwardAudioURI)
-        const forwardTitle = downloadData[index - 1].data.title
-        setCurrentTitle(forwardTitle)
-        const forwardID = downloadData[index - 1].id
-        setCurrentAudioID(forwardID)
+      if (index >= 0){
+        const  backwardThumbNail = downloadData[index - 1].data.thumbNail
+        const backwardAudioURI = downloadData[index - 1].data.audio
+        const backwardTitle = downloadData[index - 1].data.title
+        const backwardID = downloadData[index - 1].id
+        setNewSongData(backwardThumbNail, backwardAudioURI, backwardTitle, backwardID)
         setPaused(false)
 
       }
+    }
+
+    function shuffleTrack(){
+        const randomTrack = Math.floor(Math.random() * downloadData.length);
+        const  randomThumbNail = downloadData[randomTrack].data.thumbNail
+        const randomAudioURI = downloadData[randomTrack].data.audio
+        const randomTitle = downloadData[randomTrack].data.title
+        const randomID = downloadData[randomTrack].id
+        setNewSongData(randomThumbNail, randomAudioURI, randomTitle, randomID)
+        setPaused(false)
+        
     }
 
     
@@ -182,7 +212,7 @@ export default function MusicPlayer(props){
             <View style={styles.containerControls}>
               <TouchIcon
                 icon={<Feather color={colors.greyLight} name="shuffle" />}
-                onPress={() => null}
+                onPress={shuffleTrack}
               />
               <View style={gStyle.flexRowCenterAlign}>
                 <TouchIcon

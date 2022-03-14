@@ -27,6 +27,7 @@
     "@react-navigation/material-top-tabs": "^5.0.6",
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.4",
+    "@reduxjs/toolkit": "^1.6.1",
     "axios": "^0.19.2",
     "expo": "^42.0.5",
     "expo-av": "~9.2.3",
@@ -45,6 +46,7 @@
     "react-native-web": "~0.11.7",
     "react-native-webview": "^11.17.2",
     "react-native-ytdl": "^4.8.3",
+    "react-redux": "^7.2.4",
     "styled-components": "^5.0.1"
   },
   "devDependencies": {
