@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Dimensions, Button} from 'react-native'
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import WebView from 'react-native-webview';
 import ytdl from "react-native-ytdl"
 import {db, auth} from '../../../services/firebase'
@@ -10,9 +10,25 @@ import firebase from 'firebase'
 export default function VideoDisplay(props) {
     const {width, height} = Dimensions.get("screen");
 
-    const {videoId, videoThumbNail, videoTitle} = props.route.params;
+    const {videoId, videoThumbNail, videoTitle, Search} = props.route.params;
 
     const [playingVideo, setPlayingVideo] = useState(convertToVideoLink(videoId));
+
+    useEffect(() => {
+
+        if (Search){
+            db.collection('recentlyPlayed')
+            .doc(auth.currentUser.uid)
+            .collection("userRecents")
+            .add({
+                videoId: videoId,
+                videoThumbNail: videoThumbNail,
+                videoTitle: videoTitle
+            })
+
+        }
+        
+    },[])
     
 
     function convertToVideoLink(videoId){

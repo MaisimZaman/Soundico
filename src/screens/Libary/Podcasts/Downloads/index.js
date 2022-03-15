@@ -33,7 +33,7 @@ export default function Downloads({navigation}) {
 
     return unsubscribe;
     
-  }, [])
+  }, [navigation])
 
 
   function renderBody(){

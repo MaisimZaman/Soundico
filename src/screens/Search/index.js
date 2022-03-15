@@ -20,7 +20,7 @@ export default function Search({navigation}) {
 
 
   function searchForVideos(){
-    Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchText}&key=${API_KEY}`)
+    Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchText + 'music'}&key=${API_KEY}`)
       .then(res => {
         const ytData = res.data.items;
         setYTData(ytData)
@@ -53,7 +53,7 @@ export default function Search({navigation}) {
           data={allYTData}
           keyExtractor={(item) => item.etag}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {videoId: item.id.videoId,  videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title })}>
+            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {videoId: item.id.videoId,  videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, Search: true })}>
               <PodcastShow name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url}></PodcastShow>
             </TouchableOpacity>
             

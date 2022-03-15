@@ -11,7 +11,7 @@ import { API_KEY } from '../Search/YoutubeApi';
 
 import { Container, Title } from './styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import ytdl from "react-native-ytdl"
+import { auth, db } from '../../../services/firebase';
 
 
 
@@ -41,10 +41,23 @@ export default function Home({navigation}) {
   }, [])
 
   useEffect(() => {
+    const unsubscribe = db.collection('recentlyPlayed')
+                      .doc(auth.currentUser.uid)
+                      .collection('userRecents')
+                      .onSnapshot((snapshot) => setRecently(snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        data: doc.data()
+                    }))))
+
+    return unsubscribe;
+    
+  }, [navigation])
+
+  useEffect(() => {
     async function getData() {
       const response = await api.get('/db');
 
-      setRecently(response.data.Recently.Playlists);
+      //setRecently(response.data.Recently.Playlists);
       //setPodcasts(response.data.PodCasts.Shows);
       setMadeForYou(response.data.Playlists.MadeForYou);
       setPopularPlaylists(response.data.Playlists.PopularPlaylists);
@@ -70,11 +83,13 @@ export default function Home({navigation}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <AlbunsList
-              name={item.name}
-              photoAlbum={item.photoAlbum}
-              recentPlayed
-            />
+            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {videoId: item.data.videoId, videoThumbNail:item.data.videoThumbNail, videoTitle: item.data.videoTitle, Search: false})}>
+              <AlbunsList
+                name={item.data.videoTitle}
+                photoAlbum={item.data.videoThumbNail}
+                recentPlayed
+              />
+            </TouchableOpacity>
           )}
         />
         <Title>Trending podcasts</Title>
@@ -84,7 +99,7 @@ export default function Home({navigation}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title })}>
+            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, Search: true })}>
               <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} podcast={true} />
             </TouchableOpacity>
           )}

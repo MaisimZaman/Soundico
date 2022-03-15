@@ -57,7 +57,8 @@ export default function MusicPlayer(props){
       async function run(){
         const { sound } = await Audio.Sound.createAsync({uri: currentAudioURI});
         setSound(sound)
-        dispatch(setSoundOBJ(sound))
+        //dispatch(setSoundOBJ(sound))
+        
       }
       run()
 
