@@ -13,10 +13,30 @@ import { Container, Title } from './styles';
 
 export default function Search({navigation}) {
   const [yourTop, setYourTop] = useState([]);
-  const [allGenres, setAllGenres] = useState([]);
+  //const [allGenres, setAllGenres] = useState([]);
   const [YOffSet, setYOffSet] = useState(0);
   const [searchText, setSearchText] = useState('');
   const [allYTData, setYTData] = useState([]);
+
+  const allGenres = [
+    {
+      name: "Rock",
+      color: "blue"
+    },
+    {
+      name: "Jazz",
+      color: "blue"
+    },
+    {
+      name: "Pop",
+      color: "blue"
+    },
+    {
+      name: "Indie rock",
+      color: "blue"
+    },
+
+  ]
 
 
   function searchForVideos(){
@@ -34,7 +54,7 @@ export default function Search({navigation}) {
       const response = await api.get('/Categories');
 
       setYourTop(response.data.TopGenres);
-      setAllGenres(response.data.All);
+      //setAllGenres(response.data.All);
     }
 
     getData();
@@ -61,9 +81,19 @@ export default function Search({navigation}) {
         ></FlatList>
       )
     }
-    
     return (
-      <Text>No results found</Text>
+      <>
+      <FlatList
+          data={allGenres}
+          numColumns={2}
+          ListHeaderComponent={<Title>Browse All</Title>}
+          keyExtractor={(item) => `${item.id}`}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <GenreMusic name={item.name} color={item.color} />
+          )}
+        />
+  </>
     )
   }
 
@@ -98,18 +128,8 @@ export default function Search({navigation}) {
           )}
         />
 
-        <FlatList
-          data={allGenres}
-          numColumns={2}
-          ListHeaderComponent={<Title>Browse All</Title>}
-          keyExtractor={(item) => `${item.id}`}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <GenreMusic name={item.name} color={item.color} />
-          )}
-        />
+        {renderSearches()}
       </ScrollView>
-     {renderSearches()}
     </Container>
   );
 }

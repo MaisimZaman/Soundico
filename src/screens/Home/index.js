@@ -15,6 +15,7 @@ import { auth, db } from '../../../services/firebase';
 
 
 
+
 export default function Home({navigation}) {
   const [recently, setRecently] = useState([]);
   const [podcasts, setPodcasts] = useState([]);
@@ -38,7 +39,20 @@ export default function Home({navigation}) {
         
     })
 
-  }, [])
+  }, [navigation])
+
+  useEffect(() => {
+    const searches = ["Space", "Car", "clasical"]
+    const searchText = searches[Math.floor(Math.random() * (searches.length))]
+    Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchText}Music&key=${API_KEY}`)
+      .then(res => {
+        const madeForYou = res.data.items;
+        setMadeForYou(madeForYou)
+        
+        
+    })
+
+  }, [navigation])
 
   useEffect(() => {
     const unsubscribe = db.collection('recentlyPlayed')
@@ -59,7 +73,7 @@ export default function Home({navigation}) {
 
       //setRecently(response.data.Recently.Playlists);
       //setPodcasts(response.data.PodCasts.Shows);
-      setMadeForYou(response.data.Playlists.MadeForYou);
+      //setMadeForYou(response.data.Playlists.MadeForYou);
       setPopularPlaylists(response.data.Playlists.PopularPlaylists);
       setYourPlaylists(response.data.Recently.YourPlaylists);
     }
@@ -111,7 +125,9 @@ export default function Home({navigation}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <AlbunsList name={item.name} photoAlbum={item.photoAlbum} />
+            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, Search: false })}>
+            <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} />
+            </TouchableOpacity>
           )}
         />
         <Title>Most Popular Playlists</Title>
@@ -124,7 +140,7 @@ export default function Home({navigation}) {
             <AlbunsList name={item.name} photoAlbum={item.photoAlbum} />
           )}
         />
-        <Title>Suas Playlists</Title>
+        <Title>Your Playlists</Title>
         <FlatList
           data={yourPlaylists}
           keyExtractor={(item) => `${item.id}`}

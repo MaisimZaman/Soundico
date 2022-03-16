@@ -41,8 +41,8 @@ export default function MusicPlayer(props){
     const  currentSongData  = screenProps;
     const [favorited, setFavourited] = useState(false)
     const [paused, setPaused] = useState(false)
-    //const sound = JSON.parse(useSelector(selectSoundOBJ))
-    const [sound, setSound] = useState(null)
+    const sound = useSelector(selectSoundOBJ)
+    //const [sound, setSound] = useState(null)
     
     
 
@@ -56,9 +56,9 @@ export default function MusicPlayer(props){
     useEffect(() => {   
       async function run(){
         const { sound } = await Audio.Sound.createAsync({uri: currentAudioURI});
-        setSound(sound)
-        //dispatch(setSoundOBJ(sound))
-        
+        //setSound(sound)
+        dispatch(setSoundOBJ(sound))
+
       }
       run()
 

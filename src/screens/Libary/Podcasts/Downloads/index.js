@@ -35,6 +35,8 @@ export default function Downloads({navigation}) {
     
   }, [navigation])
 
+ 
+
 
   function renderBody(){
     if (downloadData.length > 0){
