@@ -6,6 +6,7 @@ import {db, auth} from '../../../services/firebase'
 import firebase from 'firebase'
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import Playlist from '../../components/Playlist';
+import { Audio } from 'expo-av';
 
 
 
@@ -16,10 +17,23 @@ export default function VideoDisplay(props) {
     const [currentVideoID, setCurrentVideoID] = useState(videoId)
     const [currentThumbnail, setCurrentThumbnail]= useState(videoThumbNail)
     const [currentTitle, setCurrentTitle] = useState(videoTitle)
+    
 
 
     const [playingVideo, setPlayingVideo] = useState(convertToVideoLink(videoId));
     const [recentlyPlayed, setRecentlyPlayed] = useState([])
+
+    useEffect(() => {
+        Audio.setAudioModeAsync({
+            allowsRecordingIOS: false,
+            staysActiveInBackground: true,
+            interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS,
+            playsInSilentModeIOS: true,
+            shouldDuckAndroid: true,
+            interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
+            playThroughEarpieceAndroid: false
+         });
+    }, [currentVideoID])
 
     useEffect(() => {
         const unsubscribe = db.collection('recentlyPlayed')
@@ -70,15 +84,43 @@ export default function VideoDisplay(props) {
 
     }
 
-    async function downloadAudio(){
-        let info = await ytdl.getInfo(String(currentVideoID));
-        let audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
-        const audioDownload = audioFormats[0].url
-        console.log(audioDownload)
+    function saveVideoData(downloadURL){
+        db.collection('videoDownloads')
+            .doc(auth.currentUser.uid)
+            .collection("userVideos")
+            .add({
+                videoURI: downloadURL,
+                thumbNail: currentThumbnail,
+                title: currentTitle,
+            })
 
-        const childPath = `audioDownloads/${auth.currentUser.uid}/${Math.random().toString(36)}`;
+    }
 
-        const response = await fetch(audioDownload);
+    
+
+    async function downloadAudioOrVideo(isVideo){
+        let childPath;
+        let theDownload;
+
+        if (isVideo){
+            console.log("this is happening")
+            const youtubeURL = `http://www.youtube.com/watch?v=${currentVideoID}`;
+            const urls = await ytdl(youtubeURL, { quality: 'highestaudio' });
+            theDownload = urls[0].url
+            console.log(urls)
+            childPath = `videoDownloads/${auth.currentUser.uid}/${Math.random().toString(36)}`;
+        }
+        else {
+            let info = await ytdl.getInfo(String(currentVideoID));
+            let audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
+            theDownload = audioFormats[0].url
+            console.log(theDownload)
+            childPath = `audioDownloads/${auth.currentUser.uid}/${Math.random().toString(36)}`;
+        }
+
+        
+
+        const response = await fetch(theDownload);
         const blob = await response.blob();
 
         const task = firebase
@@ -94,8 +136,14 @@ export default function VideoDisplay(props) {
         const taskCompleted = () => {
             task.snapshot.ref.getDownloadURL().then((snapshot) => {
                     console.log("This happened")
+
+                    if (isVideo){
+                        saveVideoData(snapshot)
+                    } else {
+                        saveAudioData(snapshot);
+                    }
                 
-                    saveAudioData(snapshot);
+                    
                 
                 
             })
@@ -121,7 +169,8 @@ export default function VideoDisplay(props) {
             
             <FlatList
             data={recentlyPlayed}
-            keyExtractor={(item) => `${item.id}`}
+            keyExtractor={(item, index) => String(index)}
+            //keyExtractor={(item) => `${item.id}`}
             renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => setVideoprops(item)}>
                 <Playlist
@@ -136,6 +185,8 @@ export default function VideoDisplay(props) {
         )
     }
 
+    
+
 
     return (
         <>
@@ -147,7 +198,8 @@ export default function VideoDisplay(props) {
                     allowsFullscreenVideo={true}
                     source={{ uri: playingVideo}}/>
         </View>
-        <Button title='Download Audio' onPress={downloadAudio}></Button>
+        
+        <Button title='Download Video' onPress={() => downloadAudioOrVideo(true)}></Button>
         <Text>Recently played</Text>
         
         {renderRecents()}
@@ -158,4 +210,10 @@ export default function VideoDisplay(props) {
     
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    video: {
+        alignSelf: 'center',
+        width: 320,
+        height: 200,
+      },
+})

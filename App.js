@@ -8,6 +8,7 @@ import VideoDisplay from './src/screens/VideoDisplayScreen';
 import Login from './src/screens/Authentication/Login';
 import Register from './src/screens/Authentication/Register';
 import MusicPlayer from './src/screens/MusicPlayer';
+import VideoPlayer from './src/screens/VideoPlayer';
 import { Provider } from 'react-redux';
 import {store} from './services/store'
 
@@ -52,6 +53,7 @@ export default function App(){
           <Stack.Screen name='Main' component={MainPage}></Stack.Screen>
           <Stack.Screen name='VideoScreen' component={VideoDisplay}></Stack.Screen>
           <Stack.Screen name='MusicScreen' component={MusicPlayer}></Stack.Screen>
+          <Stack.Screen name='VideoPlayer' component={VideoPlayer}></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

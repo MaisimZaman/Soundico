@@ -43,7 +43,8 @@ export default function Downloads({navigation}) {
       return (
         <FlatList
           data={downloadData}
-          keyExtractor={(item) => `${item.id}`}
+          keyExtractor={(item, index) => String(index)}
+          //keyExtractor={(item) => `${item.id}`}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => navigation.navigate('MusicScreen', {thumbNail: item.data.thumbNail,
                                                                                   audioURI: item.data.audio, 
