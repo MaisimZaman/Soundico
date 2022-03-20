@@ -1,36 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, TouchableOpacity } from 'react-native';
 
 import EpisodiePodcast from '../../../../components/EpisodiePodcast';
 import api from '../../../../services/api';
 
 import { Container } from './styles';
+import { auth, db } from '../../../../../services/firebase';
 
-export default function Episodes() {
-  const [episodies, setEpisodies] = useState([]);
-
+export default function Episodes({navigation}) {
+  const [episodes, setEpisodes] = useState([]);
   useEffect(() => {
-    async function getData() {
-      const response = await api.get('/PodCasts');
+    let unsubscribe = db.collection('podcastDownloads')
+                      .doc(auth.currentUser.uid)
+                      .collection('userPodcasts')
+                      .onSnapshot((snapshot) => setEpisodes(snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        data: doc.data()
+                    }))))
 
-      setEpisodies(response.data.Episodies);
-    }
+    return unsubscribe;
+    
+  }, [navigation])
 
-    getData();
-  }, []);
+  
 
   return (
     <Container>
       <FlatList
-        data={episodies}
+        data={episodes}
         keyExtractor={(item) => `${item.id}`}
         renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => navigation.navigate('MusicScreen', {thumbNail: item.data.thumbNail,
+            audioURI: item.data.audio, 
+            title: item.data.title,
+            downloadData: setEpisodes,
+            audioID: item.id
+             })}>
           <EpisodiePodcast
-            name={item.name}
-            photo={item.photo}
-            informations={item.informations}
-            ChanelPodcast={item.podcastChanel}
+            name={item.data.title}
+            photo={item.data.thumbNail}
+            informations={"tune in to elon musk debate"}
+            ChanelPodcast={"Jack Studios"}
+            AudioURI={item.data.audio}
           />
+          </TouchableOpacity>
         )}
       />
     </Container>

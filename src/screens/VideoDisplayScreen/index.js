@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, Button, TouchableOpacity} from 'react-native'
+import { StyleSheet, Text, View, Dimensions, Button, TouchableOpacity, Modal, Alert, Pressable} from 'react-native'
 import React, {useState, useEffect} from 'react';
 import WebView from 'react-native-webview';
 import ytdl from "react-native-ytdl"
@@ -12,16 +12,16 @@ import { Audio } from 'expo-av';
 
 export default function VideoDisplay(props) {
     const {width, height} = Dimensions.get("screen");
-
+    const [modalVisible, setModalVisible] = useState(false);
     const {videoId, videoThumbNail, videoTitle, Search} = props.route.params;
     const [currentVideoID, setCurrentVideoID] = useState(videoId)
     const [currentThumbnail, setCurrentThumbnail]= useState(videoThumbNail)
     const [currentTitle, setCurrentTitle] = useState(videoTitle)
     
-
+    const [recentlyPlayed, setRecentlyPlayed] = useState([])
 
     const [playingVideo, setPlayingVideo] = useState(convertToVideoLink(videoId));
-    const [recentlyPlayed, setRecentlyPlayed] = useState([])
+    
 
     useEffect(() => {
         Audio.setAudioModeAsync({
@@ -46,7 +46,8 @@ export default function VideoDisplay(props) {
     
         return unsubscribe;
         
-      }, [])
+      }, [props])
+
 
     useEffect(() => {
 
@@ -84,6 +85,18 @@ export default function VideoDisplay(props) {
 
     }
 
+    function saveAudioPodCastData(downloadURL){
+        db.collection('podcastDownloads')
+            .doc(auth.currentUser.uid)
+            .collection("userPodcasts")
+            .add({
+                audio: downloadURL,
+                thumbNail: currentThumbnail,
+                title: currentTitle,
+            })
+
+    }
+
     function saveVideoData(downloadURL){
         db.collection('videoDownloads')
             .doc(auth.currentUser.uid)
@@ -98,7 +111,7 @@ export default function VideoDisplay(props) {
 
     
 
-    async function downloadAudioOrVideo(isVideo){
+    async function downloadAudioOrVideo(isVideo=false, isPodCast=false){
         let childPath;
         let theDownload;
 
@@ -140,7 +153,12 @@ export default function VideoDisplay(props) {
                     if (isVideo){
                         saveVideoData(snapshot)
                     } else {
-                        saveAudioData(snapshot);
+                        if (isPodCast){
+                            saveAudioPodCastData(snapshot)
+                        } else {
+                            saveAudioData(snapshot);
+                        }
+                        
                     }
                 
                     
@@ -185,6 +203,47 @@ export default function VideoDisplay(props) {
         )
     }
 
+    function renderModal(){
+        return (
+            <View style={styles.centeredView}>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setModalVisible(!modalVisible);
+                }}>
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <Text style={styles.modalText}>How would you like to download it?</Text>
+                    <Pressable
+                      style={[styles.button1, styles.buttonClose]}
+                      onPress={() => downloadAudioOrVideo(true)}>
+                      <Text style={styles.textStyle}>Download Video</Text>
+                    </Pressable>
+                    <Pressable
+                      style={[styles.button2, styles.buttonClose]}
+                      onPress={() => downloadAudioOrVideo(false)}>
+                      <Text style={styles.textStyle}>Download Audio only</Text>
+                    </Pressable>
+                    <Pressable
+                      style={[styles.button2, styles.buttonClose]}
+                      onPress={() => downloadAudioOrVideo(false, true)}>
+                      <Text style={styles.textStyle}>Download PodCast Audio</Text>
+                    </Pressable>
+                    <Pressable
+                      style={[styles.button3, styles.buttonClose]}
+                      onPress={() => setModalVisible(!modalVisible)}>
+                      <Text style={styles.textStyle}>Close</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              </Modal> 
+              
+            </View>
+          );
+    }
+
     
 
 
@@ -193,14 +252,15 @@ export default function VideoDisplay(props) {
         <View style={{width:'100%',height:height/3,alignItems:'center'}}>
         <WebView
                     style={{ marginTop: 20, width: 330, height: 230 }}
+                    androidHardwareAccelerationDisabled={true}
                     javaScriptEnabled={true}
                     domStorageEnabled={true}
                     allowsFullscreenVideo={true}
                     source={{ uri: playingVideo}}/>
         </View>
         
-        <Button title='Download Video' onPress={() => downloadAudioOrVideo(true)}></Button>
-        <Text>Recently played</Text>
+        <Button style={styles.downloadButton} title='Download as Audio or Video' onPress={() => setModalVisible(true)}></Button>
+        {renderModal()}
         
         {renderRecents()}
         
@@ -216,4 +276,62 @@ const styles = StyleSheet.create({
         width: 320,
         height: 200,
       },
+      centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor: '#234d91',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 7,
+      },
+      button1: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+        marginBottom: 20
+      },
+      button2: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+        marginBottom: 20
+      },
+      button3: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+      },
+      buttonOpen: {
+        backgroundColor: '#F194FF',
+      },
+      buttonClose: {
+        backgroundColor: '#2196F3',
+      },
+      textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      },
+      modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+      },
+    downloadButton: {
+        borderRadius: 30,
+        padding: 10,
+        elevation: 2,
+    }
 })
