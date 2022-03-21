@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Audio } from 'expo-av';
 
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View, ImageBackground } from 'react-native';
 import { Feather, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
@@ -14,6 +14,7 @@ import { useDispatch } from 'react-redux';
 import { setThumbNail,  setAudioURI, setTitle, setAudioID, setDownloadData, setSoundOBJ} from '../../../services/slices/navSlice';
 import { useSelector } from 'react-redux';
 import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectSoundOBJ} from '../../../services/slices/navSlice';
+import { BG_IMAGE } from '../../services/backgroundImage';
 
 
 export default function MusicPlayer(props){
@@ -171,7 +172,9 @@ export default function MusicPlayer(props){
     
 
     return (
+      
         <View style={gStyle.container}>
+          <ImageBackground style={styles.bgImage} resizeMode='cover' source={{uri: BG_IMAGE}}>
           <ModalHeader
             left={<Feather color={colors.greyLight} name="chevron-down" />}
             leftPress={() => navigation.goBack(null)}
@@ -254,7 +257,9 @@ export default function MusicPlayer(props){
               />
             </View>
           </View>
+          </ImageBackground>
         </View>
+        
       );
     
 }
@@ -307,5 +312,9 @@ const styles = StyleSheet.create({
   containerBottom: {
     ...gStyle.flexRowSpace,
     marginTop: device.iPhoneNotch ? 32 : 8
-  }
+  },
+  bgImage: {
+    flex: 1,
+    justifyContent: "center"
+  },
 });

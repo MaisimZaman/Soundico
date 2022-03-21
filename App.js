@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusBar } from 'react-native';
+import { StatusBar, ImageBackground, StyleSheet } from 'react-native';
 import Routes from './src/Routes';
 import 'react-native-gesture-handler';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
@@ -11,6 +11,7 @@ import MusicPlayer from './src/screens/MusicPlayer';
 import VideoPlayer from './src/screens/VideoPlayer';
 import { Provider } from 'react-redux';
 import {store} from './services/store'
+import { BG_IMAGE } from './src/services/backgroundImage';
 
 
 const Stack = createStackNavigator();
@@ -30,14 +31,15 @@ const MyTheme = {
 
 function MainPage(){
   return (
-    <>
+    
+      
+    <ImageBackground style={styles.image} resizeMode="cover" source={{uri: BG_IMAGE}}>
       <StatusBar
-        backgroundColor="rgba(25,20,20,0.8)"
+        //backgroundColor="rgba(25,20,20,0.8)"
         barStyle="light-content"
       />
-
       <Routes />
-    </>
+    </ImageBackground>
   );
 }
 
@@ -61,3 +63,11 @@ export default function App(){
   
 }
 
+const styles = StyleSheet.create({
+ 
+  image: {
+    flex: 1,
+    justifyContent: "center"
+  },
+ 
+});

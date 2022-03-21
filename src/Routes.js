@@ -17,6 +17,8 @@ import CustomTopBar from "./Routes/CustomTopBar";
 import Home from "./screens/Home";
 import Search from "./screens/Search";
 import Premium from "./screens/Premium";
+import { StyleSheet, ImageBackground } from "react-native";
+import { BG_IMAGE } from "./services/backgroundImage";
 
 const MyTheme = {
   ...DefaultTheme,
@@ -37,6 +39,7 @@ function MyTabs(){
   return (
     
       <Tab.Navigator
+        
         tabBar={props => <CustomTabBar {...props} />}
         backBehavior="initialRoute"
         initialRouteName="Home"
@@ -90,7 +93,17 @@ function MyTabs(){
           }}
         />
       </Tab.Navigator>
+     
   );
 }
+
+const styles = StyleSheet.create({
+ 
+  image: {
+    flex: 1,
+    justifyContent: "center"
+  },
+ 
+});
 
 export default MyTabs;

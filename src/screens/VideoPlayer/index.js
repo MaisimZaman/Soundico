@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View, Button, FlatList, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, Button, FlatList, Dimensions, ImageBackground } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Playlist from '../../components/Playlist';
 import React, {useState, useEffect} from 'react'
 import { Video, AVPlaybackStatus, Audio, VideoFullscreenUpdateEvent } from 'expo-av';
 import { auth, db } from '../../../services/firebase';
+import { BG_IMAGE } from '../../services/backgroundImage';
 
 
 export default function VideoPlayer(props) {
@@ -58,7 +59,7 @@ export default function VideoPlayer(props) {
     
 
     return (
-        <>
+        <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
         <View style={{width:'100%',height:height/3,alignItems:'center'}}>
         <Video
           ref={video}
@@ -77,36 +78,14 @@ export default function VideoPlayer(props) {
         />
         </View>
         
-        <Text>Recently played</Text>
+        <Text style={{color: "white", fontSize: 25}}>Video Downloads</Text>
         
         {renderRecents()}
         
-        </>
+        </ImageBackground>
     )
     
-    return (
-      <View style={styles.container}>
-        <Video
-          ref={video}
-          style={styles.video}
-          source={{
-            uri: currentVideoURI,
-          }}
-          useNativeControls
-          resizeMode="contain"
-          isLooping
-          onPlaybackStatusUpdate={status => setStatus(() => status)}
-        />
-        <View style={styles.buttons}>
-          <Button
-            title={status.isPlaying ? 'Pause' : 'Play'}
-            onPress={() =>
-              status.isPlaying ? video.current.pauseAsync() : video.current.playAsync()
-            }
-          />
-        </View>
-      </View>
-    );
+    
 
     
 }
@@ -127,5 +106,9 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
     },
+    image: {
+        flex: 1,
+        justifyContent: "center"
+      },
   });
   

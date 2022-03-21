@@ -1,0 +1,1 @@
+export const BG_IMAGE = "https://image.winudf.com/v2/image1/Y29tLkFsRmFqckRldmVsb3Blci5CbGFja1dhbGxwYXBlckhEX3NjcmVlbl8xNF8xNTY3MjU0NDQyXzAyNg/screen-0.jpg?fakeurl=1&type=.jpg"

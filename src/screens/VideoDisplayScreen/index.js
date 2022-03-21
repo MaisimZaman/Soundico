@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, Button, TouchableOpacity, Modal, Alert, Pressable} from 'react-native'
+import { StyleSheet, Text, View, Dimensions, Button, TouchableOpacity, Modal, Alert, Pressable, ImageBackground} from 'react-native'
 import React, {useState, useEffect} from 'react';
 import WebView from 'react-native-webview';
 import ytdl from "react-native-ytdl"
@@ -7,6 +7,7 @@ import firebase from 'firebase'
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import Playlist from '../../components/Playlist';
 import { Audio } from 'expo-av';
+import { BG_IMAGE } from '../../services/backgroundImage';
 
 
 
@@ -152,11 +153,14 @@ export default function VideoDisplay(props) {
 
                     if (isVideo){
                         saveVideoData(snapshot)
+                        setModalVisible(false)
                     } else {
                         if (isPodCast){
                             saveAudioPodCastData(snapshot)
+                            setModalVisible(false)
                         } else {
                             saveAudioData(snapshot);
+                            setModalVisible(false)
                         }
                         
                     }
@@ -219,17 +223,17 @@ export default function VideoDisplay(props) {
                     <Pressable
                       style={[styles.button1, styles.buttonClose]}
                       onPress={() => downloadAudioOrVideo(true)}>
-                      <Text style={styles.textStyle}>Download Video</Text>
+                      <Text style={styles.textStyle}>Download as Video</Text>
                     </Pressable>
                     <Pressable
                       style={[styles.button2, styles.buttonClose]}
                       onPress={() => downloadAudioOrVideo(false)}>
-                      <Text style={styles.textStyle}>Download Audio only</Text>
+                      <Text style={styles.textStyle}>Download Music Audio only</Text>
                     </Pressable>
                     <Pressable
                       style={[styles.button2, styles.buttonClose]}
                       onPress={() => downloadAudioOrVideo(false, true)}>
-                      <Text style={styles.textStyle}>Download PodCast Audio</Text>
+                      <Text style={styles.textStyle}>Download as Podcast Audio</Text>
                     </Pressable>
                     <Pressable
                       style={[styles.button3, styles.buttonClose]}
@@ -248,7 +252,7 @@ export default function VideoDisplay(props) {
 
 
     return (
-        <>
+        <ImageBackground style={styles.image} resizeMode='cover' source={{uri: BG_IMAGE}}>
         <View style={{width:'100%',height:height/3,alignItems:'center'}}>
         <WebView
                     style={{ marginTop: 20, width: 330, height: 230 }}
@@ -264,7 +268,7 @@ export default function VideoDisplay(props) {
         
         {renderRecents()}
         
-        </>
+        </ImageBackground>
     )
 
     
@@ -284,7 +288,7 @@ const styles = StyleSheet.create({
       },
       modalView: {
         margin: 20,
-        backgroundColor: '#234d91',
+        backgroundColor: '#1b1c1f',
         borderRadius: 20,
         padding: 35,
         alignItems: 'center',
@@ -318,7 +322,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F194FF',
       },
       buttonClose: {
-        backgroundColor: '#2196F3',
+        backgroundColor: '#054c85',
       },
       textStyle: {
         color: 'white',
@@ -328,10 +332,16 @@ const styles = StyleSheet.create({
       modalText: {
         marginBottom: 15,
         textAlign: 'center',
+        color: "white",
+        fontSize: 25
       },
     downloadButton: {
         borderRadius: 30,
         padding: 10,
         elevation: 2,
-    }
+    },
+    image: {
+        flex: 1,
+        justifyContent: "center"
+      },
 })

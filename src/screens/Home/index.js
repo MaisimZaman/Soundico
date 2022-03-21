@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, ScrollView } from 'react-native';
+import { FlatList, ScrollView, ImageBackground, StyleSheet } from 'react-native';
 
 import { Entypo } from '@expo/vector-icons';
 
@@ -12,6 +12,7 @@ import { API_KEY } from '../Search/YoutubeApi';
 import { Container, Title } from './styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { auth, db } from '../../../services/firebase';
+import { BG_IMAGE } from '../../services/backgroundImage';
 
 
 
@@ -82,6 +83,7 @@ export default function Home({navigation}) {
   }, []);
 
   return (
+    <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
     <Container>
       <ScrollView>
         <Entypo
@@ -152,5 +154,16 @@ export default function Home({navigation}) {
         />
       </ScrollView>
     </Container>
+    </ImageBackground>
   );
 }
+
+
+const styles = StyleSheet.create({
+ 
+  image: {
+    flex: 1,
+    justifyContent: "center"
+  },
+ 
+});
