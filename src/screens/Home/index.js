@@ -30,9 +30,9 @@ export default function Home({navigation}) {
   }, [])
 
   useEffect(() => {
-    const searches = ["Elon Musk", "Jordan Petterson", "Ben Shapiro", "Joe Rogan", "Jeff Bezos"]
+    const searches = ["Elon Musk", "Jordan Petterson", "Ben Shapiro",  "Jeff Bezos", "John Dyole", "Dohnald Trump"]
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
-    Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchText}Interview&key=${API_KEY}`)
+    Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchText}&key=${API_KEY}`)
       .then(res => {
         const podCastData = res.data.items;
         setPodcasts(podCastData)
@@ -49,6 +49,19 @@ export default function Home({navigation}) {
       .then(res => {
         const madeForYou = res.data.items;
         setMadeForYou(madeForYou)
+        
+        
+    })
+
+  }, [navigation])
+  useEffect(() => {
+    const searches = ["Captian America Music", "Spider-man Music", "Intersteller Music"]
+    const searchText = searches[Math.floor(Math.random() * (searches.length))]
+    Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${searchText}&type=playlist&key=${API_KEY}`)
+      .then(res => {
+        const popularPlaylists = res.data.items;
+        setPopularPlaylists(popularPlaylists)
+        
         
         
     })
@@ -75,7 +88,7 @@ export default function Home({navigation}) {
       //setRecently(response.data.Recently.Playlists);
       //setPodcasts(response.data.PodCasts.Shows);
       //setMadeForYou(response.data.Playlists.MadeForYou);
-      setPopularPlaylists(response.data.Playlists.PopularPlaylists);
+      //setPopularPlaylists(response.data.Playlists.PopularPlaylists);
       setYourPlaylists(response.data.Recently.YourPlaylists);
     }
 
@@ -139,7 +152,7 @@ export default function Home({navigation}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <AlbunsList name={item.name} photoAlbum={item.photoAlbum} />
+            <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} />
           )}
         />
         <Title>Your Playlists</Title>

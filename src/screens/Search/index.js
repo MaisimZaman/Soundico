@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, FlatList, Text } from 'react-native';
+import { ScrollView, FlatList, Text, ImageBackground, StyleSheet } from 'react-native';
 
 import GenreMusic from '../../components/GenreMusic';
 import SearchBar from '../../components/SearchBar';
@@ -10,6 +10,7 @@ import Axios from 'axios';
 import PodcastShow from '../../components/PodcastShow';
 
 import { Container, Title } from './styles';
+import { BG_IMAGE } from '../../services/backgroundImage';
 
 export default function Search({navigation}) {
   const [yourTop, setYourTop] = useState([]);
@@ -17,6 +18,22 @@ export default function Search({navigation}) {
   const [YOffSet, setYOffSet] = useState(0);
   const [searchText, setSearchText] = useState('');
   const [allYTData, setYTData] = useState([]);
+  const [placeholder, setPlaceholder] = useState('Search for Music')
+  const [searchType, setSearchType] = useState('Music')
+
+  useEffect(() => {
+    if (searchType == 'Music'){
+        setPlaceholder('Search for Music')
+    }
+    else if (searchType == 'Videos'){
+      setPlaceholder('Search for Videos')
+    }
+    else if (searchType == 'Video Link'){
+      setPlaceholder('Paste in YouTubeVideo Link')
+    }
+
+
+  }, [searchType])
 
   const allGenres = [
     {
@@ -38,9 +55,25 @@ export default function Search({navigation}) {
 
   ]
 
+  const searchTypes = [
+    {
+      name: "Music",
+      color: "#1e2ee6"
+    },
+    {
+      name: "Videos",
+      color: "#1e2ee6"
+    },
+    {
+      name: "Video Link",
+      color: "#1e2ee6"
+    }
+
+  ]
+
 
   function searchForVideos(){
-    Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchText + 'music'}&key=${API_KEY}`)
+    Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchText + searchType}&key=${API_KEY}`)
       .then(res => {
         const ytData = res.data.items;
         setYTData(ytData)
@@ -100,6 +133,7 @@ export default function Search({navigation}) {
   
 
   return (
+    <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
     <Container >
       <Title YOffSet={YOffSet} search>
         Search
@@ -107,7 +141,7 @@ export default function Search({navigation}) {
 
     <TextInput 
     style={{flexDirection: "row", alignItems: 'center', justifyContent: 'space-evenly', backgroundColor: "#fff", height: 45, width: "94%", borderRadius: 10}}
-    placeholder="Search for Music or Podcasts"
+    placeholder={placeholder}
     onChangeText={(text) => setSearchText(text)}
     value={searchText}
     onSubmitEditing={searchForVideos}
@@ -118,21 +152,31 @@ export default function Search({navigation}) {
 
       <ScrollView scrollEventThrottle onScroll={handeScroll}>
         <FlatList
-          data={yourTop}
+          data={searchTypes}
           numColumns={2}
           ListHeaderComponent={<Title>Genre</Title>}
           keyExtractor={(item) => `${item.id}`}
           showsVerticalScrollIndicator
           renderItem={({ item }) => (
-            <GenreMusic name={item.name} color={item.color} />
+            <TouchableOpacity onPress={() => setSearchType(item.name)}>
+              <GenreMusic name={item.name} color={item.color} />
+              </TouchableOpacity>
           )}
         />
 
         {renderSearches()}
       </ScrollView>
     </Container>
+    </ImageBackground>
   );
 }
 
-
+const styles = StyleSheet.create({
+ 
+  image: {
+    flex: 1,
+    justifyContent: "center"
+  },
+ 
+});
 
