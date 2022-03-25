@@ -14,7 +14,7 @@ import { BG_IMAGE } from '../../services/backgroundImage';
 export default function VideoDisplay(props) {
     const {width, height} = Dimensions.get("screen");
     const [modalVisible, setModalVisible] = useState(false);
-    const {videoId, videoThumbNail, videoTitle, Search} = props.route.params;
+    const {videoId, videoThumbNail, videoTitle, Search, isPlaylist, playlistVideos} = props.route.params;
     const [currentVideoID, setCurrentVideoID] = useState(videoId)
     const [currentThumbnail, setCurrentThumbnail]= useState(videoThumbNail)
     const [currentTitle, setCurrentTitle] = useState(videoTitle)
@@ -37,6 +37,10 @@ export default function VideoDisplay(props) {
     }, [currentVideoID])
 
     useEffect(() => {
+        if (isPlaylist){
+            const unsubscribe = setRecentlyPlayed(playlistVideos)
+            return unsubscribe
+        }
         const unsubscribe = db.collection('recentlyPlayed')
                           .doc(auth.currentUser.uid)
                           .collection('userRecents')
@@ -51,6 +55,8 @@ export default function VideoDisplay(props) {
 
 
     useEffect(() => {
+        console.log("the info")
+        console.log(videoId)
 
         if (Search){
             db.collection('recentlyPlayed')
@@ -182,10 +188,19 @@ export default function VideoDisplay(props) {
 
     function renderRecents(){
         function setVideoprops(item){
-            setPlayingVideo(convertToVideoLink(item.data.videoId))
-            setCurrentVideoID(item.data.videoId)
-            setCurrentThumbnail(item.data.videoThumbNail)
-            setCurrentTitle(item.data.videoTitle)
+            if (isPlaylist){
+                setPlayingVideo(convertToVideoLink(item.snippet.resourceId.videoId))
+                setCurrentVideoID(item.snippet.resourceId.videoId)
+                setCurrentThumbnail(item.snippet.thumbnails.high.url)
+                setCurrentTitle(item.snippet.title)
+            }
+            else {
+                setPlayingVideo(convertToVideoLink(item.data.videoId))
+                setCurrentVideoID(item.data.videoId)
+                setCurrentThumbnail(item.data.videoThumbNail)
+                setCurrentTitle(item.data.videoTitle)
+            }
+            
         }
         return (
             
@@ -196,8 +211,8 @@ export default function VideoDisplay(props) {
             renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => setVideoprops(item)}>
                 <Playlist
-                    name={item.data.videoTitle}
-                    photoAlbum={item.data.videoThumbNail}
+                    name={isPlaylist ?  item.snippet.title : item.data.videoTitle}
+                    photoAlbum={isPlaylist ? item.snippet.thumbnails.high.url : item.data.videoThumbNail}
                     create={false}
                 />
                 </TouchableOpacity>
@@ -208,6 +223,16 @@ export default function VideoDisplay(props) {
     }
 
     function renderModal(){
+        
+        function renderPlaylistDownload(){
+            return (
+                <Pressable
+                      style={[styles.button4, styles.buttonClose]}
+                      onPress={() => downloadAudioOrVideo(true)}>
+                      <Text style={styles.textStyle}>Download Playlist</Text>
+                </Pressable>
+            )
+        }
         return (
             <View style={styles.centeredView}>
               <Modal
@@ -235,11 +260,13 @@ export default function VideoDisplay(props) {
                       onPress={() => downloadAudioOrVideo(false, true)}>
                       <Text style={styles.textStyle}>Download as Podcast Audio</Text>
                     </Pressable>
+                    {isPlaylist ? renderPlaylistDownload() : null}
                     <Pressable
                       style={[styles.button3, styles.buttonClose]}
                       onPress={() => setModalVisible(!modalVisible)}>
                       <Text style={styles.textStyle}>Close</Text>
                     </Pressable>
+                    
                   </View>
                 </View>
               </Modal> 
@@ -317,6 +344,12 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 10,
         elevation: 2,
+      },
+      button4: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+        marginBottom: 20
       },
       buttonOpen: {
         backgroundColor: '#F194FF',

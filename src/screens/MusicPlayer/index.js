@@ -66,6 +66,8 @@ export default function MusicPlayer(props){
       
     }, [currentAudioID])
 
+    
+
     useEffect(() => {
       Audio.setAudioModeAsync({
         allowsRecordingIOS: false,
@@ -74,11 +76,14 @@ export default function MusicPlayer(props){
         playsInSilentModeIOS: true,
         shouldDuckAndroid: true,
         interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
-        playThroughEarpieceAndroid: false
+        playThroughEarpieceAndroid: false,
+        
      });
      setNewSongData(thumbNail, audioURI, title,audioID)
       dispatch(setDownloadData(downloadData))
     }, [])
+
+
 
     useEffect(() => {
       async function main(){

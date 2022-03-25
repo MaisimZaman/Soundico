@@ -25,6 +25,7 @@ import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectDown
 
 export default function Player({Artist="Hanz Zimmer", navigation}) {
   const [playMusic, setPlayMusic] = useState(true);
+  const mainSound = useSelector(selectSoundOBJ)
 
   const Title = useSelector(selectTitle)
   const ThumbNail = useSelector(selectThumbNail)
@@ -32,9 +33,6 @@ export default function Player({Artist="Hanz Zimmer", navigation}) {
   const audioID = useSelector(selectAudioID)
   const downloadData = useSelector(selectDownloadData)
 
-  const sound = useSelector(selectSoundOBJ)
-  
-  
   useEffect(() => {
     Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
@@ -45,7 +43,14 @@ export default function Player({Artist="Hanz Zimmer", navigation}) {
       interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
       playThroughEarpieceAndroid: false
    });
+
+
+   
   }, [])
+
+
+
+ 
  
 
   useEffect(() => {
@@ -55,10 +60,10 @@ export default function Player({Artist="Hanz Zimmer", navigation}) {
         
 
         console.log('Playing Sound');
-         await sound.playAsync(); 
+        await mainSound.playAsync(); 
       }
-      else if (sound != null && playMusic == false){
-       sound.pauseAsync()
+      else if (mainSound != null && playMusic == false){
+       mainSound.pauseAsync()
     
       }
 
@@ -67,15 +72,15 @@ export default function Player({Artist="Hanz Zimmer", navigation}) {
     main()
     
 
-  }, [playMusic, audioID, sound])
+  }, [playMusic, audioID, mainSound])
 
-  useEffect(() => {
-    return sound
+  useEffect (() => {
+    return mainSound
       ? () => {
           console.log('Unloading Sound 2');
-          sound.unloadAsync(); }
+          mainSound.unloadAsync(); }
       : undefined;
-  }, [sound, audioID]);
+  }, [mainSound, audioID]);
   
 
   return (

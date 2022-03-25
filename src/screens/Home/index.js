@@ -15,19 +15,14 @@ import { auth, db } from '../../../services/firebase';
 import { BG_IMAGE } from '../../services/backgroundImage';
 
 
-
-
 export default function Home({navigation}) {
   const [recently, setRecently] = useState([]);
   const [podcasts, setPodcasts] = useState([]);
   const [madeForYou, setMadeForYou] = useState([]);
   const [popularPlaylists, setPopularPlaylists] = useState([]);
   const [yourPlaylists, setYourPlaylists] = useState([]);
+  const [currentPlaylistData, setCurrentPlaylistData] = useState()
 
-  useEffect(async() => {
-    //const youtubeURL = 'https://www.youtube.com/watch?v=TVowQ4LgwLk';
-    //const urls = await ytdl(youtubeURL, { quality: 'highestaudio' });
-  }, [])
 
   useEffect(() => {
     const searches = ["Elon Musk", "Jordan Petterson", "Ben Shapiro",  "Jeff Bezos", "John Dyole", "Dohnald Trump"]
@@ -54,6 +49,7 @@ export default function Home({navigation}) {
     })
 
   }, [navigation])
+
   useEffect(() => {
     const searches = ["Captian America Music", "Spider-man Music", "Intersteller Music"]
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
@@ -62,11 +58,19 @@ export default function Home({navigation}) {
         const popularPlaylists = res.data.items;
         setPopularPlaylists(popularPlaylists)
         
+        //getPlayListData(popularPlaylists[0].id.playlistId)
+        
         
         
     })
 
   }, [navigation])
+
+  
+  
+
+
+  
 
   useEffect(() => {
     const unsubscribe = db.collection('recentlyPlayed')
@@ -94,6 +98,19 @@ export default function Home({navigation}) {
 
     getData();
   }, []);
+
+  async function getPlayListData(playlistId){
+   
+
+    const response = await Axios.get(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&key=${API_KEY}`)
+    const playlistVideos = response.data.items
+    const videoId = playlistVideos[0].snippet.resourceId.videoId
+    const videoThumbNail = playlistVideos[0].snippet.thumbnails.high.url
+    const videoTitle = playlistVideos[0].snippet.title
+    setCurrentPlaylistData([videoId, videoThumbNail, videoTitle, playlistVideos])
+    navigation.navigate('VideoScreen', {videoId: currentPlaylistData[0], videoThumbNail:currentPlaylistData[1], videoTitle: currentPlaylistData[2], Search: false, isPlaylist: true, playlistVideos: currentPlaylistData[3]})
+
+  }
 
   return (
     <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
@@ -128,7 +145,7 @@ export default function Home({navigation}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, Search: true })}>
+            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, Search: false })}>
               <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} podcast={true} />
             </TouchableOpacity>
           )}
@@ -152,7 +169,9 @@ export default function Home({navigation}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} />
+            <TouchableOpacity onPress={() => getPlayListData(item.id.playlistId)}>
+              <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} />
+              </TouchableOpacity>
           )}
         />
         <Title>Your Playlists</Title>

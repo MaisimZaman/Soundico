@@ -83,7 +83,7 @@ function MyTabs(){
           }}
         />
         <Tab.Screen
-          name="Premium"
+          name="Profile"
           component={Premium}
           options={{
             tabBarLabel: "Premium",
