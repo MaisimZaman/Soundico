@@ -99,7 +99,7 @@ export default function Home({navigation}) {
     getData();
   }, []);
 
-  async function getPlayListData(playlistId){
+  async function getPlayListData(item, playlistId){
    
 
     const response = await Axios.get(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&key=${API_KEY}`)
@@ -108,7 +108,7 @@ export default function Home({navigation}) {
     const videoThumbNail = playlistVideos[0].snippet.thumbnails.high.url
     const videoTitle = playlistVideos[0].snippet.title
     setCurrentPlaylistData([videoId, videoThumbNail, videoTitle, playlistVideos])
-    navigation.navigate('VideoScreen', {videoId: currentPlaylistData[0], videoThumbNail:currentPlaylistData[1], videoTitle: currentPlaylistData[2], Search: false, isPlaylist: true, playlistVideos: currentPlaylistData[3]})
+    navigation.navigate('VideoScreen', {videoId: currentPlaylistData[0], videoThumbNail:currentPlaylistData[1], videoTitle: currentPlaylistData[2], Search: false, isPlaylist: true, playlistVideos: currentPlaylistData[3], plInfo: [item.snippet.title, item.snippet.thumbnails.high.url]})
 
   }
 
@@ -169,7 +169,7 @@ export default function Home({navigation}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => getPlayListData(item.id.playlistId)}>
+            <TouchableOpacity onPress={() => getPlayListData(item, item.id.playlistId)}>
               <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} />
               </TouchableOpacity>
           )}

@@ -5,15 +5,30 @@ import Playlist from '../../../../components/Playlist';
 import api from '../../../../services/api';
 
 import { Container } from './styles';
+import { auth, db } from '../../../../../services/firebase';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-export default function Playlists() {
+export default function Playlists({navigation}) {
   const [playlists, setPlaylists] = useState([]);
+
+  useEffect(() => {
+    let unsubscribe = db.collection('playlists')
+                      .doc(auth.currentUser.uid)
+                      .collection('userPlaylists')
+                      .onSnapshot((snapshot) => setPlaylists(snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        data: doc.data()
+                    }))))
+
+    return unsubscribe;
+    
+  }, [navigation])
 
   useEffect(() => {
     async function getData() {
       const response = await api.get('/Playlists');
 
-      setPlaylists(response.data.YourPlaylists);
+      //setPlaylists(response.data.YourPlaylists);
     }
 
     getData();
@@ -25,11 +40,14 @@ export default function Playlists() {
         data={playlists}
         keyExtractor={(item) => `${item.id}`}
         renderItem={({ item }) => (
-          <Playlist
-            name={item.name}
-            photoAlbum={item.photoAlbum}
-            create={item.create}
-          />
+          <TouchableOpacity onPress={() => navigation.navigate("AlbumScreen", {title:item.data.playlistTitle, photoAlbum: item.data.playListThumbnail, playlistVideos: item.data.playlistVideos })}>
+          
+            <Playlist
+              name={item.data.playlistTitle}
+              photoAlbum={item.data.playListThumbnail}
+              create={item.create}
+            />
+          </TouchableOpacity>
         )}
       />
     </Container>

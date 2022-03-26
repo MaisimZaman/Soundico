@@ -14,7 +14,7 @@ import { BG_IMAGE } from '../../services/backgroundImage';
 export default function VideoDisplay(props) {
     const {width, height} = Dimensions.get("screen");
     const [modalVisible, setModalVisible] = useState(false);
-    const {videoId, videoThumbNail, videoTitle, Search, isPlaylist, playlistVideos} = props.route.params;
+    const {videoId, videoThumbNail, videoTitle, Search, isPlaylist, playlistVideos, plInfo} = props.route.params;
     const [currentVideoID, setCurrentVideoID] = useState(videoId)
     const [currentThumbnail, setCurrentThumbnail]= useState(videoThumbNail)
     const [currentTitle, setCurrentTitle] = useState(videoTitle)
@@ -112,6 +112,20 @@ export default function VideoDisplay(props) {
                 videoURI: downloadURL,
                 thumbNail: currentThumbnail,
                 title: currentTitle,
+            })
+
+    }
+
+    function savePlaylistData(){
+        db.collection('playlists')
+            .doc(auth.currentUser.uid)
+            .collection("userPlaylists")
+            .add({
+                playlistTitle: plInfo[0],
+                playListThumbnail: plInfo[1],
+                playlistVideos: playlistVideos,
+
+                
             })
 
     }
@@ -228,7 +242,7 @@ export default function VideoDisplay(props) {
             return (
                 <Pressable
                       style={[styles.button4, styles.buttonClose]}
-                      onPress={() => downloadAudioOrVideo(true)}>
+                      onPress={savePlaylistData}>
                       <Text style={styles.textStyle}>Download Playlist</Text>
                 </Pressable>
             )

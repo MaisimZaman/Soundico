@@ -35,6 +35,8 @@ export default function Search({navigation}) {
 
   }, [searchType])
 
+  const listOFColours = ["blue", "green", "white", "orange", "yellow", "purple"]
+
   const allGenres = [
     {
       name: "Rock",
@@ -58,28 +60,46 @@ export default function Search({navigation}) {
   const searchTypes = [
     {
       name: "Music",
-      color: "#1e2ee6"
+      color: "#1e2ee6",
+      id: 1
     },
     {
       name: "Videos",
-      color: "#1e2ee6"
+      color: "#1e2ee6",
+      id: 2
     },
     {
       name: "Video Link",
-      color: "#1e2ee6"
+      color: "#1e2ee6",
+      id: 3
     }
 
   ]
 
 
   function searchForVideos(){
-    Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchText + searchType}&key=${API_KEY}`)
+    console.log(searchType)
+    if (setSearchType == 'Video Link'){
+      console.log("went throuh")
+      const searchID = searchText.slice(24, 35)
+      Axios.get(`https://youtube.googleapis.com/youtube/v3/videos?part=snippet&id=${searchID}&key=${API_KEY}`)
       .then(res => {
         const ytData = res.data.items;
         setYTData(ytData)
+      })
         
         
-    })
+    }
+    else {
+      Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchText + searchType}&key=${API_KEY}`)
+      .then(res => {
+        const ytData = res.data.items;
+        setYTData(ytData)
+      })
+    }
+
+    
+    
   }
 
   useEffect(() => {
@@ -159,8 +179,8 @@ export default function Search({navigation}) {
           showsVerticalScrollIndicator
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => setSearchType(item.name)}>
-              <GenreMusic name={item.name} color={item.color} />
-              </TouchableOpacity>
+              <GenreMusic name={item.name} color={listOFColours[Math.floor(Math.random() * listOFColours.length)]} />
+            </TouchableOpacity>
           )}
         />
 
