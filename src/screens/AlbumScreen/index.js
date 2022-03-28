@@ -1,15 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, ImageBackground, StyleSheet } from "react-native";
+import { View, Text, FlatList, ImageBackground, StyleSheet, TouchableOpacity } from "react-native";
 import { auth } from "../../../services/firebase";
 import { BG_IMAGE } from "../../services/backgroundImage";
 
 import AlbumHeader from "./components/AlbumHeader";
 import SongListItem from "./components/songListItem";
+import ytdl from "react-native-ytdl"
 
 
-const AlbumScreen = (props) => {
+function AlbumScreen(props){
   const {title, photoAlbum,playlistVideos} = props.route.params
   const [albums, setAlbums] = useState(playlistVideos);
+
+ function navigateToMusicPlayer(item){
+    
+
+    props.navigation.navigate("MusicScreen", 
+    {
+      thumbNail:item.snippet.thumbnails.high.url,
+      audioURI: item.snippet.resourceId.videoId,
+      title: item.snippet.title,
+      audioID: item.id,
+      downloadData: albums,
+      playListName: title
+
+    })
+  }
 
 
   return (
@@ -18,13 +34,15 @@ const AlbumScreen = (props) => {
         data={albums}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <SongListItem
-            id={item.id}
-            title={item.snippet.title}
-            artist={item.snippet.channelTitle}
-            imageUri={item.snippet.thumbnails.high.url}
-            uri={"null"}
-          />
+            <SongListItem
+              id={item.id}
+              title={item.snippet.title}
+              artist={item.snippet.channelTitle}
+              imageUri={item.snippet.thumbnails.high.url}
+              navigationFunc={navigateToMusicPlayer}
+              item={item}
+              uri={"null"}
+            />
         )}
         ListHeaderComponent={
           <AlbumHeader

@@ -56,7 +56,6 @@ export default function Player({Artist="Hanz Zimmer", navigation}) {
   useEffect(() => {
     async function main(){
       if (playMusic){
-        console.log(sound)
         
 
         console.log('Playing Sound');

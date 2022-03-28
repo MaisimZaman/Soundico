@@ -16,6 +16,7 @@ import { BG_IMAGE } from '../../services/backgroundImage';
 
 
 export default function Home({navigation}) {
+
   const [recently, setRecently] = useState([]);
   const [podcasts, setPodcasts] = useState([]);
   const [madeForYou, setMadeForYou] = useState([]);
@@ -66,11 +67,18 @@ export default function Home({navigation}) {
 
   }, [navigation])
 
-  
-  
+  useEffect(() => {
+    let unsubscribe = db.collection('playlists')
+                      .doc(auth.currentUser.uid)
+                      .collection('userPlaylists')
+                      .onSnapshot((snapshot) => setYourPlaylists(snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        data: doc.data()
+                    }))))
 
-
-  
+    return unsubscribe;
+    
+  }, [navigation])
 
   useEffect(() => {
     const unsubscribe = db.collection('recentlyPlayed')
@@ -85,19 +93,6 @@ export default function Home({navigation}) {
     
   }, [navigation])
 
-  useEffect(() => {
-    async function getData() {
-      const response = await api.get('/db');
-
-      //setRecently(response.data.Recently.Playlists);
-      //setPodcasts(response.data.PodCasts.Shows);
-      //setMadeForYou(response.data.Playlists.MadeForYou);
-      //setPopularPlaylists(response.data.Playlists.PopularPlaylists);
-      setYourPlaylists(response.data.Recently.YourPlaylists);
-    }
-
-    getData();
-  }, []);
 
   async function getPlayListData(item, playlistId){
    
@@ -111,6 +106,9 @@ export default function Home({navigation}) {
     navigation.navigate('VideoScreen', {videoId: currentPlaylistData[0], videoThumbNail:currentPlaylistData[1], videoTitle: currentPlaylistData[2], Search: false, isPlaylist: true, playlistVideos: currentPlaylistData[3], plInfo: [item.snippet.title, item.snippet.thumbnails.high.url]})
 
   }
+
+
+  
 
   return (
     <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
@@ -181,7 +179,9 @@ export default function Home({navigation}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <AlbunsList name={item.name} photoAlbum={item.photoAlbum} />
+            <TouchableOpacity onPress={() => navigation.navigate("AlbumScreen", {title:item.data.playlistTitle, photoAlbum: item.data.playListThumbnail, playlistVideos: item.data.playlistVideos })}>
+              <AlbunsList name={item.data.playlistTitle} photoAlbum={item.data.playListThumbnail} />
+            </TouchableOpacity>
           )}
         />
       </ScrollView>

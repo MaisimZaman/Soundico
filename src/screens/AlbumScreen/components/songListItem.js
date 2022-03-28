@@ -1,12 +1,12 @@
 import React from "react";
-import { View, Image, Text, Pressable, StyleSheet } from "react-native";
+import { View, Image, Text, Pressable, StyleSheet, TouchableOpacity } from "react-native";
 
 
-const SongListItem = ({ id, title, artist, imageUri }) => {
+const SongListItem = ({ id, title, artist, imageUri, navigationFunc, item }) => {
   //const { setSongId } = useAppContext();
 
   return (
-    <Pressable onPress={() => null}>
+    <TouchableOpacity onPress={() => navigationFunc(item)}>
       <View style={styles.container}>
         <Image source={{ uri: imageUri }} style={styles.image} />
         <View style={styles.innerContainer}>
@@ -14,7 +14,7 @@ const SongListItem = ({ id, title, artist, imageUri }) => {
           <Text style={styles.artist}>{artist}</Text>
         </View>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, FlatList, Text, ImageBackground, StyleSheet } from 'react-native';
+import { ScrollView, FlatList, Text, ImageBackground, StyleSheet, View } from 'react-native';
 
 import GenreMusic from '../../components/GenreMusic';
 import SearchBar from '../../components/SearchBar';
@@ -8,6 +8,7 @@ import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { API_KEY } from './YoutubeApi';
 import Axios from 'axios';
 import PodcastShow from '../../components/PodcastShow';
+import { TextButton } from '../../components/AuthComponents';
 
 import { Container, Title } from './styles';
 import { BG_IMAGE } from '../../services/backgroundImage';
@@ -18,6 +19,7 @@ export default function Search({navigation}) {
   const [YOffSet, setYOffSet] = useState(0);
   const [searchText, setSearchText] = useState('');
   const [allYTData, setYTData] = useState([]);
+  const [currentPlaylistData, setCurrentPlaylistData] = useState([])
   const [placeholder, setPlaceholder] = useState('Search for Music')
   const [searchType, setSearchType] = useState('Music')
 
@@ -31,6 +33,9 @@ export default function Search({navigation}) {
     else if (searchType == 'Video Link'){
       setPlaceholder('Paste in YouTubeVideo Link')
     }
+    else if (searchType == 'Playlists'){
+      setPlaceholder("Search for playlists")
+    }
 
 
   }, [searchType])
@@ -39,19 +44,27 @@ export default function Search({navigation}) {
 
   const allGenres = [
     {
-      name: "Rock",
+      name: "Music",
       color: "blue"
     },
     {
-      name: "Jazz",
+      name: "Podcasts",
       color: "blue"
     },
     {
-      name: "Pop",
+      name: "Interviews",
       color: "blue"
     },
     {
-      name: "Indie rock",
+      name: "Speaches",
+      color: "blue"
+    },
+    {
+      name: "Motivational Speaches",
+      color: "blue"
+    },
+    {
+      name: "Stories",
       color: "blue"
     },
 
@@ -72,6 +85,11 @@ export default function Search({navigation}) {
       name: "Video Link",
       color: "#1e2ee6",
       id: 3
+    },
+    {
+      name: "Playlists",
+      color: "#1e2ee6",
+      id: 4
     }
 
   ]
@@ -79,9 +97,16 @@ export default function Search({navigation}) {
 
   function searchForVideos(){
     console.log(searchType)
-    if (setSearchType == 'Video Link'){
-      console.log("went throuh")
-      const searchID = searchText.slice(24, 35)
+    if (searchType == "Playlists"){
+      Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${searchText}&type=playlist&key=${API_KEY}`)
+      .then(res => {
+        const ytData = res.data.items;
+        setYTData(ytData)
+      })
+    }
+    else if (searchType == "Video Link"){
+      const searchID = searchText.slice(17, 28)
+      console.warn(searchID)
       Axios.get(`https://youtube.googleapis.com/youtube/v3/videos?part=snippet&id=${searchID}&key=${API_KEY}`)
       .then(res => {
         const ytData = res.data.items;
@@ -113,10 +138,32 @@ export default function Search({navigation}) {
     getData();
   }, []);
 
-  const handeScroll = (props) => {
-    const yOffSet = props.nativeEvent.contentOffset.y;
-    setYOffSet(yOffSet);
-  };
+  async function getPlayListData(item, playlistId){
+   
+
+    const response = await Axios.get(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&key=${API_KEY}`)
+    const playlistVideos = response.data.items
+    const videoId = playlistVideos[0].snippet.resourceId.videoId
+    const videoThumbNail = playlistVideos[0].snippet.thumbnails.high.url
+    const videoTitle = playlistVideos[0].snippet.title
+    setCurrentPlaylistData([videoId, videoThumbNail, videoTitle, playlistVideos])
+    navigation.navigate('VideoScreen', {videoId: currentPlaylistData[0], videoThumbNail:currentPlaylistData[1], videoTitle: currentPlaylistData[2], Search: true, isPlaylist: true, playlistVideos: currentPlaylistData[3], plInfo: [item.snippet.title, item.snippet.thumbnails.high.url]})
+
+  }
+
+
+  function searchForType(item, playlistId){
+
+    if (searchType == "Playlists"){
+      getPlayListData(item, playlistId)
+    }
+    else if (searchType == "Video Link"){
+      navigation.navigate('VideoScreen', {videoId: item.id,  videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, Search: true })
+    }
+    else {
+      navigation.navigate('VideoScreen', {videoId: item.id.videoId,  videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, Search: true })
+    }
+  }
 
 
   function renderSearches(){
@@ -126,7 +173,7 @@ export default function Search({navigation}) {
           data={allYTData}
           keyExtractor={(item) => item.etag}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {videoId: item.id.videoId,  videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, Search: true })}>
+            <TouchableOpacity onPress={() => searchForType(item, item.id.playlistId)}>
               <PodcastShow name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url}></PodcastShow>
             </TouchableOpacity>
             
@@ -143,7 +190,7 @@ export default function Search({navigation}) {
           keyExtractor={(item) => `${item.id}`}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <GenreMusic name={item.name} color={item.color} />
+              <GenreMusic name={item.name} color={"#4d6feb"} />
           )}
         />
   </>
@@ -170,22 +217,38 @@ export default function Search({navigation}) {
         
      
 
-      <ScrollView scrollEventThrottle onScroll={handeScroll}>
+      <View>
         <FlatList
-          data={searchTypes}
-          numColumns={2}
-          ListHeaderComponent={<Title>Genre</Title>}
-          keyExtractor={(item) => `${item.id}`}
-          showsVerticalScrollIndicator
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => setSearchType(item.name)}>
-              <GenreMusic name={item.name} color={listOFColours[Math.floor(Math.random() * listOFColours.length)]} />
-            </TouchableOpacity>
-          )}
-        />
+                    horizontal
+                    data={searchTypes}
+                    listKey="TopSearches"
+                    keyExtractor={item => `TopSearches-${item.id}`}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{
+                        marginTop: 12
+                    }}
+                    renderItem={({ item, index }) => (
+                        <TextButton
+                            label={item.name}
+                            onPress={() => setSearchType(item.name)}
+                            contentContainerStyle={{
+                                paddingVertical: 12,
+                                paddingHorizontal: 14,
+                                marginLeft: index == 0 ? 14 : 12,
+                                marginRight: index == searchTypes.length - 1 ? 14 : 0,
+                                borderRadius: 12,
+                                backgroundColor: "#E5E5E5"
+                            }}
+                            labelStyle={{
+                                color: "#7F7F7F",
+                                fontFamily: "Roboto-Bold", fontSize: 16, lineHeight: 22 
+                            }}
+                        />
+                    )}
+                />
 
         {renderSearches()}
-      </ScrollView>
+      </View>
     </Container>
     </ImageBackground>
   );

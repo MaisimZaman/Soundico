@@ -15,13 +15,19 @@ import { setThumbNail,  setAudioURI, setTitle, setAudioID, setDownloadData, setS
 import { useSelector } from 'react-redux';
 import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectSoundOBJ} from '../../../services/slices/navSlice';
 import { BG_IMAGE } from '../../services/backgroundImage';
+import ytdl from 'react-native-ytdl';
 
 
 export default function MusicPlayer(props){
 
   const dispatch = useDispatch();
 
-  const {thumbNail, audioURI, title,audioID, downloadData} = props.route.params
+  
+
+  const {thumbNail, audioURI, title,audioID, downloadData, playListName} = props.route.params
+
+  const [playListAudioURI, setPlayListAudioURI] = useState(audioURI)
+  const [status, setStatus] = useState(null)
 
   const currentThumbNail = useSelector(selectThumbNail)
   const currentAudioURI = useSelector(selectAudioURI)
@@ -56,9 +62,21 @@ export default function MusicPlayer(props){
 
     useEffect(() => {   
       async function run(){
-        const { sound } = await Audio.Sound.createAsync({uri: currentAudioURI});
-        //setSound(sound)
-        dispatch(setSoundOBJ(sound))
+        if (playListName != undefined){
+          let info = await ytdl.getInfo(String(playListAudioURI));
+          let audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
+          const theAudioURI = audioFormats[0].url
+          dispatch(setAudioURI(theAudioURI))
+          const { sound } = await Audio.Sound.createAsync({uri: currentAudioURI});
+          dispatch(setSoundOBJ(sound))
+        }
+        else {
+          const { sound: soundObject, status } = await Audio.Sound.createAsync({uri: currentAudioURI});
+            //setSound(sound)
+            dispatch(setSoundOBJ(soundObject))
+            setStatus(status)
+        }
+        
 
       }
       run()
@@ -137,12 +155,26 @@ export default function MusicPlayer(props){
       });
 
       if (index < downloadData.length){
-        const forwardThumbNail = downloadData[index + 1].data.thumbNail
-        const forwardAudioURI = downloadData[index + 1].data.audio
-        const forwardTitle = downloadData[index + 1].data.title
-        const forwardID = downloadData[index + 1].id
-        setNewSongData(forwardThumbNail, forwardAudioURI, forwardTitle, forwardID)
-        setPaused(false)
+        if (playListName != undefined){
+          const forwardThumbNail = downloadData[index + 1].snippet.thumbnails.high.url
+          const forwardAudioURI = "null"
+          const forwardTitle = downloadData[index + 1].snippet.title
+          const forwardID = downloadData[index + 1].id
+          setPlayListAudioURI(downloadData[index + 1].snippet.resourceId.videoId)
+          setNewSongData(forwardThumbNail, forwardAudioURI, forwardTitle, forwardID)
+          setPaused(false)
+
+        }
+        else {
+          const forwardThumbNail = downloadData[index + 1].data.thumbNail
+          const forwardAudioURI = downloadData[index + 1].data.audio
+          const forwardTitle = downloadData[index + 1].data.title
+          const forwardID = downloadData[index + 1].id
+          setNewSongData(forwardThumbNail, forwardAudioURI, forwardTitle, forwardID)
+          setPaused(false)
+
+        }
+        
 
       }
     }
@@ -174,6 +206,8 @@ export default function MusicPlayer(props){
         
     }
 
+  
+
     
 
     return (
@@ -184,7 +218,7 @@ export default function MusicPlayer(props){
             left={<Feather color={colors.greyLight} name="chevron-down" />}
             leftPress={() => navigation.goBack(null)}
             right={<Feather color={colors.greyLight} name="more-horizontal" />}
-            text={currentSongData.album}
+            text={playListName != undefined ? playListName + " Playlist" : "Downloads"}
           />
   
           <View style={gStyle.p3}>
@@ -208,9 +242,12 @@ export default function MusicPlayer(props){
             <View style={styles.containerVolume}>
               <Slider
                 minimumValue={0}
-                maximumValue={currentSongData.length}
+                maximumValue={214}
+                value={sound?.playbackStatus?.positionMillis || 0}
                 minimumTrackTintColor={colors.white}
                 maximumTrackTintColor={colors.grey3}
+                
+                
               />
               <View style={styles.containerTime}>
                 <Text style={styles.time}>{timePast}</Text>
@@ -262,6 +299,7 @@ export default function MusicPlayer(props){
               />
             </View>
           </View>
+        
           </ImageBackground>
         </View>
         

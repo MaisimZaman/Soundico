@@ -5,6 +5,9 @@ import React, {useState, useEffect} from 'react'
 import { Video, AVPlaybackStatus, Audio, VideoFullscreenUpdateEvent } from 'expo-av';
 import { auth, db } from '../../../services/firebase';
 import { BG_IMAGE } from '../../services/backgroundImage';
+//import * as MediaLibrary from 'expo-media-library';
+import * as FileSystem from 'expo-file-system';
+//import * as Permissions from 'expo-permissions';
 
 
 export default function VideoPlayer(props) {
@@ -15,8 +18,10 @@ export default function VideoPlayer(props) {
     const [currentThumbNail, setCurrentThumbnail] = useState(thumbNail)
     const [currentTitle, setCurrentTitle] = useState(title)
     const [currentVideoURI, setCurrentVideoURI] = useState(videoURI)
+    //const [fileURI, setFileURI] = useState(null)
     const video = React.useRef(null);
     const [status, setStatus] = useState({});
+
     useEffect(() => {
         Audio.setAudioModeAsync({
             allowsRecordingIOS: false,
@@ -56,7 +61,25 @@ export default function VideoPlayer(props) {
         )
     }
 
+    function downloadFile(){
+        const uri = currentVideoURI
+        let fileUri = FileSystem.documentDirectory + "small.mp4";
+        FileSystem.downloadAsync(uri, fileUri)
+        .then(({ uri }) => {
+            saveFile(uri);
+          })
+          .catch(error => {
+            console.error(error);
+          })
+    }
     
+    async function saveFile(fileUri){
+        const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+        if (status === "granted") {
+            const asset = await MediaLibrary.createAssetAsync(fileUri)
+            await MediaLibrary.createAlbumAsync("Download", asset, false)
+        }
+    }
 
     return (
         <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
@@ -78,6 +101,7 @@ export default function VideoPlayer(props) {
         />
         </View>
         
+        
         <Text style={{color: "white", fontSize: 25}}>Video Downloads</Text>
         
         {renderRecents()}
@@ -89,6 +113,7 @@ export default function VideoPlayer(props) {
 
     
 }
+
 
 const styles = StyleSheet.create({
     container: {

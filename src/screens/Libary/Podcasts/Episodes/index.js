@@ -33,7 +33,7 @@ export default function Episodes({navigation}) {
           <TouchableOpacity onPress={() => navigation.navigate('MusicScreen', {thumbNail: item.data.thumbNail,
             audioURI: item.data.audio, 
             title: item.data.title,
-            downloadData: setEpisodes,
+            downloadData: episodes,
             audioID: item.id
              })}>
           <EpisodiePodcast

@@ -8,6 +8,9 @@ import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import Playlist from '../../components/Playlist';
 import { Audio } from 'expo-av';
 import { BG_IMAGE } from '../../services/backgroundImage';
+import { TextButton } from '../../components/AuthComponents';
+
+
 
 
 
@@ -58,6 +61,7 @@ export default function VideoDisplay(props) {
         console.log("the info")
         console.log(videoId)
 
+        
         if (Search){
             db.collection('recentlyPlayed')
             .doc(auth.currentUser.uid)
@@ -70,7 +74,10 @@ export default function VideoDisplay(props) {
 
         }
         
+        
     },[])
+
+    
     
 
     function convertToVideoLink(videoId){
@@ -121,6 +128,7 @@ export default function VideoDisplay(props) {
             .doc(auth.currentUser.uid)
             .collection("userPlaylists")
             .add({
+
                 playlistTitle: plInfo[0],
                 playListThumbnail: plInfo[1],
                 playlistVideos: playlistVideos,
@@ -151,9 +159,21 @@ export default function VideoDisplay(props) {
             console.log(theDownload)
             childPath = `audioDownloads/${auth.currentUser.uid}/${Math.random().toString(36)}`;
         }
-
+        if (isVideo){
+            saveVideoData(theDownload)
+            setModalVisible(false)
+        } else {
+            if (isPodCast){
+                saveAudioPodCastData(theDownload)
+                setModalVisible(false)
+            } else {
+                saveAudioData(theDownload);
+                setModalVisible(false)
+            }
+            
+        }
         
-
+        /*
         const response = await fetch(theDownload);
         const blob = await response.blob();
 
@@ -166,7 +186,6 @@ export default function VideoDisplay(props) {
         const taskProgress = snapshot => {
             console.log(`transferred: ${snapshot.bytesTransferred}`)
         }
-
         const taskCompleted = () => {
             task.snapshot.ref.getDownloadURL().then((snapshot) => {
                     console.log("This happened")
@@ -183,21 +202,16 @@ export default function VideoDisplay(props) {
                             setModalVisible(false)
                         }
                         
-                    }
-                
-                    
-                
+                    }  
                 
             })
         }
-
         const taskError = snapshot => {
             console.log(snapshot)
         }
 
         task.on("state_changed", taskProgress, taskError, taskCompleted);
-        
-
+        */
     }
 
     function renderRecents(){
@@ -304,9 +318,20 @@ export default function VideoDisplay(props) {
                     source={{ uri: playingVideo}}/>
         </View>
         
-        <Button style={styles.downloadButton} title='Download as Audio or Video' onPress={() => setModalVisible(true)}></Button>
+       
+        <TextButton
+                    contentContainerStyle={{
+                        height: 40,
+                        marginTop: 10,
+                        borderRadius: 30,
+                        backgroundColor: "#054c85"
+                    }}
+                    label="Download options"
+                    onPress={() => setModalVisible(true)}
+                />
         {renderModal()}
         
+        <Text style={{color: "white", fontSize: 25}}>{isPlaylist ? "More from this playlist" : 'Recently Played'}</Text>
         {renderRecents()}
         
         </ImageBackground>
