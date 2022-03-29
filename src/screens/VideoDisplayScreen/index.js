@@ -140,12 +140,11 @@ export default function VideoDisplay(props) {
 
     
 
-    async function downloadAudioOrVideo(isVideo=false, isPodCast=false){
+     async function downloadAudioOrVideo(isVideo=false, isPodCast=false){
         let childPath;
         let theDownload;
 
         if (isVideo){
-            console.log("this is happening")
             const youtubeURL = `http://www.youtube.com/watch?v=${currentVideoID}`;
             const urls = await ytdl(youtubeURL, { quality: 'highestaudio' });
             theDownload = urls[0].url
@@ -159,21 +158,8 @@ export default function VideoDisplay(props) {
             console.log(theDownload)
             childPath = `audioDownloads/${auth.currentUser.uid}/${Math.random().toString(36)}`;
         }
-        if (isVideo){
-            saveVideoData(theDownload)
-            setModalVisible(false)
-        } else {
-            if (isPodCast){
-                saveAudioPodCastData(theDownload)
-                setModalVisible(false)
-            } else {
-                saveAudioData(theDownload);
-                setModalVisible(false)
-            }
-            
-        }
         
-        /*
+        
         const response = await fetch(theDownload);
         const blob = await response.blob();
 
@@ -211,7 +197,7 @@ export default function VideoDisplay(props) {
         }
 
         task.on("state_changed", taskProgress, taskError, taskCompleted);
-        */
+        
     }
 
     function renderRecents(){

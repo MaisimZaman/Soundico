@@ -19,6 +19,7 @@ import Search from "./screens/Search";
 import Premium from "./screens/Premium";
 import { StyleSheet, ImageBackground } from "react-native";
 import { BG_IMAGE } from "./services/backgroundImage";
+import ProfileScreen from "./screens/ProfileScreen";
 
 const MyTheme = {
   ...DefaultTheme,
@@ -84,11 +85,11 @@ function MyTabs(){
         />
         <Tab.Screen
           name="Profile"
-          component={Premium}
+          component={ProfileScreen}
           options={{
-            tabBarLabel: "Premium",
+            tabBarLabel: "Profile",
             tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="spotify" color={color} size={28} />
+              <MaterialCommunityIcons name='face-profile' color={color} size={28} />
             )
           }}
         />

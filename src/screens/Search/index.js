@@ -140,14 +140,14 @@ export default function Search({navigation}) {
 
   async function getPlayListData(item, playlistId){
    
-
+    console.warn(playlistId)
     const response = await Axios.get(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&key=${API_KEY}`)
     const playlistVideos = response.data.items
     const videoId = playlistVideos[0].snippet.resourceId.videoId
     const videoThumbNail = playlistVideos[0].snippet.thumbnails.high.url
     const videoTitle = playlistVideos[0].snippet.title
     setCurrentPlaylistData([videoId, videoThumbNail, videoTitle, playlistVideos])
-    navigation.navigate('VideoScreen', {videoId: currentPlaylistData[0], videoThumbNail:currentPlaylistData[1], videoTitle: currentPlaylistData[2], Search: true, isPlaylist: true, playlistVideos: currentPlaylistData[3], plInfo: [item.snippet.title, item.snippet.thumbnails.high.url]})
+    navigation.navigate('VideoScreen', {videoId: videoId, videoThumbNail:videoThumbNail, videoTitle: videoTitle, Search: true, isPlaylist: true, playlistVideos: playlistVideos, plInfo: [item.snippet.title, item.snippet.thumbnails.high.url]})
 
   }
 
