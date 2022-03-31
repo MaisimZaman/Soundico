@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react';
 import { AntDesign } from '@expo/vector-icons';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import Playlist from '../../../../components/Playlist';
-import {Text, Alert, StyleSheet, Modal, Pressable} from 'react-native'
+import {Text, Alert, StyleSheet, Modal, Pressable, Button, TextInput} from 'react-native'
 
 import {
   Container,
@@ -18,7 +18,10 @@ import { View } from 'react-native-web';
 export default function Downloads({navigation}) {
 
   const [downloadData, setDownloadData] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [playlistSelect, setPlaylistSelect] = useState(false)
+  const [playlistTitle, setPlaylistTitle] = useState('')
+  const [selectedDownloads, setSelectedDownloads] = useState([])
+  //const [modalVisible, setModalVisible] = useState(false);
 
  
 
@@ -36,43 +39,15 @@ export default function Downloads({navigation}) {
     
   }, [navigation])
 
+  function addDownloadToPlaylist(item){
+    setSelectedDownloads(selectedDownloads => [...selectedDownloads, item])
+  }
+
   function deleteDownload(){
 
   }
 
-  function renderModal(){
-    return (
-        <View style={styles.centeredView}>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(!modalVisible);
-            }}>
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text style={styles.modalText}>Would you like to delete this download?</Text>
-                <Pressable
-                  style={[styles.button1, styles.buttonClose]}
-                  onPress={deleteDownload}>
-                  <Text style={styles.textStyle}>Delete</Text>
-                </Pressable>
-                <Pressable
-                  style={[styles.button3, styles.buttonClose]}
-                  onPress={() => setModalVisible(!modalVisible)}>
-                  <Text style={styles.textStyle}>Close</Text>
-                </Pressable>
-              </View>
-            </View>
-          </Modal> 
-          
-        </View>
-      );
-}
-
- 
-
+  
 
   function renderBody(){
     
@@ -108,6 +83,7 @@ export default function Downloads({navigation}) {
   
   return (
     <>
+      <Button title='Create Playlist?' onPress={() => navigation.navigate('NamePlaylist')}></Button>
       {renderBody()}
      
     </>

@@ -83,7 +83,7 @@ export default function Player({Artist="Hanz Zimmer", navigation}) {
   
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('MusicScreen', {thumbNail: ThumbNail,
+    <TouchableOpacity style={{marginBottom: 50}} onPress={() => navigation.navigate('MusicScreen', {thumbNail: ThumbNail,
       audioURI: audiouURI, 
       title: Title,
       downloadData: downloadData,

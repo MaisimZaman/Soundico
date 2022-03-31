@@ -3,7 +3,7 @@ import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 
 
-const AlbumHeader = ({ name, creator, imageUri, likes }) => (
+const AlbumHeader = ({ name, creator, imageUri, likes, firstItem, musicNavigator }) => (
   <View style={styles.container}>
     <Image source={{ uri: imageUri }} style={styles.image} />
     <Text style={styles.name}>{name}</Text>
@@ -11,7 +11,7 @@ const AlbumHeader = ({ name, creator, imageUri, likes }) => (
       <Text style={styles.creator}>By {creator}</Text>
       <Text style={styles.likes}>{likes} Likes</Text>
     </View>
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => musicNavigator(firstItem)}>
       <View style={styles.button}>
         <Text style={styles.buttonText}>PLAY</Text>
       </View>

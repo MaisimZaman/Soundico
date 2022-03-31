@@ -9,22 +9,41 @@ import ytdl from "react-native-ytdl"
 
 
 function AlbumScreen(props){
-  const {title, photoAlbum,playlistVideos} = props.route.params
+  const {title, photoAlbum,playlistVideos, isCustom} = props.route.params
   const [albums, setAlbums] = useState(playlistVideos);
 
  function navigateToMusicPlayer(item){
-    
 
-    props.navigation.navigate("MusicScreen", 
+    if (isCustom){
+      props.navigation.navigate("MusicScreen", 
+      {
+      thumbNail:item.data.thumbNail,
+      audioURI: item.data.audio,
+      title: item.data.title,
+      audioID: item.id,
+      downloadData: albums,
+      playListName: title
+
+      })
+
+    }
+    else {
+      props.navigation.navigate("MusicScreen", 
     {
       thumbNail:item.snippet.thumbnails.high.url,
       audioURI: item.snippet.resourceId.videoId,
       title: item.snippet.title,
       audioID: item.id,
       downloadData: albums,
-      playListName: title
+      playListName: title,
+      notCustom: true
 
     })
+
+    }
+    
+
+    
   }
 
 
@@ -36,9 +55,9 @@ function AlbumScreen(props){
         renderItem={({ item }) => (
             <SongListItem
               id={item.id}
-              title={item.snippet.title}
-              artist={item.snippet.channelTitle}
-              imageUri={item.snippet.thumbnails.high.url}
+              title={isCustom ? item.data.title : item.snippet.title}
+              artist={isCustom ? auth.currentUser.displayName:  item.snippet.channelTitle}
+              imageUri={isCustom ? item.data.thumbNail : item.snippet.thumbnails.high.url}
               navigationFunc={navigateToMusicPlayer}
               item={item}
               uri={"null"}
@@ -50,6 +69,8 @@ function AlbumScreen(props){
             imageUri={photoAlbum}
             creator={auth.currentUser.displayName}
             name={title}
+            firstItem = {playlistVideos[0]}
+            musicNavigator={navigateToMusicPlayer}
             artistHeadline={"First album"}
             likes={900}
           />

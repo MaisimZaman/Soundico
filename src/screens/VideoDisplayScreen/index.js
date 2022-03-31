@@ -11,9 +11,6 @@ import { BG_IMAGE } from '../../services/backgroundImage';
 import { TextButton } from '../../components/AuthComponents';
 
 
-
-
-
 export default function VideoDisplay(props) {
     const {width, height} = Dimensions.get("screen");
     const [modalVisible, setModalVisible] = useState(false);

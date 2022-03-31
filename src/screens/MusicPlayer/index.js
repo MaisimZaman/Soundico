@@ -24,7 +24,7 @@ export default function MusicPlayer(props){
 
   
 
-  const {thumbNail, audioURI, title,audioID, downloadData, playListName} = props.route.params
+  const {thumbNail, audioURI, title,audioID, downloadData, playListName, notCustom} = props.route.params
 
   const [playListAudioURI, setPlayListAudioURI] = useState(audioURI)
   const [status, setStatus] = useState(null)
@@ -62,7 +62,7 @@ export default function MusicPlayer(props){
 
     useEffect(() => {   
       async function run(){
-        if (playListName != undefined){
+        if (notCustom == true){
           let info = await ytdl.getInfo(String(playListAudioURI));
           let audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
           const theAudioURI = audioFormats[0].url
@@ -87,6 +87,9 @@ export default function MusicPlayer(props){
     
 
     useEffect(() => {
+     
+
+        
       Audio.setAudioModeAsync({
         allowsRecordingIOS: false,
         staysActiveInBackground: true,
@@ -97,11 +100,13 @@ export default function MusicPlayer(props){
         playThroughEarpieceAndroid: false,
         
      });
+     
      setNewSongData(thumbNail, audioURI, title,audioID)
       dispatch(setDownloadData(downloadData))
+    
     }, [])
 
-
+    
 
     useEffect(() => {
       async function main(){
@@ -155,7 +160,7 @@ export default function MusicPlayer(props){
       });
 
       if (index < downloadData.length){
-        if (playListName != undefined){
+        if (notCustom == true){
           const forwardThumbNail = downloadData[index + 1].snippet.thumbnails.high.url
           const forwardAudioURI = "null"
           const forwardTitle = downloadData[index + 1].snippet.title

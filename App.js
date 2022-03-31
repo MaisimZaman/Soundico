@@ -10,6 +10,8 @@ import Register from './src/screens/Authentication/Register';
 import MusicPlayer from './src/screens/MusicPlayer';
 import VideoPlayer from './src/screens/VideoPlayer';
 import AlbumScreen from './src/screens/AlbumScreen';
+import NamePlaylist from './src/screens/CreatePlaylist/NamePlaylist';
+import AddToPlaylist from './src/screens/CreatePlaylist/AddToPlaylist';
 import { Provider } from 'react-redux';
 import {store} from './services/store'
 import { BG_IMAGE } from './src/services/backgroundImage';
@@ -58,6 +60,8 @@ export default function App(){
           <Stack.Screen name='MusicScreen' component={MusicPlayer}></Stack.Screen>
           <Stack.Screen name='VideoPlayer' component={VideoPlayer}></Stack.Screen>
           <Stack.Screen name='AlbumScreen' component={AlbumScreen}></Stack.Screen>
+          <Stack.Screen name='NamePlaylist' component={NamePlaylist}></Stack.Screen>
+          <Stack.Screen name='AddToPlaylist' component={AddToPlaylist}></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

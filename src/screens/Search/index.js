@@ -201,6 +201,7 @@ export default function Search({navigation}) {
 
   return (
     <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
+     
     <Container >
       <Title YOffSet={YOffSet} search>
         Search
@@ -250,6 +251,7 @@ export default function Search({navigation}) {
         {renderSearches()}
       </View>
     </Container>
+    
     </ImageBackground>
   );
 }
@@ -258,7 +260,9 @@ const styles = StyleSheet.create({
  
   image: {
     flex: 1,
-    justifyContent: "center"
+    justifyContent: "center",
+    marginBottom: 100
+    
   },
  
 });

@@ -46,7 +46,17 @@ function MyTabs(){
         initialRouteName="Home"
         tabBarOptions={{
           activeTintColor: "#f3f3f3",
-          inactiveTintColor: "#acacac"
+          inactiveTintColor: "#acacac",
+          style: {
+          backgroundColor: 'black',
+          //borderTopWidth: 0,
+          position: 'absolute',
+          opacity: 0.7,
+          
+          
+          
+         
+          }
         }}
       >
         <Tab.Screen

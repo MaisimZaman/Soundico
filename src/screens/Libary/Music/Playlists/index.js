@@ -40,7 +40,7 @@ export default function Playlists({navigation}) {
         data={playlists}
         keyExtractor={(item) => `${item.id}`}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate("AlbumScreen", {title:item.data.playlistTitle, photoAlbum: item.data.playListThumbnail, playlistVideos: item.data.playlistVideos })}>
+          <TouchableOpacity onPress={() => navigation.navigate("AlbumScreen", {title:item.data.playlistTitle, photoAlbum: item.data.playListThumbnail, playlistVideos: item.data.playlistVideos, isCustom: item.data.isCustom })}>
           
             <Playlist
               name={item.data.playlistTitle}
