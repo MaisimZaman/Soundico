@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Audio } from 'expo-av';
 
-import { Image, StyleSheet, Text, View, ImageBackground } from 'react-native';
+import { Image, StyleSheet, Text, View, ImageBackground, Modal, Pressable } from 'react-native';
 import { Feather, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
@@ -28,6 +28,7 @@ export default function MusicPlayer(props){
 
   const [playListAudioURI, setPlayListAudioURI] = useState(audioURI)
   const [status, setStatus] = useState(null)
+  const [modalVisible, setModalVisible] = useState(false)
 
   const currentThumbNail = useSelector(selectThumbNail)
   const currentAudioURI = useSelector(selectAudioURI)
@@ -50,6 +51,7 @@ export default function MusicPlayer(props){
     const [paused, setPaused] = useState(false)
     const sound = useSelector(selectSoundOBJ)
     //const [sound, setSound] = useState(null)
+    const [repeat, setRepeat] = useState(false)
     
     
 
@@ -82,7 +84,7 @@ export default function MusicPlayer(props){
       run()
 
       
-    }, [currentAudioID])
+    }, [currentAudioID, repeat])
 
     
 
@@ -211,6 +213,44 @@ export default function MusicPlayer(props){
         
     }
 
+    function renderModal(){
+        
+      return (
+          <View style={styles.centeredView}>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                setModalVisible(!modalVisible);
+              }}>
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>Options?</Text>
+                  <Pressable
+                    style={[styles.button1, styles.buttonClose]}
+                    onPress={() => navigation.navigate('AddToMadePlaylist', {playListObject: {id: currentAudioID, data: {
+                      audio: currentAudioURI,
+                      thumbNail: currentThumbNail,
+                      title: currentTitle
+                    }}})}>
+                    <Text style={styles.textStyle}>Add to a playlist?</Text>
+                  </Pressable>
+                
+                  <Pressable
+                    style={[styles.button3, styles.buttonClose]}
+                    onPress={() => setModalVisible(!modalVisible)}>
+                    <Text style={styles.textStyle}>Close</Text>
+                  </Pressable>
+                  
+                </View>
+              </View>
+            </Modal> 
+            
+          </View>
+        );
+  }
+
   
 
     
@@ -222,7 +262,7 @@ export default function MusicPlayer(props){
           <ModalHeader
             left={<Feather color={colors.greyLight} name="chevron-down" />}
             leftPress={() => navigation.goBack(null)}
-            right={<Feather color={colors.greyLight} name="more-horizontal" />}
+            right={ <Feather onPress={() => setModalVisible(true)} color={colors.greyLight} name="more-horizontal" />}
             text={playListName != undefined ? playListName + " Playlist" : "Downloads"}
           />
   
@@ -287,7 +327,7 @@ export default function MusicPlayer(props){
               </View>
               <TouchIcon
                 icon={<Feather color={colors.greyLight} name="repeat" />}
-                onPress={() => null}
+                onPress={() => setRepeat(!repeat)}
               />
             </View>
   
@@ -304,6 +344,7 @@ export default function MusicPlayer(props){
               />
             </View>
           </View>
+          {renderModal()}
         
           </ImageBackground>
         </View>
@@ -364,5 +405,66 @@ const styles = StyleSheet.create({
   bgImage: {
     flex: 1,
     justifyContent: "center"
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: '#1b1c1f',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 7,
+  },
+  button1: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    marginBottom: 20
+  },
+  button2: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    marginBottom: 20
+  },
+  button3: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  button4: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    marginBottom: 20
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#054c85',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    color: "white",
+    fontSize: 25
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
   },
 });

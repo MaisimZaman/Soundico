@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, ImageBackground, TextInput, Button } from 'react-native'
 import React, {useState} from 'react'
 import { BG_IMAGE } from '../../services/backgroundImage'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 export default function NamePlaylist({navigation}) {
 
@@ -16,7 +17,12 @@ export default function NamePlaylist({navigation}) {
         placeholder="Enter your playlist title.."
         
       />
-      <Button title='Create' onPress={() => navigation.navigate('AddToPlaylist', {playListTitle: titleText})}></Button>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Text style={{color: "white", fontSize: 20, textAlignVertical: 'center'}}>Cancel</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('AddToPlaylist', {playListTitle: titleText})}>
+        <Text style={{color: "white", fontSize: 20}}>Next</Text>
+      </TouchableOpacity>
     </ImageBackground>
   )
 }

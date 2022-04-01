@@ -10,8 +10,9 @@ import {
   DownloadMessager,
   SubMessage,
   ContainerButton,
-  TextButton,
+  T//extButton,
 } from './styles';
+import { TextButton } from '../../../ProfileScreen/ProfileComponents';
 import { auth, db } from '../../../../../services/firebase';
 import { View } from 'react-native-web';
 
@@ -83,7 +84,16 @@ export default function Downloads({navigation}) {
   
   return (
     <>
-      <Button title='Create Playlist?' onPress={() => navigation.navigate('NamePlaylist')}></Button>
+      <TextButton
+                    contentContainerStyle={{
+                        height: 40,
+                        marginTop: 10,
+                        borderRadius: 30,
+                        backgroundColor: "#054c85"
+                    }}
+                    label="Create a playlist?"
+                    onPress={() => navigation.navigate('NamePlaylist')}
+                />
       {renderBody()}
      
     </>

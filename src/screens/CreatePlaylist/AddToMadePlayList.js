@@ -7,22 +7,28 @@ import { TextButton } from '../ProfileScreen/ProfileComponents';
 
 
 
-export default function AddToPlaylist(props) {
+export default function AddToMadePlaylist(props) {
 
-    const {playListTitle} = props.route.params;
+    const {playListObject} = props.route.params;
     const [searchText, setSearchText] = useState('')
-    const [allMusic, setAllMusic] = useState([])
-    const [selectedDownloads, setSelectedDownloads] = useState([])
+    const [allPlaylists, setAllPlaylists] = useState([])
+    const [currentItem, setCurrentItem] = useState(null)
     
 
     useEffect(() => {
-        let unsubscribe = db.collection('audioDownloads')
+        let unsubscribe = db.collection('playlists')
                           .doc(auth.currentUser.uid)
-                          .collection('userAudios')
-                          .onSnapshot((snapshot) => setAllMusic(snapshot.docs.map(doc => ({
-                            id: doc.id,
-                            data: doc.data()
-                        }))))
+                          .collection('userPlaylists')
+                          .where('isCustom', '==', true)
+                          .get()
+                          .then((snapshot) => {
+                              let sPlaylists = snapshot.docs.map(doc => {
+                                  const data = doc.data();
+                                  const id = doc.id;
+                                  return { id: id, data: data }
+                              });
+                              setAllPlaylists(sPlaylists)
+                          })
     
         return unsubscribe;
         
@@ -30,46 +36,41 @@ export default function AddToPlaylist(props) {
 
     useEffect(() => {
         if (searchText != ''){
-            fetchMusic(searchText)
+            fetchPlaylists(searchText)
         }
     }, [searchText])
 
-    function addDownloadToPlaylist(item){
-        setSelectedDownloads(selectedDownloads => [...selectedDownloads, item])
-    }
 
 
-    function buildPlaylist(){
+    function addToPlaylist(){
         db.collection('playlists')
             .doc(auth.currentUser.uid)
             .collection("userPlaylists")
-            .add({
-                playlistTitle: playListTitle,
-                playListThumbnail: selectedDownloads[0].data.thumbNail,
-                playlistVideos: selectedDownloads,
-                isCustom: true
+            .doc(currentItem.id)
+            .update({
+                playlistVideos: [...currentItem.data.playlistVideos, playListObject]
 
-                
             })
         
-        props.navigation.navigate("AlbumScreen", {title: playListTitle, photoAlbum: selectedDownloads[0].data.thumbNail, playlistVideos: selectedDownloads, isCustom: true })
+        props.navigation.navigate("AlbumScreen", {title: currentItem.data.playlistTitle, photoAlbum: currentItem.data.playListThumbnail, playlistVideos: [...currentItem.data.playlistVideos, playListObject], isCustom: true })
             
     }
 
-     function fetchMusic(search){
+     function fetchPlaylists(search){
         //console.warn("Function was called")
-         db.collection('audioDownloads')
+         db.collection('playlists')
             .doc(auth.currentUser.uid)
-            .collection('userAudios')
-            .where('title', '>=', search)
+            .collection('userPlaylists')
+            .where('isCustom', '==', true)
+            .where('playlistTitle', '==', search)
             .get()
             .then((snapshot) => {
-                let sMusic = snapshot.docs.map(doc => {
+                let sPlaylists = snapshot.docs.map(doc => {
                     const data = doc.data();
                     const id = doc.id;
                     return { id: id, data: data }
                 });
-                setAllMusic(sMusic);
+                setAllPlaylists(sPlaylists);
             })
             
 
@@ -86,25 +87,25 @@ export default function AddToPlaylist(props) {
 
     return (
         <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
-            <Text style={{color: "white", fontSize: 24, marginBottom: 15, marginTop: 15}}>Add songs to {playListTitle}</Text>
+            <Text style={{color: "white", fontSize: 24, marginBottom: 15, marginTop: 15}}>Add a playlist to add to</Text>
             <TextInput 
                 style={{flexDirection: "row", alignItems: 'center', justifyContent: 'space-evenly', backgroundColor: "#fff", height: 45, width: "94%", borderRadius: 10, marginBottom: 20}}
-                placeholder={'Search for Music to add'}
+                placeholder={'Search your playlists'}
                 onChangeText={(text) => setSearchText(text)}
                 value={searchText}
-                //onSubmitEditing={() => fetchMusic(searchText)}
+                //onSubmitEditing={() => fetchPlaylists(searchText)}
     
     ></TextInput>
 
             <FlatList
-                data={allMusic}
+                data={allPlaylists}
                 keyExtractor={(item, index) => String(index)}
                 renderItem={({ item }) => (
             <TouchableOpacity
-                onPress={() => addDownloadToPlaylist(item)}>
+                onPress={() => setCurrentItem(item)}>
               <Playlist
-                name={item.data.title}
-                photoAlbum={item.data.thumbNail}
+                name={item.data.playlistTitle}
+                photoAlbum={item.data.playListThumbnail}
                 create={true}
               />
             </TouchableOpacity>
@@ -117,9 +118,9 @@ export default function AddToPlaylist(props) {
                         borderRadius: 30,
                         backgroundColor: "#054c85"
                     }}
-                    label="Create this playlist"
-                    onPress={buildPlaylist}
-                    disabled={selectedDownloads.length == 0}
+                    label="Add Music to this playlist"
+                    onPress={addToPlaylist}
+                    disabled={currentItem == null}
                     
                 />
         </ImageBackground>
