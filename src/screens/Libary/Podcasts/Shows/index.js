@@ -36,7 +36,7 @@ export default function Shows({navigation}) {
     getData();
   }, []);
 
-  console.warn(shows.length)
+ 
   return (
     <Container>
       <FlatList
