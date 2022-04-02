@@ -5,7 +5,7 @@ import { BG_IMAGE } from "../../services/backgroundImage";
 
 import AlbumHeader from "./components/AlbumHeader";
 import SongListItem from "./components/songListItem";
-import ytdl from "react-native-ytdl"
+
 
 
 function AlbumScreen(props){

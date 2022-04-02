@@ -34,9 +34,12 @@ export default function Playlists({navigation}) {
     getData();
   }, []);
 
+  
+
   return (
     <Container>
       <FlatList
+        contentContainerStyle={{ paddingBottom: 20 }}
         data={playlists}
         keyExtractor={(item) => `${item.id}`}
         renderItem={({ item }) => (

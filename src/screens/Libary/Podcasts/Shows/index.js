@@ -11,7 +11,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 export default function Shows({navigation}) {
   const [shows, setShows] = useState([]);
 
-
+  
 
   useEffect(() => {
     const unsubscribe = db.collection('videoDownloads')
@@ -36,6 +36,7 @@ export default function Shows({navigation}) {
     getData();
   }, []);
 
+  console.warn(shows.length)
   return (
     <Container>
       <FlatList
