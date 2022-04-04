@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux';
 import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectSoundOBJ} from '../../../services/slices/navSlice';
 import { BG_IMAGE } from '../../services/backgroundImage';
 import ytdl from 'react-native-ytdl';
+import { auth, db } from '../../../services/firebase';
 
 
 export default function MusicPlayer(props){
@@ -60,7 +61,9 @@ export default function MusicPlayer(props){
     const iconPlay = paused ? 'play-circle' : 'pause-circle';
 
     const timePast = func.formatTime(0);
-    const timeLeft = func.formatTime(20);
+    const timeLeft = func.formatTime(400);
+
+    
 
     useEffect(() => {   
       async function run(){
@@ -76,7 +79,8 @@ export default function MusicPlayer(props){
           const { sound: soundObject, status } = await Audio.Sound.createAsync({uri: currentAudioURI});
             //setSound(sound)
             dispatch(setSoundOBJ(soundObject))
-            setStatus(status)
+            //console.warn(status.durationMillis)
+            setStatus(status.durationMillis)
         }
         
 
@@ -213,6 +217,16 @@ export default function MusicPlayer(props){
         
     }
 
+    function deleteMusicItem(){
+      db.collection('audioDownloads')
+      .doc(auth.currentUser.uid)
+      .collection('userAudios')
+      .doc(currentAudioID)
+      .delete()
+
+      navigation.goBack()
+    }
+
     function renderModal(){
         
       return (
@@ -234,7 +248,13 @@ export default function MusicPlayer(props){
                       thumbNail: currentThumbNail,
                       title: currentTitle
                     }}})}>
-                    <Text style={styles.textStyle}>Add to a playlist?</Text>
+                    <Text style={styles.textStyle}>Add to playlist</Text>
+                  </Pressable>
+
+                  <Pressable
+                    style={[styles.button1, styles.buttonClose]}
+                    onPress={deleteMusicItem}>
+                    <Text style={styles.textStyle}>Delete song</Text>
                   </Pressable>
                 
                   <Pressable
@@ -284,13 +304,16 @@ export default function MusicPlayer(props){
               </View>
             </View>
   
-            <View style={styles.containerVolume}>
+            <View >
               <Slider
                 minimumValue={0}
-                maximumValue={214}
+                maximumValue={sound?.playbackStatus?.positionMillis || 0}
                 value={sound?.playbackStatus?.positionMillis || 0}
                 minimumTrackTintColor={colors.white}
                 maximumTrackTintColor={colors.grey3}
+                onSlidingComplete={async (value) =>{
+                  console.log(value)
+                }}
                 
                 
               />

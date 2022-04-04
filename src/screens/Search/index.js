@@ -45,27 +45,27 @@ export default function Search({navigation}) {
   const allGenres = [
     {
       name: "Music",
-      color: "blue"
+      color: "#4d6feb"
     },
     {
       name: "Podcasts",
-      color: "blue"
+      color: "#4d6feb"
     },
     {
       name: "Interviews",
-      color: "blue"
+      color: "#4d6feb"
     },
     {
       name: "Speaches",
-      color: "blue"
+      color: "#4d6feb"
     },
     {
       name: "Motivational Speaches",
-      color: "blue"
+      color: "#4d6feb"
     },
     {
       name: "Stories",
-      color: "blue"
+      color: "#4d6feb"
     },
 
   ]
@@ -190,7 +190,8 @@ export default function Search({navigation}) {
           keyExtractor={(item) => `${item.id}`}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-              <GenreMusic name={item.name} color={"#4d6feb"} />
+              <GenreMusic name={item.name} color={item.color} navigationFunc={() => navigation.navigate('TopicContent', {topic: item.name})} />
+           
           )}
         />
   </>

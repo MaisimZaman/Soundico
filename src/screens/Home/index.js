@@ -24,6 +24,8 @@ export default function Home({navigation}) {
   const [yourPlaylists, setYourPlaylists] = useState([]);
   const [currentPlaylistData, setCurrentPlaylistData] = useState()
 
+  
+
 
   useEffect(() => {
     const searches = ["Elon Musk", "Jordan Petterson", "Ben Shapiro",  "Jeff Bezos", "John Dyole", "Dohnald Trump"]
@@ -108,6 +110,14 @@ export default function Home({navigation}) {
   }
 
 
+  function signOutUser(){
+    if (auth.currentUser.uid != null &&  auth.currentUser.uid != undefined){
+      auth.signOut().then(() => {
+          navigation.replace('Login')
+      })
+  }
+  }
+
   
 
   return (
@@ -115,6 +125,7 @@ export default function Home({navigation}) {
     <Container>
       <ScrollView>
         <Entypo
+          onPress={signOutUser}
           name="cog"
           size={25}
           color="#acacac"

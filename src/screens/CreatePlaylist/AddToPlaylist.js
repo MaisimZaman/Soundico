@@ -35,7 +35,15 @@ export default function AddToPlaylist(props) {
     }, [searchText])
 
     function addDownloadToPlaylist(item){
-        setSelectedDownloads(selectedDownloads => [...selectedDownloads, item])
+        if (selectedDownloads.includes(item)){ 
+            setSelectedDownloads(selectedDownloads => [...selectedDownloads].splice([...selectedDownloads].indexOf(item)))
+        
+              
+        }
+        else {
+            setSelectedDownloads(selectedDownloads => [...selectedDownloads, item])
+        }
+        
     }
 
 
@@ -82,6 +90,16 @@ export default function AddToPlaylist(props) {
        
     }
 
+    function itemStyle(item){
+        if (selectedDownloads.includes(item)){
+            return '#054c85' 
+            
+        }
+        else {
+            return 'null'
+        }
+    }
+
     
 
     return (
@@ -106,6 +124,7 @@ export default function AddToPlaylist(props) {
                 name={item.data.title}
                 photoAlbum={item.data.thumbNail}
                 create={true}
+                backgroundColor={itemStyle(item)}
               />
             </TouchableOpacity>
           )}

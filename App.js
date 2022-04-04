@@ -13,6 +13,7 @@ import AlbumScreen from './src/screens/AlbumScreen';
 import NamePlaylist from './src/screens/CreatePlaylist/NamePlaylist';
 import AddToPlaylist from './src/screens/CreatePlaylist/AddToPlaylist';
 import AddToMadePlaylist from './src/screens/CreatePlaylist/AddToMadePlayList';
+import TopicContent from './src/screens/TopicContent/TopicContent';
 import { Provider } from 'react-redux';
 import {store} from './services/store'
 import { BG_IMAGE } from './src/services/backgroundImage';
@@ -64,6 +65,7 @@ export default function App(){
           <Stack.Screen name='NamePlaylist' component={NamePlaylist}></Stack.Screen>
           <Stack.Screen name='AddToPlaylist' component={AddToPlaylist}></Stack.Screen>
           <Stack.Screen name='AddToMadePlaylist' component={AddToMadePlaylist}></Stack.Screen>
+          <Stack.Screen name='TopicContent' component={TopicContent}></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

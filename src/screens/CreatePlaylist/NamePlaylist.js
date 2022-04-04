@@ -7,22 +7,26 @@ export default function NamePlaylist({navigation}) {
 
   const [titleText, setTitleText] = useState('')
 
+  
+
   return (
     <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
-      <Text style={{textAlign: 'center', color: "white", fontSize: 24, marginBottom: 15}}>Give your playlist a name</Text>
+      <Text style={{textAlign: 'center', color: "white", fontSize: 24, marginBottom: 30}}>Give your playlist a name</Text>
       <TextInput
         style={styles.input}
         onChangeText={(text) => setTitleText(text)}
         value={titleText}
+        textAlign='center'
         placeholder="Enter your playlist title.."
         
       />
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Text style={{color: "white", fontSize: 20, textAlignVertical: 'center'}}>Cancel</Text>
-      </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('AddToPlaylist', {playListTitle: titleText})}>
-        <Text style={{color: "white", fontSize: 20}}>Next</Text>
+        <Text style={{color: "white", fontSize: 20, textAlign: 'center'}}>Next</Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Text style={{color: "white", fontSize: 20, textAlign: 'center'}}>Cancel</Text>
+      </TouchableOpacity>
+      
     </ImageBackground>
   )
 }
@@ -34,9 +38,10 @@ const styles = StyleSheet.create({
       },
       input: {
         height: 40,
-        margin: 12,
+        marginTop: 15,
         padding: 10,
-        color: "white"
+        color: "white",
+        fontSize: 24
       },
 
 })

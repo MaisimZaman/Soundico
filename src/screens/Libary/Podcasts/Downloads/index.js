@@ -28,7 +28,7 @@ export default function Downloads({navigation}) {
 
 
   useEffect(() => {
-    let unsubscribe = db.collection('audioDownloads')
+     db.collection('audioDownloads')
                       .doc(auth.currentUser.uid)
                       .collection('userAudios')
                       .onSnapshot((snapshot) => setDownloadData(snapshot.docs.map(doc => ({
@@ -36,7 +36,7 @@ export default function Downloads({navigation}) {
                         data: doc.data()
                     }))))
 
-    return unsubscribe;
+    //return unsubscribe;
     
   }, [navigation])
 
@@ -55,14 +55,14 @@ export default function Downloads({navigation}) {
       return (       
         <FlatList
           data={downloadData}
-          keyExtractor={(item, index) => String(index)}
+          keyExtractor={(item, index) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity
-            onLongPress={() => setModalVisible(true)} 
-            onPress={() => navigation.navigate('MusicScreen', {thumbNail: item.data.thumbNail,
-                                                                                  audioURI: item.data.audio, 
-                                                                                  title: item.data.title,
-                                                                                  downloadData: downloadData,
+
+                    onPress={() => navigation.navigate('MusicScreen', {thumbNail: item.data.thumbNail,
+                                                                      audioURI: item.data.audio, 
+                                                                      title: item.data.title,
+                                                                      downloadData: downloadData,
                                                                                   audioID: item.id
                                                                                    })}>
               <Playlist

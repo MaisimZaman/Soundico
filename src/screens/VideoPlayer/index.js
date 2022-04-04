@@ -45,8 +45,8 @@ export default function VideoPlayer(props) {
             
             <FlatList
             data={allShows}
-            keyExtractor={(item, index) => String(index)}
-            //keyExtractor={(item) => `${item.id}`}
+            //keyExtractor={(item, index) => String(index)}
+            keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => setVideoprops(item)}>
                 <Playlist

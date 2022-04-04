@@ -3,7 +3,9 @@ import {
     View,
     Text,
     Image,
-    TouchableOpacity
+    TouchableOpacity,
+    StyleSheet,
+    ImageBackground
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
@@ -17,77 +19,8 @@ import { COLORS, FONTS, SIZES, constants, icons } from "./constants";
 
 
 import {auth, db} from '../../../services/firebase'
+import { BG_IMAGE } from '../../services/backgroundImage';
 
-function Option({ containerStyle, label, isSelected, onPress }){
-
-    return (
-        <TouchableOpacity
-            style={{
-                flex: 1,
-                paddingVertical: SIZES.base,
-                paddingHorizontal: SIZES.radius,
-                borderRadius: SIZES.radius,
-                backgroundColor: isSelected ? COLORS.primary3 : COLORS.additionalColor13,
-                ...containerStyle
-            }}
-            onPress={onPress}
-        >
-            {/* Checked */}
-            <View
-                style={{
-                    alignItems: 'flex-end'
-                }}
-            >
-                <View
-                    style={{
-                        width: 40,
-                        height: 40,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderRadius: 20,
-                        borderWidth: 1,
-                        backgroundColor: isSelected ? COLORS.white : null
-                    }}
-                >
-                    {isSelected &&
-                        <Image
-                            source={icons.checked}
-                            resizeMode="contain"
-                            style={{
-                                width: 20,
-                                height: 20
-                            }}
-                        />
-                    }
-                </View>
-            </View>
-
-            {/* Label */}
-            <View
-                style={{
-                    marginVertical: SIZES.height > 800 ? SIZES.base : 0,
-                }}
-            >
-                <Text
-                    style={{
-                        color: isSelected ? COLORS.white : COLORS.black,
-                        ...FONTS.body3
-                    }}
-                >
-                    I am a
-                </Text>
-                <Text
-                    style={{
-                        color: isSelected ? COLORS.white : COLORS.black,
-                        ...FONTS.h2
-                    }}
-                >
-                    {label}
-                </Text>
-            </View>
-        </TouchableOpacity>
-    )
-}
 
 function Register({ navigation }){
 
@@ -292,12 +225,7 @@ function Register({ navigation }){
     }
 
     return (
-        <View
-            style={{
-                flex: 1,
-                backgroundColor: COLORS.white
-            }}
-        >
+        <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
             {/* Title */}
             <Text
                 style={{
@@ -324,9 +252,18 @@ function Register({ navigation }){
                 {renderForm()}
                 {renderButtons()}
             </KeyboardAwareScrollView>
-        </View>
+        </ImageBackground>
     )
 }
 
 
 export default Register;
+
+const styles = StyleSheet.create({
+ 
+    image: {
+      flex: 1,
+      justifyContent: "center"
+    },
+   
+  });

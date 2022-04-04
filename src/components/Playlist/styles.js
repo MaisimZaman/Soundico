@@ -4,6 +4,7 @@ export const Container = styled.View`
   flex: 1;
   flex-direction: row;
   justify-content: flex-start;
+  
 `;
 
 export const Image = styled.Image.attrs({

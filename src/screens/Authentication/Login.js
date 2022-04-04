@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
-    Image
+    Image,
+    ImageBackground,
+    StyleSheet
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
@@ -15,6 +17,7 @@ import {
 import { COLORS, FONTS, SIZES, images, icons } from "./constants";
 
 import {auth, db} from '../../../services/firebase'
+import { BG_IMAGE } from '../../services/backgroundImage';
 
 function Login({ navigation }){
 
@@ -185,12 +188,7 @@ function Login({ navigation }){
     }
 
     return (
-        <View
-            style={{
-                flex: 1,
-                backgroundColor:'black'
-            }}
-        >
+        <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
             {/* Background */}
             <Image
                 source={images.bg}
@@ -231,8 +229,17 @@ function Login({ navigation }){
                 {/* Buttons */}
                 {renderButtons()}
             </KeyboardAwareScrollView>
-        </View>
+        </ImageBackground>
     )
 }
 
 export default Login
+
+const styles = StyleSheet.create({
+ 
+    image: {
+      flex: 1,
+      justifyContent: "center"
+    },
+   
+  });

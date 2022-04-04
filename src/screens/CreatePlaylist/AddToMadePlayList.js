@@ -7,7 +7,7 @@ import { TextButton } from '../ProfileScreen/ProfileComponents';
 
 
 
-export default function AddToMadePlaylist(props) {
+export default function AddToMadePlaylist(props){
 
     const {playListObject} = props.route.params;
     const [searchText, setSearchText] = useState('')
@@ -32,7 +32,9 @@ export default function AddToMadePlaylist(props) {
     
         return unsubscribe;
         
-      }, [])
+    }, [])
+
+    
 
     useEffect(() => {
         if (searchText != ''){
@@ -83,6 +85,17 @@ export default function AddToMadePlaylist(props) {
        
     }
 
+    function itemStyle(item){
+        if (currentItem == item){
+            return '#054c85' 
+            
+        }
+        
+        else {
+            return 'null'
+        }
+    }
+
     
 
     return (
@@ -107,6 +120,7 @@ export default function AddToMadePlaylist(props) {
                 name={item.data.playlistTitle}
                 photoAlbum={item.data.playListThumbnail}
                 create={true}
+                backgroundColor={itemStyle(item)}
               />
             </TouchableOpacity>
           )}

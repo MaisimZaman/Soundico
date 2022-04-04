@@ -21,6 +21,7 @@ import { StyleSheet, ImageBackground } from "react-native";
 import { BG_IMAGE } from "./services/backgroundImage";
 import ProfileScreen from "./screens/ProfileScreen";
 
+
 const MyTheme = {
   ...DefaultTheme,
   dark: true,

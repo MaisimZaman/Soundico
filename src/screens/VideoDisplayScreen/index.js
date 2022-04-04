@@ -11,6 +11,9 @@ import { BG_IMAGE } from '../../services/backgroundImage';
 import { TextButton } from '../../components/AuthComponents';
 
 
+
+
+
 export default function VideoDisplay(props) {
     const {width, height} = Dimensions.get("screen");
     const [modalVisible, setModalVisible] = useState(false);
@@ -66,7 +69,8 @@ export default function VideoDisplay(props) {
             .add({
                 videoId: currentVideoID,
                 videoThumbNail: currentThumbnail,
-                videoTitle: currentTitle
+                videoTitle: currentTitle,
+                creation: firebase.firestore.FieldValue.serverTimestamp()
             })
 
         }
@@ -88,10 +92,11 @@ export default function VideoDisplay(props) {
         db.collection('audioDownloads')
             .doc(auth.currentUser.uid)
             .collection("userAudios")
-            .add({
+            ({
                 audio: downloadURL,
                 thumbNail: currentThumbnail,
                 title: currentTitle,
+                creation: firebase.firestore.FieldValue.serverTimestamp()
             })
 
     }
@@ -116,6 +121,7 @@ export default function VideoDisplay(props) {
                 videoURI: downloadURL,
                 thumbNail: currentThumbnail,
                 title: currentTitle,
+                creation: firebase.firestore.FieldValue.serverTimestamp()
             })
 
     }

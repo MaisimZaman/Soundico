@@ -14,7 +14,7 @@ export default function Shows({navigation}) {
   
 
   useEffect(() => {
-    const unsubscribe = db.collection('videoDownloads')
+    db.collection('videoDownloads')
                       .doc(auth.currentUser.uid)
                       .collection('userVideos')
                       .onSnapshot((snapshot) => setShows(snapshot.docs.map(doc => ({
@@ -22,7 +22,7 @@ export default function Shows({navigation}) {
                         data: doc.data()
                     }))))
 
-    return unsubscribe;
+  
     
   }, [navigation])
 
@@ -41,7 +41,7 @@ export default function Shows({navigation}) {
     <Container>
       <FlatList
         data={shows}
-        keyExtractor={(item, index) => String(index)}
+        keyExtractor={(item, index) => item.id}
         //keyExtractor={(item) => `${item.id}`}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => navigation.navigate('VideoPlayer',{thumbNail:item.data.thumbNail, title: item.data.title, videoURI:item.data.videoURI, allShows: shows  })}>

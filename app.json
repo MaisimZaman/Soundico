@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "Spotify-UI-Clone-Expo",
-    "description": "Spotify UI Clone with React Native Framework and Expo Execution Platform",
+    "name": "MusicCoApp",
+    "description": "test",
     "scheme": "spotify-ui-clone-expo",
-    "slug": "spotify-ui-clone-expo",
+    "slug": "musiccoapp",
     "privacy": "public",
     "version": "0.0.1",
     "sdkVersion": "42.0.0",
@@ -11,7 +11,7 @@
       "ios",
       "android"
     ],
-    "githubUrl": "https://github.com/RonaldGuilhermePDS/Spotify-UI-Clone-Expo",
+    "githubUrl": "https://github.com/MaisimZaman/Free-Music-Soundify-",
     "orientation": "portrait",
     "icon": "./assets/Icon.png",
     "splash": {
