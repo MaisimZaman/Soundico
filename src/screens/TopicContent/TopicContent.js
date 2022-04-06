@@ -12,7 +12,7 @@ export default function TopicContent(props) {
 
     useEffect(() => {
         
-        Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${'educational' + topic}&key=${API_KEY}`)
+        Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${topic}&key=${API_KEY}`)
           .then(res => {
             const thisContent = res.data.items;
             setAllContent(thisContent)
@@ -24,14 +24,15 @@ export default function TopicContent(props) {
 
     return (
         <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
+            <Text style={{fontSize: 24, color: "white", marginTop: 15}}>{topic}</Text>
             <FlatList
             data={content}
             keyExtractor={(item) => `${item.id}`}
             showsVerticalScrollIndicator={true}
-            
+            style={{marginTop: 50, marginRight: 20}}
             numColumns={2}
             renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => props.navigation.navigate('VideoScreen', {videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, Search: false })}>
+            <TouchableOpacity style={{marginBottom: 15}} onPress={() => props.navigation.navigate('VideoScreen', {videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, Search: false })}>
               <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} podcast={true} />
             </TouchableOpacity>
           )}

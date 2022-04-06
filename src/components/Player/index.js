@@ -23,9 +23,10 @@ import { useSelector } from 'react-redux';
 import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectDownloadData, selectSoundOBJ} from '../../../services/slices/navSlice';
 
 
-export default function Player({Artist="Hanz Zimmer", navigation}) {
+export default function Player({Artist="Hanz Zimmer", navigation, soundOBj}) {
   const [playMusic, setPlayMusic] = useState(true);
-  const mainSound = useSelector(selectSoundOBJ)
+  //const soundOBj = useSelector(selectSoundOBJ)
+  
 
   const Title = useSelector(selectTitle)
   const ThumbNail = useSelector(selectThumbNail)
@@ -50,6 +51,7 @@ export default function Player({Artist="Hanz Zimmer", navigation}) {
 
 
 
+
  
  
 
@@ -58,11 +60,11 @@ export default function Player({Artist="Hanz Zimmer", navigation}) {
       if (playMusic){
         
 
-        console.log('Playing Sound');
-        await mainSound.playAsync(); 
+    
+        await soundOBj.playAsync(); 
       }
-      else if (mainSound != null && playMusic == false){
-       mainSound.pauseAsync()
+      else if (soundOBj != null && playMusic == false){
+       soundOBj.pauseAsync()
     
       }
 
@@ -71,15 +73,18 @@ export default function Player({Artist="Hanz Zimmer", navigation}) {
     main()
     
 
-  }, [playMusic, audioID, mainSound])
+  }, [playMusic, audioID, soundOBj])
 
-  useEffect (() => {
-    return mainSound
-      ? () => {
-          console.log('Unloading Sound 2');
-          mainSound.unloadAsync(); }
-      : undefined;
-  }, [mainSound, audioID]);
+  //useEffect (() => {
+    //return soundOBj
+     // ? () => {
+       // 
+         // soundOBj.unloadAsync(); }
+      //: undefined;
+  //}, [soundOBj, audioID]);
+
+
+  
   
 
   return (

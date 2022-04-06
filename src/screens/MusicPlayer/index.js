@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux';
 import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectSoundOBJ} from '../../../services/slices/navSlice';
 import { BG_IMAGE } from '../../services/backgroundImage';
 import ytdl from 'react-native-ytdl';
+import { convertTime } from './helpers';
 import { auth, db } from '../../../services/firebase';
 
 
@@ -53,6 +54,7 @@ export default function MusicPlayer(props){
     const sound = useSelector(selectSoundOBJ)
     //const [sound, setSound] = useState(null)
     const [repeat, setRepeat] = useState(false)
+    const [currentPosition, setCurrentPosition] = useState(null)
     
     
 
@@ -61,8 +63,32 @@ export default function MusicPlayer(props){
     const iconPlay = paused ? 'play-circle' : 'pause-circle';
 
     const timePast = func.formatTime(0);
-    const timeLeft = func.formatTime(400);
+    const timeLeft = func.formatTime(status != null ? status.durationMillis : 0);
 
+  
+  
+    const calculateSeekBar = () => {
+
+      
+
+  
+        //if (status != null){
+        //  if (sound.status.positionMillis != null && status.durationMillis !== null) {
+        //    console.log("under here")
+        //    return 9312 / status.durationMillis;
+        //  }
+       // }
+        
+
+
+        return 0.9
+     
+      
+      
+
+  
+  
+    };
     
 
     useEffect(() => {   
@@ -77,10 +103,13 @@ export default function MusicPlayer(props){
         }
         else {
           const { sound: soundObject, status } = await Audio.Sound.createAsync({uri: currentAudioURI});
+
+          
             //setSound(sound)
             dispatch(setSoundOBJ(soundObject))
             //console.warn(status.durationMillis)
-            setStatus(status.durationMillis)
+      
+            setStatus(status)
         }
         
 
@@ -89,6 +118,8 @@ export default function MusicPlayer(props){
 
       
     }, [currentAudioID, repeat])
+
+
 
     
 
@@ -272,8 +303,8 @@ export default function MusicPlayer(props){
   }
 
   
-
-    
+ 
+   
 
     return (
       
@@ -307,13 +338,11 @@ export default function MusicPlayer(props){
             <View >
               <Slider
                 minimumValue={0}
-                maximumValue={sound?.playbackStatus?.positionMillis || 0}
-                value={sound?.playbackStatus?.positionMillis || 0}
+                maximumValue={1}
+                value={calculateSeekBar()}
                 minimumTrackTintColor={colors.white}
                 maximumTrackTintColor={colors.grey3}
-                onSlidingComplete={async (value) =>{
-                  console.log(value)
-                }}
+                
                 
                 
               />
