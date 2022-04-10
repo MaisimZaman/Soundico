@@ -25,7 +25,10 @@ export default function VideoDisplay(props) {
     const [recentlyPlayed, setRecentlyPlayed] = useState([])
 
     const [playingVideo, setPlayingVideo] = useState(convertToVideoLink(videoId));
-    
+
+   
+
+  
 
     useEffect(() => {
         Audio.setAudioModeAsync({
@@ -58,8 +61,7 @@ export default function VideoDisplay(props) {
 
 
     useEffect(() => {
-        console.log("the info")
-        console.log(videoId)
+        
 
         
         if (Search){
@@ -98,6 +100,13 @@ export default function VideoDisplay(props) {
                 title: currentTitle,
                 creation: firebase.firestore.FieldValue.serverTimestamp()
             })
+
+        props.navigation.navigate('MusicScreen', {thumbNail: currentThumbnail,
+            audioURI: downloadURL, 
+            title: currentTitle,
+            downloadData: downloadURL,
+                        audioID: '2121'
+                            })
 
     }
 
@@ -143,6 +152,8 @@ export default function VideoDisplay(props) {
 
     
 
+    
+
      async function downloadAudioOrVideo(isVideo=false, isPodCast=false){
         let childPath;
         let theDownload;
@@ -161,6 +172,8 @@ export default function VideoDisplay(props) {
             console.log(theDownload)
             childPath = `audioDownloads/${auth.currentUser.uid}/${Math.random().toString(36)}`;
         }
+
+      
         
         
         const response = await fetch(theDownload);
@@ -182,6 +195,7 @@ export default function VideoDisplay(props) {
                     if (isVideo){
                         saveVideoData(snapshot)
                         setModalVisible(false)
+            
                     } else {
                         if (isPodCast){
                             saveAudioPodCastData(snapshot)

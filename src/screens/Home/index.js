@@ -86,6 +86,7 @@ export default function Home({navigation}) {
     const unsubscribe = db.collection('recentlyPlayed')
                       .doc(auth.currentUser.uid)
                       .collection('userRecents')
+                      .orderBy('creation', 'desc')
                       .onSnapshot((snapshot) => setRecently(snapshot.docs.map(doc => ({
                         id: doc.id,
                         data: doc.data()

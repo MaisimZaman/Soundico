@@ -7,6 +7,7 @@ const initialState = {
     audioID: null,
     downloadData: null,
     soundOBJ: null,
+    soundStatus: 0,
 
 }
 
@@ -32,12 +33,15 @@ export const navSlice = createSlice({
         setSoundOBJ: (state, action) => {
             state.soundOBJ = action.payload;
         },
+        setSoundStatus: (state, action) => {
+            state.soundStatus = action.payload;
+        },
         
     },
 
 });
 
-export const {setThumbNail, setAudioURI, setTitle, setAudioID, setDownloadData, setSoundOBJ} = navSlice.actions;
+export const {setThumbNail, setAudioURI, setTitle, setAudioID, setDownloadData, setSoundOBJ, setSoundStatus} = navSlice.actions;
 
 export const selectThumbNail = (state) => state.nav.thumbNail
 
@@ -50,6 +54,8 @@ export const selectAudioID = (state) => state.nav.audioID
 export const selectDownloadData = (state) => state.nav.downloadData
 
 export const selectSoundOBJ = (state) => state.nav.soundOBJ
+
+export const selectSoundStatus = (state) => state.nav.soundStatus
 
 const navReducer = navSlice.reducer
 

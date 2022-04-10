@@ -31,6 +31,7 @@ export default function Downloads({navigation}) {
      db.collection('audioDownloads')
                       .doc(auth.currentUser.uid)
                       .collection('userAudios')
+                      //.orderBy('creation', 'desc')
                       .onSnapshot((snapshot) => setDownloadData(snapshot.docs.map(doc => ({
                         id: doc.id,
                         data: doc.data()
@@ -40,13 +41,6 @@ export default function Downloads({navigation}) {
     
   }, [navigation])
 
-  function addDownloadToPlaylist(item){
-    setSelectedDownloads(selectedDownloads => [...selectedDownloads, item])
-  }
-
-  function deleteDownload(){
-
-  }
 
   
 

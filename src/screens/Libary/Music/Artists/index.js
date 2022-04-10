@@ -7,17 +7,16 @@ import api from '../../../../services/api';
 import { Container } from './styles';
 
 export default function Artists() {
-  const [artists, setArtists] = useState([]);
+  ///const [artists, setArtists] = useState([]);
 
-  useEffect(() => {
-    async function getData() {
-      const response = await api.get('/Playlists');
+  const artists = [
+    {
+      name: "elon Musk",
+      photo: 'https://img.etimg.com/thumb/msid-84588036,width-650,imgsize-109325,,resizemode-4,quality-100/elon-musk.jpg'
+    },
+  ]
 
-      setArtists(response.data.Artists);
-    }
-
-    getData();
-  }, []);
+  
 
   return (
     <Container>

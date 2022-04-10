@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, Text } from 'react-native';
 
 import PodcastShow from '../../../../components/PodcastShow';
 import api from '../../../../services/api';
@@ -17,6 +17,7 @@ export default function Shows({navigation}) {
     db.collection('videoDownloads')
                       .doc(auth.currentUser.uid)
                       .collection('userVideos')
+                      .orderBy('creation', 'desc')
                       .onSnapshot((snapshot) => setShows(snapshot.docs.map(doc => ({
                         id: doc.id,
                         data: doc.data()
@@ -26,27 +27,20 @@ export default function Shows({navigation}) {
     
   }, [navigation])
 
-  useEffect(() => {
-    async function getData() {
-      const response = await api.get('/PodCasts');
-
-      //setShows(response.data.Shows);
-    }
-
-    getData();
-  }, []);
-
+ 
  
   return (
     <Container>
       <FlatList
         data={shows}
-        keyExtractor={(item, index) => item.id}
+        key={Math.random().toString(36)}
+        //keyExtractor={(item) => item.id}
         //keyExtractor={(item) => `${item.id}`}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => navigation.navigate('VideoPlayer',{thumbNail:item.data.thumbNail, title: item.data.title, videoURI:item.data.videoURI, allShows: shows  })}>
             <PodcastShow name={item.data.title} photoAlbum={item.data.thumbNail} />
-          </TouchableOpacity>
+            </TouchableOpacity>
+          
         )}
       />
     </Container>
