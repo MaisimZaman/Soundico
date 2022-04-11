@@ -64,9 +64,25 @@ export default function MusicPlayer(props){
     const favoriteIcon = favorited ? 'heart' : 'heart-o';
     const iconPlay = paused ? 'play-circle' : 'pause-circle';
 
-    const timePast = func.formatTime(0);
-    const timeLeft = func.formatTime(status.playableDurationMillis - currentPosition);
+    function msToTime(s) {
+      var ms = s % 1000;
+      s = (s - ms) / 1000;
+      var secs = s % 60;
+      s = (s - secs) / 60;
+      var mins = s % 60;
 
+     
+    
+      if (secs < 10){
+        return  mins + ':' + "0" + secs;
+      }
+      return  mins + ':' + secs;
+    }
+
+    const timePast = msToTime(status != 0 ? status.positionMillis : 0);
+    const timeLeft = msToTime(status != 0 ? status.durationMillis - status.positionMillis : 0);
+  
+  
   
   
   
@@ -80,14 +96,13 @@ export default function MusicPlayer(props){
           let audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
           const theAudioURI = audioFormats[0].url
           dispatch(setAudioURI(theAudioURI))
-          const { sound } = await Audio.Sound.createAsync({uri: currentAudioURI},  { shouldPlay: true });
+          const { sound, status } = await Audio.Sound.createAsync({uri: currentAudioURI}, { shouldPlay: true }, (status) => dispatch(setSoundStatus(status)));
           dispatch(setSoundOBJ(sound))
         }
         else {
-          const { sound, status } = await Audio.Sound.createAsync({uri: currentAudioURI}, { shouldPlay: true });
+          const { sound, status } = await Audio.Sound.createAsync({uri: currentAudioURI}, { shouldPlay: true }, (status) => dispatch(setSoundStatus(status)));
 
             
-            dispatch(setSoundStatus(status))
             //setSound(sound)
             dispatch(setSoundOBJ(sound))
             //console.warn(status.durationMillis)
@@ -290,8 +305,7 @@ export default function MusicPlayer(props){
   }
 
   
- 
-   console.log(status.positionMillis)
+
 
     return (
       
