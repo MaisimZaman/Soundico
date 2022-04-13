@@ -44,7 +44,7 @@ export default function VideoPlayer(props) {
         return (
             
             <FlatList
-            data={allShows}
+            data={allShows.slice(0, allShows.length-1)}
             //keyExtractor={(item, index) => String(index)}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (

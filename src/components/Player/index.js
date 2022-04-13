@@ -20,7 +20,7 @@ import {
   Controller,
 } from './styles';
 import { useSelector } from 'react-redux';
-import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectDownloadData, selectSoundOBJ} from '../../../services/slices/navSlice';
+import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectDownloadData, selectSoundStatus} from '../../../services/slices/navSlice';
 
 
 export default function Player({Artist="Hanz Zimmer", navigation, soundOBj}) {
@@ -33,6 +33,7 @@ export default function Player({Artist="Hanz Zimmer", navigation, soundOBj}) {
   const audiouURI = useSelector(selectAudioURI)
   const audioID = useSelector(selectAudioID)
   const downloadData = useSelector(selectDownloadData)
+  const status = useSelector(selectSoundStatus)
 
   useEffect(() => {
     Audio.setAudioModeAsync({
@@ -96,7 +97,7 @@ export default function Player({Artist="Hanz Zimmer", navigation, soundOBj}) {
       })}>
       <Container>
         <BarStatus>
-          <Line />
+          <Line progress={(status.durationMillis / status.positionMillis) * 100} />
         </BarStatus>
         <PhotoAlbum
           source={{

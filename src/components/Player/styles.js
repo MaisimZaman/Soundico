@@ -1,5 +1,6 @@
 import styled from 'styled-components/native';
 
+
 export const Container = styled.View`
   flex-direction: row;
   width: 100%;
@@ -18,7 +19,7 @@ export const Line = styled.View`
   background-color: #fff;
   position: absolute;
   height: 100%;
-  width: 50%;
+  width: ${props => props.progress}%;
 `;
 
 export const PhotoAlbum = styled.Image.attrs({

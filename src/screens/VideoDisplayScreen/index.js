@@ -21,6 +21,7 @@ export default function VideoDisplay(props) {
     const [currentVideoID, setCurrentVideoID] = useState(videoId)
     const [currentThumbnail, setCurrentThumbnail]= useState(videoThumbNail)
     const [currentTitle, setCurrentTitle] = useState(videoTitle)
+    const [page, setPage] = useState(4)
     
     const [recentlyPlayed, setRecentlyPlayed] = useState([])
 
@@ -233,10 +234,26 @@ export default function VideoDisplay(props) {
             }
             
         }
+        if (recentlyPlayed.length == 0){
+            return (
+                <View>
+                    <Text >No recently played</Text>
+                </View>
+            )
+        }
+        
+        else if (recentlyPlayed.length > 4) {
+
+            var qPlayed = recentlyPlayed.slice(0, page)
+        }
+        else {
+            var qPlayed = recentlyPlayed;
+        }
+
         return (
             
             <FlatList
-            data={recentlyPlayed}
+            data={qPlayed}
             keyExtractor={(item, index) => String(index)}
             //keyExtractor={(item) => `${item.id}`}
             renderItem={({ item }) => (
@@ -248,6 +265,8 @@ export default function VideoDisplay(props) {
                 />
                 </TouchableOpacity>
             )}
+            onEndReachedThreshold={0.5}
+            onEndReached={() => setPage(page+4)}
             />
         
         )

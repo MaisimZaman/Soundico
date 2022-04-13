@@ -1,16 +1,18 @@
 import styled from 'styled-components/native';
 
 export const Container = styled.View`
-  width: ${(props) => (props.recentPlayed ? 125 : 155)}px;
-  height: ${(props) => (props.recentPlayed ? 150 : 180)}px;
-  justify-content: center;
+  width: ${(props) => (props.recentPlayed ? 125 : 145)}px;
+  height: ${(props) => (props.recentPlayed ? 150 : 170)}px;
+  
   margin: 0px 10px 8px;
 `;
+
 export const Image = styled.Image.attrs({
   resizeMode: 'cover',
 })`
   height: 90%;
   width: 100%;
+  border-radius: 15px;
   background: #80808055;
   align-self: center;
 `;
@@ -19,7 +21,6 @@ export const AlbumInformation = styled.View`
   justify-content: flex-start;
   align-items: center;
   padding: 0px 5px 0px;
-
   height: 40px;
 `;
 export const Title = styled.Text`

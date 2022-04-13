@@ -3,25 +3,22 @@ import React, {useState, useEffect} from 'react';
 import { AntDesign } from '@expo/vector-icons';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import Playlist from '../../../../components/Playlist';
-import {Text, Alert, StyleSheet, Modal, Pressable, Button, TextInput} from 'react-native'
+import {Text, Alert, StyleSheet, Modal, Pressable, Button, TextInput, View} from 'react-native'
 
 import {
   Container,
   DownloadMessager,
   SubMessage,
   ContainerButton,
-  T//extButton,
 } from './styles';
 import { TextButton } from '../../../ProfileScreen/ProfileComponents';
 import { auth, db } from '../../../../../services/firebase';
-import { View } from 'react-native-web';
+
 
 export default function Downloads({navigation}) {
 
   const [downloadData, setDownloadData] = useState([]);
-  const [playlistSelect, setPlaylistSelect] = useState(false)
-  const [playlistTitle, setPlaylistTitle] = useState('')
-  const [selectedDownloads, setSelectedDownloads] = useState([])
+  const [page, setPage] = useState(7)
   //const [modalVisible, setModalVisible] = useState(false);
 
  
@@ -45,10 +42,26 @@ export default function Downloads({navigation}) {
   
 
   function renderBody(){
+
+    if (downloadData.length == 0){
+      return (
+          <View>
+              <Text >No downloads yet</Text>
+          </View>
+      )
+  }
+  
+  else if (downloadData.length > 7) {
+
+      var qDownloads = downloadData.slice(0, page)
+  }
+  else {
+      var qDownloads = downloadData;
+  }
     
       return (       
         <FlatList
-          data={downloadData}
+          data={qDownloads}
           keyExtractor={(item, index) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity
@@ -63,6 +76,8 @@ export default function Downloads({navigation}) {
                 name={item.data.title}
                 photoAlbum={item.data.thumbNail}
                 create={false}
+                onEndReachedThreshold={0.7}
+              onEndReached={() => setPage(page => page+7)}
               />
             </TouchableOpacity>
           )}

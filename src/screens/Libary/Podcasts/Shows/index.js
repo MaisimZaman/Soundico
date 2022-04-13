@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, Text } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 
 import PodcastShow from '../../../../components/PodcastShow';
 import api from '../../../../services/api';
@@ -10,6 +10,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function Shows({navigation}) {
   const [shows, setShows] = useState([]);
+  const [page, setPage] = useState(shows.length -1)
 
   
 
@@ -17,7 +18,6 @@ export default function Shows({navigation}) {
     db.collection('videoDownloads')
                       .doc(auth.currentUser.uid)
                       .collection('userVideos')
-                      .orderBy('creation', 'desc')
                       .onSnapshot((snapshot) => setShows(snapshot.docs.map(doc => ({
                         id: doc.id,
                         data: doc.data()
@@ -27,12 +27,26 @@ export default function Shows({navigation}) {
     
   }, [navigation])
 
- 
+  if (shows.length == 0){
+    return (
+        <View>
+            <Text >No downloads yet</Text>
+        </View>
+    )
+}
+
+  else if (shows.length > 7) {
+
+      var qDownloads = shows.slice(0, page)
+  }
+  else {
+      var qDownloads = shows;
+  }
  
   return (
     <Container>
       <FlatList
-        data={shows}
+        data={qDownloads}
         key={Math.random().toString(36)}
         //keyExtractor={(item) => item.id}
         //keyExtractor={(item) => `${item.id}`}
@@ -42,6 +56,8 @@ export default function Shows({navigation}) {
             </TouchableOpacity>
           
         )}
+        //onEndReachedThreshold={0.7}
+        //onEndReached={() => setPage(page => page+7)}
       />
     </Container>
   );
