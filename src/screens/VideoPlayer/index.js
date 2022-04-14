@@ -36,6 +36,8 @@ export default function VideoPlayer(props) {
     
 
     function renderRecents(){
+
+        
         function setVideoprops(item){
             setCurrentThumbnail(item.data.thumbNail)
             setCurrentTitle(item.data.title)
@@ -51,6 +53,7 @@ export default function VideoPlayer(props) {
                 <TouchableOpacity onPress={() => setVideoprops(item)}>
                 <Playlist
                     name={item.data.title}
+                   
                     photoAlbum={item.data.thumbNail}
                     create={false}
                 />

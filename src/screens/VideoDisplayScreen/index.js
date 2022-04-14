@@ -1,14 +1,15 @@
 import { StyleSheet, Text, View, Dimensions, Button, TouchableOpacity, Modal, Alert, Pressable, ImageBackground} from 'react-native'
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import WebView from 'react-native-webview';
 import ytdl from "react-native-ytdl"
 import {db, auth} from '../../../services/firebase'
 import firebase from 'firebase'
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import Playlist from '../../components/Playlist';
-import { Audio } from 'expo-av';
+import { Audio, Video } from 'expo-av';
 import { BG_IMAGE } from '../../services/backgroundImage';
 import { TextButton } from '../../components/AuthComponents';
+
 
 
 
@@ -22,6 +23,8 @@ export default function VideoDisplay(props) {
     const [currentThumbnail, setCurrentThumbnail]= useState(videoThumbNail)
     const [currentTitle, setCurrentTitle] = useState(videoTitle)
     const [page, setPage] = useState(4)
+
+    const video = useRef(null);
     
     const [recentlyPlayed, setRecentlyPlayed] = useState([])
 
@@ -95,19 +98,19 @@ export default function VideoDisplay(props) {
         db.collection('audioDownloads')
             .doc(auth.currentUser.uid)
             .collection("userAudios")
-            ({
+            .add({
                 audio: downloadURL,
                 thumbNail: currentThumbnail,
                 title: currentTitle,
                 creation: firebase.firestore.FieldValue.serverTimestamp()
             })
 
-        props.navigation.navigate('MusicScreen', {thumbNail: currentThumbnail,
-            audioURI: downloadURL, 
-            title: currentTitle,
-            downloadData: downloadURL,
-                        audioID: '2121'
-                            })
+            props.navigation.navigate('MusicScreen', {thumbNail: currentThumbnail,
+                audioURI: downloadURL, 
+                title: currentTitle,
+                downloadData: downloadURL,
+                            audioID: '2121'
+                                })
 
     }
 
@@ -219,6 +222,7 @@ export default function VideoDisplay(props) {
     }
 
     function renderRecents(){
+
         function setVideoprops(item){
             if (isPlaylist){
                 setPlayingVideo(convertToVideoLink(item.snippet.resourceId.videoId))
@@ -249,6 +253,8 @@ export default function VideoDisplay(props) {
         else {
             var qPlayed = recentlyPlayed;
         }
+
+
 
         return (
             
@@ -326,13 +332,14 @@ export default function VideoDisplay(props) {
     }
 
     
+  
 
 
     return (
         <ImageBackground style={styles.image} resizeMode='cover' source={{uri: BG_IMAGE}}>
         <View style={{width:'100%',height:height/3,alignItems:'center'}}>
         <WebView
-                    style={{ marginTop: 20, width: 330, height: 230 }}
+                    style={{ marginTop: 20, marginTop: 20, width: 350, height: 230 }}
                     androidHardwareAccelerationDisabled={true}
                     javaScriptEnabled={true}
                     domStorageEnabled={true}
