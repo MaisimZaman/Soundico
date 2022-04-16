@@ -156,7 +156,7 @@ export default function MusicPlayer(props){
           await sound.playFromPositionAsync(currentPosition)
         }
         else if (sound != null && paused == true){
-         sound.pauseAsync()
+         await sound.pauseAsync()
       
         }
 

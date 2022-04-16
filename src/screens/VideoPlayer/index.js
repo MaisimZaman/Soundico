@@ -84,6 +84,10 @@ export default function VideoPlayer(props) {
         }
     }
 
+    function nesssw(){
+      
+    }
+
     return (
         <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
         <View style={{width:'100%',height:height/3,alignItems:'center'}}>
@@ -126,8 +130,9 @@ const styles = StyleSheet.create({
     },
     video: {
       alignSelf: 'center',
-      width: 320,
-      height: 200,
+      height:300,
+      width:'100%',
+      marginBottom: 20
     },
     buttons: {
       flexDirection: 'row',

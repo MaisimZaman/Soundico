@@ -1,8 +1,8 @@
 import styled from 'styled-components/native';
 
 export const Container = styled.View`
-  width: ${(props) => (props.recentPlayed ? 125 : 145)}px;
-  height: ${(props) => (props.recentPlayed ? 150 : 170)}px;
+  width: ${(props) => (props.recentPlayed ? 125 : 135)}px;
+  height: ${(props) => (props.recentPlayed ? 150 : 160)}px;
   
   margin: 0px 10px 8px;
 `;
