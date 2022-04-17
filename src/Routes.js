@@ -45,6 +45,7 @@ function MyTabs(){
         tabBar={props => <CustomTabBar {...props} />}
         backBehavior="initialRoute"
         initialRouteName="Home"
+        
         tabBarOptions={{
           activeTintColor: "#f3f3f3",
           inactiveTintColor: "#acacac",

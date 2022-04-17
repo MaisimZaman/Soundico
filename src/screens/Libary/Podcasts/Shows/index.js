@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, Text, View } from 'react-native';
+import { FlatList, Text, View, ImageBackground, StyleSheet } from 'react-native';
 
 import PodcastShow from '../../../../components/PodcastShow';
 import api from '../../../../services/api';
@@ -7,6 +7,7 @@ import api from '../../../../services/api';
 import { Container } from './styles';
 import { auth, db } from '../../../../../services/firebase';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { BG_IMAGE } from '../../../../services/backgroundImage';
 
 export default function Shows({navigation}) {
   const [shows, setShows] = useState([]);
@@ -44,6 +45,7 @@ export default function Shows({navigation}) {
   }
  
   return (
+   
     <Container>
       <FlatList
         data={qDownloads}
@@ -60,5 +62,13 @@ export default function Shows({navigation}) {
         //onEndReached={() => setPage(page => page+7)}
       />
     </Container>
+   
   );
 }
+const styles = StyleSheet.create({
+  image: {
+      flex: 1,
+      justifyContent: "center"
+    },
+   
+})

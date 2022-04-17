@@ -92,6 +92,7 @@ export default function App() {
       initialRouteName="Music"
       backBehavior="initialRoute"
       tabBarPosition="top"
+      
       style={{
         backgroundColor: '#14141400',
       }}

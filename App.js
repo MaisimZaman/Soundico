@@ -19,6 +19,7 @@ import {store} from './services/store'
 import { BG_IMAGE } from './src/services/backgroundImage';
 
 
+
 const Stack = createStackNavigator();
 
 const MyTheme = {
@@ -34,7 +35,10 @@ const MyTheme = {
   }
 };
 
+
+
 function MainPage(){
+ 
   return (
     
       

@@ -20,6 +20,8 @@ import { convertTime } from './helpers';
 import { auth, db } from '../../../services/firebase';
 
 
+
+
 export default function MusicPlayer(props){
 
   const dispatch = useDispatch();
@@ -123,8 +125,7 @@ export default function MusicPlayer(props){
     
 
     useEffect(() => {
-     
-
+      
         
       Audio.setAudioModeAsync({
         allowsRecordingIOS: false,
@@ -319,7 +320,7 @@ export default function MusicPlayer(props){
           />
   
           <View style={gStyle.p3}>
-            <Image source={{uri: currentThumbNail}} style={styles.image} />
+            <Image  source={{uri: currentThumbNail}} style={styles.image} />
   
             <View style={[gStyle.flexRowSpace, styles.containerDetails]}>
               <View style={styles.containerSong}>

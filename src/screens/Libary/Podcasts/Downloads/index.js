@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react';
 import { AntDesign } from '@expo/vector-icons';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import Playlist from '../../../../components/Playlist';
-import {Text, Alert, StyleSheet, Modal, Pressable, Button, TextInput, View} from 'react-native'
+import {Text, Alert, StyleSheet, Modal, Pressable, Button, TextInput, View, ImageBackground } from 'react-native'
 
 import {
   Container,
@@ -13,6 +13,8 @@ import {
 } from './styles';
 import { TextButton } from '../../../ProfileScreen/ProfileComponents';
 import { auth, db } from '../../../../../services/firebase';
+import { BG_IMAGE } from '../../../../services/backgroundImage';
+
 
 
 export default function Downloads({navigation}) {
@@ -92,7 +94,7 @@ export default function Downloads({navigation}) {
   }
   
   return (
-    <>
+    <View>
       <TextButton
                     contentContainerStyle={{
                         height: 40,
@@ -105,9 +107,11 @@ export default function Downloads({navigation}) {
                 />
       {renderBody()}
      
-    </>
+    </View>
   );
 }
+
+
 
 
 const styles = StyleSheet.create({
@@ -180,4 +184,5 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: "center"
     },
+   
 })

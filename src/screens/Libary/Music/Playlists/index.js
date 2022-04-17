@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, StyleSheet, ImageBackground } from 'react-native';
 
 import Playlist from '../../../../components/Playlist';
 import api from '../../../../services/api';
@@ -7,6 +7,7 @@ import api from '../../../../services/api';
 import { Container } from './styles';
 import { auth, db } from '../../../../../services/firebase';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { BG_IMAGE } from '../../../../services/backgroundImage';
 
 export default function Playlists({navigation}) {
   const [playlists, setPlaylists] = useState([]);
@@ -37,6 +38,7 @@ export default function Playlists({navigation}) {
   
 
   return (
+    
     <Container>
       <FlatList
         data={playlists}
@@ -53,5 +55,13 @@ export default function Playlists({navigation}) {
         )}
       />
     </Container>
+   
   );
 }
+const styles = StyleSheet.create({
+  image: {
+      flex: 1,
+      justifyContent: "center"
+    },
+   
+})

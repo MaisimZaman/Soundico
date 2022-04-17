@@ -1,24 +1,22 @@
-import { StyleSheet, Text, View, Dimensions, Button, TouchableOpacity, Modal, Alert, Pressable, ImageBackground} from 'react-native'
+import { StyleSheet, Text, View, Dimensions, Button, TouchableOpacity, Modal, Alert, Pressable, ImageBackground, Image} from 'react-native'
 import React, {useState, useEffect, useRef} from 'react';
-import WebView from 'react-native-webview';
 import ytdl from "react-native-ytdl"
 import {db, auth} from '../../../services/firebase'
 import firebase from 'firebase'
-import { FlatList, ScrollView } from 'react-native-gesture-handler';
-import Playlist from '../../components/Playlist';
+
 import { Audio, Video } from 'expo-av';
 import { BG_IMAGE } from '../../services/backgroundImage';
-import { TextButton } from '../../components/AuthComponents';
+
 import ModalHeader from '../MusicPlayer/ModalHeader';
 import { Feather, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import { colors, device, func, gStyle } from '../MusicPlayer/constants/index';
 import TouchIcon from '../MusicPlayer/TouchIcon';
+import { msToTime, downloadAudioOrVideo  } from './handlingfunctions';
+import RenderModal from './downloadModal';
+//import { styles } from './styles';
+import { styles } from './styles';
 // components
-
-
-
-
 
 
 export default function VideoDisplay(props) {
@@ -28,41 +26,15 @@ export default function VideoDisplay(props) {
     const [currentVideoID, setCurrentVideoID] = useState(videoId)
     const [currentThumbnail, setCurrentThumbnail]= useState(videoThumbNail)
     const [currentTitle, setCurrentTitle] = useState(videoTitle)
-    const [page, setPage] = useState(4)
-    const [paused, setpasued] = useState(false)
     const [currentPosition, setCurrentPosition] = useState(0)
     const [status, setStatus] = useState(0);
-    
     const [recentlyPlayed, setRecentlyPlayed] = useState([])
-
-    const [playingVideo, setPlayingVideo] = useState('null2');
-    
-
+    const [playingVideo, setPlayingVideo] = useState('null');
     const iconPlay = status.isPlaying ?   'pause-circle' : 'play-circle';
-
-    const video = useRef(null);
-
-
-    function msToTime(s) {
-        var ms = s % 1000;
-        s = (s - ms) / 1000;
-        var secs = s % 60;
-        s = (s - secs) / 60;
-        var mins = s % 60;
-  
-       
-      
-        if (secs < 10){
-          return  mins + ':' + "0" + secs;
-        }
-        return  mins + ':' + secs;
-      }
-  
-      const timePast = msToTime(status != 0 ? status.positionMillis : 0);
-    const timeLeft = msToTime(status != 0 ? status.durationMillis - status.positionMillis : 0);
-
-   //console.log(status)
     
+    const [video, setVideo] = useState(useRef(null))
+    const timePast = msToTime(status != 0 ? status.positionMillis : 0);
+    const timeLeft = msToTime(status != 0 ? status.durationMillis - status.positionMillis : 0);
 
     useEffect(() => {
      
@@ -80,13 +52,16 @@ export default function VideoDisplay(props) {
     useEffect(() => {
 
       async function runAudio(){
-        await video.current.playAsync()
-      }
+        if (video){
+          await video.current.playAsync()
+        }
+      
+    }
 
-      runAudio()
+    runAudio()
 
-    }, [currentVideoID, currentPosition])
-  
+  }, [currentVideoID, currentPosition, video])
+
 
     useEffect(() => {
         
@@ -102,12 +77,7 @@ export default function VideoDisplay(props) {
     }, [currentVideoID])
 
     
-
-
     useEffect( () => {
-        
-
-        
         if (Search){
             db.collection('recentlyPlayed')
             .doc(auth.currentUser.uid)
@@ -125,199 +95,12 @@ export default function VideoDisplay(props) {
         
     },[])
 
-    
-    
-
-    function convertToVideoLink(videoId){
-        const videoLink = `https://www.youtube.com/embed/${videoId}`
-
-        return videoLink
-
-    }
-
-    function saveAudioData(downloadURL){
-        db.collection('audioDownloads')
-            .doc(auth.currentUser.uid)
-            .collection("userAudios")
-            .add({
-                audio: downloadURL,
-                thumbNail: currentThumbnail,
-                title: currentTitle,
-                creation: firebase.firestore.FieldValue.serverTimestamp()
-            })
-
-            props.navigation.navigate('MusicScreen', {thumbNail: currentThumbnail,
-                audioURI: downloadURL, 
-                title: currentTitle,
-                downloadData: downloadURL,
-                            audioID: '2121'
-                                })
-
-    }
-
-    function saveAudioPodCastData(downloadURL){
-        db.collection('podcastDownloads')
-            .doc(auth.currentUser.uid)
-            .collection("userPodcasts")
-            .add({
-                audio: downloadURL,
-                thumbNail: currentThumbnail,
-                title: currentTitle,
-            })
-
-    }
-
-    function saveVideoData(downloadURL){
-        db.collection('videoDownloads')
-            .doc(auth.currentUser.uid)
-            .collection("userVideos")
-            .add({
-                videoURI: downloadURL,
-                thumbNail: currentThumbnail,
-                title: currentTitle,
-                creation: firebase.firestore.FieldValue.serverTimestamp()
-            })
-
-    }
-
-    function savePlaylistData(){
-        db.collection('playlists')
-            .doc(auth.currentUser.uid)
-            .collection("userPlaylists")
-            .add({
-
-                playlistTitle: plInfo[0],
-                playListThumbnail: plInfo[1],
-                playlistVideos: playlistVideos,
-
-                
-            })
-
-    }
-
-    
-
-    
-
-     async function downloadAudioOrVideo(isVideo=false, isPodCast=false){
-        let childPath;
-        let theDownload;
-
-        if (isVideo){
-          let info = await ytdl.getInfo(currentVideoID);
-          let audioFormats = ytdl.filterFormats(info.formats, 'audioandvideo');
-            theDownload = audioFormats[0].url
-            console.log(urls)
-            childPath = `videoDownloads/${auth.currentUser.uid}/${Math.random().toString(36)}`;
-        }
-        else {
-            let info = await ytdl.getInfo(String(currentVideoID));
-            let audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
-            theDownload = audioFormats[0].url
-            console.log(theDownload)
-            childPath = `audioDownloads/${auth.currentUser.uid}/${Math.random().toString(36)}`;
-        }
-
-      
-        
-        
-        const response = await fetch(theDownload);
-        const blob = await response.blob();
-
-        const task = firebase
-            .storage()
-            .ref()
-            .child(childPath)
-            .put(blob);
-
-        const taskProgress = snapshot => {
-            console.log(`transferred: ${snapshot.bytesTransferred}`)
-        }
-        const taskCompleted = () => {
-            task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                    console.log("This happened")
-
-                    if (isVideo){
-                        saveVideoData(snapshot)
-                        setModalVisible(false)
-            
-                    } else {
-                        if (isPodCast){
-                            saveAudioPodCastData(snapshot)
-                            setModalVisible(false)
-                        } else {
-                            saveAudioData(snapshot);
-                            setModalVisible(false)
-                        }
-                        
-                    }  
-                
-            })
-        }
-        const taskError = snapshot => {
-            console.log(snapshot)
-        }
-
-        task.on("state_changed", taskProgress, taskError, taskCompleted);
-        
-    }
-
-
-    function renderModal(){
-        
-        function renderPlaylistDownload(){
-            return (
-                <Pressable
-                      style={[styles.button4, styles.buttonClose]}
-                      onPress={savePlaylistData}>
-                      <Text style={styles.textStyle}>Download Playlist</Text>
-                </Pressable>
-            )
-        }
-        return (
-            <View style={styles.centeredView}>
-              <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                  setModalVisible(!modalVisible);
-                }}>
-                <View style={styles.centeredView}>
-                  <View style={styles.modalView}>
-                    <Text style={styles.modalText}>How would you like to download it?</Text>
-                    <Pressable
-                      style={[styles.button1, styles.buttonClose]}
-                      onPress={() => downloadAudioOrVideo(true)}>
-                      <Text style={styles.textStyle}>Download as Video</Text>
-                    </Pressable>
-                    <Pressable
-                      style={[styles.button2, styles.buttonClose]}
-                      onPress={() => downloadAudioOrVideo(false)}>
-                      <Text style={styles.textStyle}>Download Music Audio only</Text>
-                    </Pressable>
-                    <Pressable
-                      style={[styles.button2, styles.buttonClose]}
-                      onPress={() => downloadAudioOrVideo(false, true)}>
-                      <Text style={styles.textStyle}>Download as Podcast Audio</Text>
-                    </Pressable>
-                    {isPlaylist ? renderPlaylistDownload() : null}
-                    <Pressable
-                      style={[styles.button3, styles.buttonClose]}
-                      onPress={() => setModalVisible(!modalVisible)}>
-                      <Text style={styles.textStyle}>Close</Text>
-                    </Pressable>
-                    
-                  </View>
-                </View>
-              </Modal> 
-              
-            </View>
-          );
-    }
-
-
     function renderVideoPlayer(){
+      if (playingVideo == 'null'){
+        return (
+          <Image style={styles.video} source={{uri: currentThumbnail}}></Image>
+        )
+      }
         return (
             <Video
           ref={video}
@@ -438,7 +221,7 @@ export default function VideoDisplay(props) {
           </View>
         </View>
         
-              {renderModal()}
+             <RenderModal modalVisible={modalVisible} setModalVisible={setModalVisible} isPlaylist={isPlaylist}></RenderModal>
         </ImageBackground>
       </View>
       
@@ -451,136 +234,3 @@ export default function VideoDisplay(props) {
     
 }
 
-const styles = StyleSheet.create({
-    video: {
-        alignSelf: 'center',
-        height:300,
-        width:'120%',
-        marginBottom: 20
-      },
-      centeredView: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 22,
-      },
-      modalView: {
-        margin: 20,
-        backgroundColor: '#1b1c1f',
-        borderRadius: 20,
-        padding: 35,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 7,
-      },
-      image: {
-        height: device.width - 48,
-        marginVertical: device.iPhoneNotch ? 36 : 8,
-        width: device.width - 48
-      },
-      containerDetails: {
-        marginBottom: 16
-      },
-      containerSong: {
-        flex: 6
-      },
-      song: {
-        ...gStyle.textSpotifyBold24,
-        color: colors.white
-      },
-      artist: {
-        ...gStyle.textSpotify18,
-        color: colors.greyInactive
-      },
-      containerFavorite: {
-        alignItems: 'flex-end',
-        flex: 1,
-        justifyContent: 'center'
-      },
-      containerTime: {
-        ...gStyle.flexRowSpace
-      },
-      time: {
-        ...gStyle.textSpotify10,
-        color: colors.greyInactive
-      },
-      containerControls: {
-        ...gStyle.flexRowSpace,
-        marginTop: device.iPhoneNotch ? 24 : 8
-      },
-      containerBottom: {
-        ...gStyle.flexRowSpace,
-        marginTop: device.iPhoneNotch ? 32 : 8
-      },
-      bgImage: {
-        flex: 1,
-        justifyContent: "center"
-      },
-      modalView: {
-        margin: 20,
-        backgroundColor: '#1b1c1f',
-        borderRadius: 20,
-        padding: 35,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 7,
-      },
-      button1: {
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2,
-        marginBottom: 20
-      },
-      button2: {
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2,
-        marginBottom: 20
-      },
-      button3: {
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2,
-      },
-      button4: {
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2,
-        marginBottom: 20
-      },
-      buttonOpen: {
-        backgroundColor: '#F194FF',
-      },
-      buttonClose: {
-        backgroundColor: '#054c85',
-      },
-      textStyle: {
-        color: 'white',
-        fontWeight: 'bold',
-        textAlign: 'center',
-      },
-      modalText: {
-        marginBottom: 15,
-        textAlign: 'center',
-        color: "white",
-        fontSize: 25
-      },
-      centeredView: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 22,
-      },
-})
