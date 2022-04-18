@@ -48,7 +48,7 @@ function AlbumScreen(props){
 
 
   return (
-    <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
+    <ImageBackground style={styles.image} source={ BG_IMAGE}>
       <FlatList
         data={albums}
         keyExtractor={(item) => item.id}

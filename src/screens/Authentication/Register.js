@@ -225,7 +225,7 @@ function Register({ navigation }){
     }
 
     return (
-        <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
+        <ImageBackground style={styles.image} source={ BG_IMAGE}>
             {/* Title */}
             <Text
                 style={{

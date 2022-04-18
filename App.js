@@ -42,7 +42,7 @@ function MainPage(){
   return (
     
       
-    <ImageBackground style={styles.image} resizeMode="cover" source={{uri: BG_IMAGE}}>
+    <ImageBackground style={styles.image} resizeMode="cover" source={ BG_IMAGE}>
       <StatusBar
         //backgroundColor="rgba(25,20,20,0.8)"
         barStyle="light-content"

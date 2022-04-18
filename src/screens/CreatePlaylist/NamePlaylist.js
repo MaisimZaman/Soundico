@@ -10,7 +10,7 @@ export default function NamePlaylist({navigation}) {
   
 
   return (
-    <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
+    <ImageBackground style={styles.image} source={ BG_IMAGE}>
       <Text style={{textAlign: 'center', color: "white", fontSize: 24, marginBottom: 30}}>Give your playlist a name</Text>
       <TextInput
         style={styles.input}

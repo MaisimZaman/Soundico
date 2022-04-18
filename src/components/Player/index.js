@@ -20,10 +20,10 @@ import {
   Controller,
 } from './styles';
 import { useSelector } from 'react-redux';
-import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectDownloadData, selectSoundStatus} from '../../../services/slices/navSlice';
+import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectDownloadData, selectSoundStatus, selectAuthor, selectIsAudioOnly} from '../../../services/slices/navSlice';
 
 
-export default function Player({Artist="Hanz Zimmer", navigation, soundOBj}) {
+export default function Player({navigation, soundOBj}) {
   const [playMusic, setPlayMusic] = useState(true);
   //const soundOBj = useSelector(selectSoundOBJ)
   
@@ -34,6 +34,8 @@ export default function Player({Artist="Hanz Zimmer", navigation, soundOBj}) {
   const audioID = useSelector(selectAudioID)
   const downloadData = useSelector(selectDownloadData)
   const status = useSelector(selectSoundStatus)
+  const Artist = useSelector(selectAuthor)
+  const isAudioOnly = useSelector(selectIsAudioOnly)
 
   useEffect(() => {
     Audio.setAudioModeAsync({
@@ -84,17 +86,34 @@ export default function Player({Artist="Hanz Zimmer", navigation, soundOBj}) {
       //: undefined;
   //}, [soundOBj, audioID]);
 
+  function handleNavigation(){
+    if (isAudioOnly){
+      navigation.navigate('MusicScreen', {thumbNail: ThumbNail,
+        audioURI: audiouURI, 
+        title: Title,
+        downloadData: downloadData,
+        audioID: audioID
+        })
+    }
+    else {
+      navigation.navigate('VideoScreen', {videoThumbNail: ThumbNail,
+        audioURI: audiouURI, 
+        videoTitle: Title,
+        downloadData: downloadData,
+        videoId: audioID,
+        Search: false,
+        isPlaylist: false,
+        artist: Artist
+        })
+    }
+  }
+
 
   
   
 
   return (
-    <TouchableOpacity style={{marginBottom: 50}} onPress={() => navigation.navigate('MusicScreen', {thumbNail: ThumbNail,
-      audioURI: audiouURI, 
-      title: Title,
-      downloadData: downloadData,
-      audioID: audioID
-      })}>
+    <TouchableOpacity style={{marginBottom: 50}} onPress={handleNavigation}>
       <Container>
         <BarStatus>
           <Line progress={(status.durationMillis / status.positionMillis) * 100} />

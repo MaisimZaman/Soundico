@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "MusicCoApp",
+    "name": "Soundico: Free Music",
     "description": "test",
-    "scheme": "spotify-ui-clone-expo",
+    "scheme": "Soundico",
     "slug": "musiccoapp",
     "privacy": "public",
     "version": "0.0.1",

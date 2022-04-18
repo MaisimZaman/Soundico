@@ -11,7 +11,7 @@ import { colors, device, func, gStyle } from './constants/index';
 import ModalHeader from './ModalHeader';
 import TouchIcon from './TouchIcon';
 import { useDispatch } from 'react-redux';
-import { setThumbNail,  setAudioURI, setTitle, setAudioID, setDownloadData, setSoundOBJ, setSoundStatus} from '../../../services/slices/navSlice';
+import { setThumbNail,  setAudioURI, setTitle, setAudioID, setDownloadData, setSoundOBJ, setSoundStatus, setIsAudioOnly} from '../../../services/slices/navSlice';
 import { useSelector } from 'react-redux';
 import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectSoundOBJ, selectSoundStatus} from '../../../services/slices/navSlice';
 import { BG_IMAGE } from '../../services/backgroundImage';
@@ -181,6 +181,7 @@ export default function MusicPlayer(props){
           dispatch(setAudioURI(audioURI))
           dispatch(setAudioID(audioID))
           dispatch(setTitle(title))
+          dispatch(setIsAudioOnly(true))
          
     }
     
@@ -311,7 +312,7 @@ export default function MusicPlayer(props){
     return (
       
         <View style={gStyle.container}>
-          <ImageBackground style={styles.bgImage} resizeMode='cover' source={{uri: BG_IMAGE}}>
+          <ImageBackground style={styles.bgImage} resizeMode='cover' source={ BG_IMAGE}>
           <ModalHeader
             left={<Feather color={colors.greyLight} name="chevron-down" />}
             leftPress={() => navigation.goBack(null)}

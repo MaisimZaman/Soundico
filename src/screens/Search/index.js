@@ -201,7 +201,7 @@ export default function Search({navigation}) {
   
 
   return (
-    <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
+    <ImageBackground style={styles.image} source={ BG_IMAGE}>
      
     <Container >
       <Title YOffSet={YOffSet} search>

@@ -89,7 +89,7 @@ export default function VideoPlayer(props) {
     }
 
     return (
-        <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
+        <ImageBackground style={styles.image} source={ BG_IMAGE}>
         <View style={{width:'100%',height:height/3,alignItems:'center'}}>
         <Video
           ref={video}

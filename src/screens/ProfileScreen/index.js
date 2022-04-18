@@ -267,7 +267,7 @@ function ProfileScreen(props){
     }
 
     return (
-        <ImageBackground style={styles.image} resizeMode="cover" source={{uri: BG_IMAGE}}>
+        <ImageBackground style={styles.image} resizeMode="cover" source={ BG_IMAGE}>
         <View
             style={{
                 flex: 1,

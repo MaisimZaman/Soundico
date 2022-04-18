@@ -2,6 +2,10 @@ import ytdl from "react-native-ytdl"
 import {db, auth} from '../../../services/firebase'
 import firebase from 'firebase'
 
+
+
+
+
 export function msToTime(s) {
     var ms = s % 1000;
     s = (s - ms) / 1000;
@@ -15,7 +19,73 @@ export function msToTime(s) {
       return  mins + ':' + "0" + secs;
     }
     return  mins + ':' + secs;
+}
+
+
+
+export function skipFowardTrack(downloadData, setNewSongData, currentID, isRecently){
+    const index = downloadData.findIndex(object => {
+      return object.id === currentID;
+    });
+    
+
+    if (index < downloadData.length){
+
+       if (isRecently){
+        const forwardThumbNail =  downloadData[index + 1].data.videoThumbNail
+        const forwardAudioURI = null
+        const forwardTitle = downloadData[index + 1].data.videoTitle
+        const forwardID = downloadData[index + 1].id
+        const forwardArtist = downloadData[index + 1].data.videoArtist
+        setNewSongData(forwardThumbNail, forwardAudioURI, forwardTitle, forwardID, forwardArtist)
+       }
+       else {
+        const forwardThumbNail =  downloadData[index + 1].snippet.thumbnails.high.url
+        const forwardAudioURI = null
+        const forwardTitle = downloadData[index + 1].snippet.title
+        const forwardID = downloadData[index + 1].id
+        const forwardArtist = downloadData[index + 1].snippet.channelTitle
+        setNewSongData(forwardThumbNail, forwardAudioURI, forwardTitle, forwardID, forwardArtist)
+       }
+    
+    
+        
+
+      
+      
+      
+
+    }
   }
+
+
+export function skipBackwardTrack(downloadData, setNewSongData, currentID, isRecently){
+    const index = downloadData.findIndex(object => {
+        return object.id === currentID;
+    });
+    
+    if (index >= 0){
+        if (isRecently){
+            const backwardThumbNail =  downloadData[index - 1].data.videoThumbNail
+            const backwardAudioURI = null
+            const backwardTitle = downloadData[index - 1].data.videoTitle
+            const backwardID = downloadData[index - 1].id
+            const backwardArtist = downloadData[index - 1].data.videoArtist
+            setNewSongData(backwardThumbNail, backwardAudioURI, backwardTitle, backwardID, backwardArtist)
+           }
+           else {
+            const backwardThumbNail =  downloadData[index - 1].snippet.thumbnails.high.url
+            const backwardAudioURI = null
+            const backwardTitle = downloadData[index - 1].snippet.title
+            const backwardID = downloadData[index - 1].id
+            const backwardArtist = downloadData[index - 1].snippet.channelTitle
+            setNewSongData(backwardThumbNail, backwardAudioURI, backwardTitle, backwardID, backwardArtist)
+           }
+        
+        
+
+    }
+}
 
 export async function downloadAudioOrVideo(isVideo=false, isPodCast=false){
     let childPath;

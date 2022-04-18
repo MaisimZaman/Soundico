@@ -12,36 +12,69 @@ import { Feather, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import { colors, device, func, gStyle } from '../MusicPlayer/constants/index';
 import TouchIcon from '../MusicPlayer/TouchIcon';
-import { msToTime, downloadAudioOrVideo  } from './handlingfunctions';
+import { msToTime,  skipBackwardTrack,  skipFowardTrack  } from './handlingfunctions';
 import RenderModal from './downloadModal';
 //import { styles } from './styles';
 import { styles } from './styles';
 // components
+import { setIsAudioOnly, 
+  setAudioID, 
+  setThumbNail, 
+  setAuthor, 
+  setTitle, 
+  setSoundStatus, 
+  setAudioURI, 
+  selectThumbNail, 
+  selectAudioID, 
+  selectTitle,
+  selectAudioURI,
+  setDownloadData
+} from '../../../services/slices/navSlice';
+
+import { useDispatch, useSelector } from 'react-redux';
+
 
 
 export default function VideoDisplay(props) {
     const {width, height} = Dimensions.get("screen");
     const [modalVisible, setModalVisible] = useState(false);
-    const {videoId, videoThumbNail, videoTitle, Search, isPlaylist, playlistVideos, artist='unknown', plInfo} = props.route.params;
-    const [currentVideoID, setCurrentVideoID] = useState(videoId)
-    const [currentThumbnail, setCurrentThumbnail]= useState(videoThumbNail)
-    const [currentTitle, setCurrentTitle] = useState(videoTitle)
+    const {videoId, videoThumbNail, videoTitle, Search, isPlaylist, isRecently=false,  artist, downloadData} = props.route.params;
+    const currentVideoID = useSelector(selectAudioID)
+    const currentThumbnail = useSelector(selectThumbNail)
+    const currentTitle = useSelector(selectTitle)
     const [currentPosition, setCurrentPosition] = useState(0)
     const [status, setStatus] = useState(0);
     const [recentlyPlayed, setRecentlyPlayed] = useState([])
-    const [playingVideo, setPlayingVideo] = useState('null');
+    const playingVideo  = useSelector(selectAudioURI);
+    
+    //const [playingVideo, setPlayingVideo] = useState('null')
     const iconPlay = status.isPlaying ?   'pause-circle' : 'play-circle';
     
     const [video, setVideo] = useState(useRef(null))
     const timePast = msToTime(status != 0 ? status.positionMillis : 0);
     const timeLeft = msToTime(status != 0 ? status.durationMillis - status.positionMillis : 0);
 
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+      dispatch(setIsAudioOnly(false))
+      dispatch(setAudioID(videoId))
+      dispatch(setThumbNail(videoThumbNail))
+      dispatch(setAuthor(artist))
+      dispatch(setTitle(videoTitle))
+      dispatch(setSoundStatus(0))
+      dispatch(setIsAudioOnly(false))
+      dispatch(setDownloadData(downloadData))
+    }, [videoId])
+
     useEffect(() => {
      
         async function main(){
           let info = await ytdl.getInfo(currentVideoID);
           let audioFormats = ytdl.filterFormats(info.formats, 'audioandvideo');
-          setPlayingVideo(audioFormats[0].url);
+          //setPlayingVideo(audioFormats[0].url);
+         
+          dispatch(setAudioURI(audioFormats[0].url))
         }
 
         main()
@@ -96,7 +129,7 @@ export default function VideoDisplay(props) {
     },[])
 
     function renderVideoPlayer(){
-      if (playingVideo == 'null'){
+      if (playingVideo == null){
         return (
           <Image style={styles.video} source={{uri: currentThumbnail}}></Image>
         )
@@ -117,6 +150,16 @@ export default function VideoDisplay(props) {
         )
     }
 
+    function setNewSongData(thumbNail, audioURI, title,audioID, artist){
+      dispatch(setThumbNail(thumbNail))
+      dispatch(setAudioURI(audioURI))
+      dispatch(setAudioID(audioID))
+      dispatch(setTitle(title))
+      dispatch(setIsAudioOnly(false))
+      dispatch(setAuthor(artist))
+      
+  }
+
 
     async function togglePlayVideo(){
 
@@ -130,7 +173,7 @@ export default function VideoDisplay(props) {
 
      return (
         <View style={gStyle.container}>
-        <ImageBackground style={styles.bgImage} resizeMode='cover' source={{uri: BG_IMAGE}}>
+        <ImageBackground style={styles.bgImage} resizeMode='cover' source={ BG_IMAGE}>
         <ModalHeader
           left={<Feather color={colors.greyLight} name="chevron-down" />}
           leftPress={() => props.navigation.goBack()}
@@ -185,7 +228,7 @@ export default function VideoDisplay(props) {
               <TouchIcon
                 icon={<FontAwesome color={colors.white} name="step-backward" />}
                 iconSize={32}
-                onPress={() => null}
+                onPress={() => skipBackwardTrack(downloadData, setNewSongData, currentVideoID, isRecently)}
               />
               <View style={gStyle.pH3}>
                 <TouchIcon
@@ -197,7 +240,7 @@ export default function VideoDisplay(props) {
               <TouchIcon
                 icon={<FontAwesome color={colors.white} name="step-forward" />}
                 iconSize={32}
-                onPress={() => null}
+                onPress={() => skipFowardTrack(downloadData, setNewSongData, currentVideoID, isRecently)}
               />
              
             </View>

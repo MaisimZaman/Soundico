@@ -44,7 +44,7 @@ export default function Home({navigation}) {
   }, [navigation])
 
   useEffect(() => {
-    const searches = ["Space", "Car", "clasical"]
+    const searches = ["Space", "Car", "airplane"]
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
     Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchText}Music&key=${API_KEY}`)
       .then(res => {
@@ -57,7 +57,7 @@ export default function Home({navigation}) {
   }, [navigation])
 
   useEffect(() => {
-    const searches = ["Captian America Music", "Spider-man Music", "Intersteller Music"]
+    const searches = ["Car Music", "Spider-man Music", "Intersteller Music", "Clasical music", "Workout Music"]
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
     Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${searchText}&type=playlist&key=${API_KEY}`)
       .then(res => {
@@ -126,7 +126,7 @@ export default function Home({navigation}) {
   
 
   return (
-    <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
+    <ImageBackground style={styles.image} source={ BG_IMAGE}>
     <Container>
       <ScrollView>
         <Entypo
@@ -143,7 +143,7 @@ export default function Home({navigation}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {videoId: item.data.videoId, videoThumbNail:item.data.videoThumbNail, videoTitle: item.data.videoTitle, artist: item.data.videoArtist, Search: false})}>
+            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {videoId: item.data.videoId, videoThumbNail:item.data.videoThumbNail, videoTitle: item.data.videoTitle, artist: item.data.videoArtist, Search: false, isRecently: true, downloadData: recently})}>
               <AlbunsList
                 name={item.data.videoTitle}
                 photoAlbum={item.data.videoThumbNail}
@@ -159,7 +159,7 @@ export default function Home({navigation}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: false })}>
+            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: false, downloadData: podcasts })}>
               <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} podcast={true} />
             </TouchableOpacity>
           )}
@@ -171,7 +171,7 @@ export default function Home({navigation}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: false })}>
+            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: false, downloadData: madeForYou })}>
             <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} />
             </TouchableOpacity>
           )}

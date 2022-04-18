@@ -23,7 +23,7 @@ export default function TopicContent(props) {
       }, [props.navigation])
 
     return (
-        <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
+        <ImageBackground style={styles.image} source={ BG_IMAGE}>
             <Text style={{fontSize: 24, color: "white", marginTop: 15}}>{topic}</Text>
             <FlatList
             data={content}

@@ -99,7 +99,7 @@ export default function AddToMadePlaylist(props){
     
 
     return (
-        <ImageBackground style={styles.image} source={{uri: BG_IMAGE}}>
+        <ImageBackground style={styles.image} source={ BG_IMAGE}>
             <Text style={{color: "white", fontSize: 24, marginBottom: 15, marginTop: 15}}>Add a playlist to add to</Text>
             <TextInput 
                 style={{flexDirection: "row", alignItems: 'center', justifyContent: 'space-evenly', backgroundColor: "#fff", height: 45, width: "94%", borderRadius: 10, marginBottom: 20}}
