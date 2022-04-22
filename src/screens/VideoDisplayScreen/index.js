@@ -32,13 +32,14 @@ import { setIsAudioOnly,
 } from '../../../services/slices/navSlice';
 
 import { useDispatch, useSelector } from 'react-redux';
+import { SECONDARY_BG } from '../../services/backgroundImage';
 
 
 
 export default function VideoDisplay(props) {
     const {width, height} = Dimensions.get("screen");
     const [modalVisible, setModalVisible] = useState(false);
-    const {videoId, videoThumbNail, videoTitle, Search, isPlaylist, isRecently=false,  artist, downloadData} = props.route.params;
+    const {videoId, videoThumbNail, videoTitle, Search, isPlaylist, isRecently=true,  artist, downloadData} = props.route.params;
     const currentVideoID = useSelector(selectAudioID)
     const currentThumbnail = useSelector(selectThumbNail)
     const currentTitle = useSelector(selectTitle)
@@ -57,6 +58,9 @@ export default function VideoDisplay(props) {
     const dispatch = useDispatch()
 
     useEffect(() => {
+      dispatch(setAudioURI(null))
+      setCurrentPosition(0)
+      setStatus(0)
       dispatch(setIsAudioOnly(false))
       dispatch(setAudioID(videoId))
       dispatch(setThumbNail(videoThumbNail))
@@ -65,11 +69,13 @@ export default function VideoDisplay(props) {
       dispatch(setSoundStatus(0))
       dispatch(setIsAudioOnly(false))
       dispatch(setDownloadData(downloadData))
-    }, [videoId])
+    }, [])
 
     useEffect(() => {
      
         async function main(){
+          setCurrentPosition(0)
+          setStatus(0)
           let info = await ytdl.getInfo(currentVideoID);
           let audioFormats = ytdl.filterFormats(info.formats, 'audioandvideo');
           //setPlayingVideo(audioFormats[0].url);
@@ -79,7 +85,7 @@ export default function VideoDisplay(props) {
 
         main()
         
-    }, [videoId])
+    }, [currentVideoID])
 
    
     useEffect(() => {
@@ -173,7 +179,7 @@ export default function VideoDisplay(props) {
 
      return (
         <View style={gStyle.container}>
-        <ImageBackground style={styles.bgImage} resizeMode='cover' source={ BG_IMAGE}>
+        <ImageBackground style={styles.bgImage} resizeMode='cover' source={BG_IMAGE}>
         <ModalHeader
           left={<Feather color={colors.greyLight} name="chevron-down" />}
           leftPress={() => props.navigation.goBack()}
@@ -264,7 +270,7 @@ export default function VideoDisplay(props) {
           </View>
         </View>
         
-             <RenderModal modalVisible={modalVisible} setModalVisible={setModalVisible} isPlaylist={isPlaylist}></RenderModal>
+             <RenderModal props={props} modalVisible={modalVisible} currentVideoID={currentVideoID} setModalVisible={setModalVisible} isPlaylist={isPlaylist}></RenderModal>
         </ImageBackground>
       </View>
       

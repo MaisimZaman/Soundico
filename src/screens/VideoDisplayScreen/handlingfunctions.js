@@ -3,9 +3,6 @@ import {db, auth} from '../../../services/firebase'
 import firebase from 'firebase'
 
 
-
-
-
 export function msToTime(s) {
     var ms = s % 1000;
     s = (s - ms) / 1000;
@@ -87,7 +84,7 @@ export function skipBackwardTrack(downloadData, setNewSongData, currentID, isRec
     }
 }
 
-export async function downloadAudioOrVideo(isVideo=false, isPodCast=false){
+export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, currentVideoID, props){
     let childPath;
     let theDownload;
 
@@ -134,7 +131,7 @@ export async function downloadAudioOrVideo(isVideo=false, isPodCast=false){
                         saveAudioPodCastData(snapshot)
                         setModalVisible(false)
                     } else {
-                        saveAudioData(snapshot);
+                        saveAudioData(snapshot, props);
                         setModalVisible(false)
                     }
                     
@@ -151,7 +148,7 @@ export async function downloadAudioOrVideo(isVideo=false, isPodCast=false){
 }
 
 
-function saveAudioData(downloadURL){
+function saveAudioData(downloadURL, props){
     db.collection('audioDownloads')
         .doc(auth.currentUser.uid)
         .collection("userAudios")

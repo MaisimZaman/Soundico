@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Soundico: Free Music",
+    "name": "Soundico",
     "description": "test",
-    "scheme": "Soundico",
+    "scheme": "soundico",
     "slug": "musiccoapp",
     "privacy": "public",
     "version": "0.0.1",

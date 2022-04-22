@@ -5,7 +5,7 @@ import {  downloadAudioOrVideo  } from './handlingfunctions';
 
 import { styles } from './styles';
 // components
-export default function RenderModal({modalVisible, setModalVisible, isPlaylist}){
+export default function RenderModal({modalVisible, setModalVisible, isPlaylist, currentVideoID, props}){
         
     function renderPlaylistDownload(){
         return (
@@ -35,7 +35,7 @@ export default function RenderModal({modalVisible, setModalVisible, isPlaylist})
                 </Pressable>
                 <Pressable
                   style={[styles.button2, styles.buttonClose]}
-                  onPress={() => downloadAudioOrVideo(false)}>
+                  onPress={() => downloadAudioOrVideo(false, props=props, currentVideoID=currentVideoID)}>
                   <Text style={styles.textStyle}>Download Music Audio only</Text>
                 </Pressable>
                 <Pressable

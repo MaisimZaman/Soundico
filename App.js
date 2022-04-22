@@ -3,7 +3,7 @@ import { StatusBar, ImageBackground, StyleSheet } from 'react-native';
 import Routes from './src/Routes';
 import 'react-native-gesture-handler';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import VideoDisplay from './src/screens/VideoDisplayScreen';
 import Login from './src/screens/Authentication/Login';
 import Register from './src/screens/Authentication/Register';
@@ -18,7 +18,7 @@ import { Provider } from 'react-redux';
 import {store} from './services/store'
 import { BG_IMAGE } from './src/services/backgroundImage';
 
-
+CardStyleInterpolators
 
 const Stack = createStackNavigator();
 
@@ -58,7 +58,7 @@ export default function App(){
   return (
     <Provider store={store}>
       <NavigationContainer theme={MyTheme}>
-        <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Login'>
+        <Stack.Navigator screenOptions={{headerShown: false, animationEnabled: true, cardStyleInterpolator: CardStyleInterpolators.forRevealFromBottomAndroid}} initialRouteName='Login'>
           <Stack.Screen name='Login' component={Login}></Stack.Screen>
           <Stack.Screen name='Register' component={Register}></Stack.Screen>
           <Stack.Screen name='Main' component={MainPage}></Stack.Screen>

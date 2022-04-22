@@ -59,6 +59,7 @@ function Login({ navigation }){
                     keyboardType="email-address"
                     autoCompleteType="email"
                     value={username}
+                    inputStyle={{color: "white"}}
                     onChange={(value) => {
                         setUsername(value)
                     }}
@@ -99,7 +100,7 @@ function Login({ navigation }){
                         height: 60,
                         marginTop: 30,
                         borderRadius: 30,
-                        backgroundColor: COLORS.primary
+                        backgroundColor: "#024af2"
                     }}
                     label="LOGIN"
                     onPress={signIn}
@@ -209,7 +210,7 @@ function Login({ navigation }){
                     ...FONTS.h1
                 }}
             >
-                Login
+                Login to Soundico 
             </Text>
 
             <KeyboardAwareScrollView

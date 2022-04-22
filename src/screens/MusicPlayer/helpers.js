@@ -1,5 +1,6 @@
 export const convertTime = minutes => {
-    if (minutes) {
+  
+  if (minutes) {
       const hrs = minutes / 60;
       const minute = hrs.toString().split('.')[0];
       const percent = parseInt(hrs.toString().split('.')[1].slice(0, 2));
@@ -21,5 +22,5 @@ export const convertTime = minutes => {
       }
   
       return `${minute}:${sec}`;
-    }
-  };
+  }
+};
