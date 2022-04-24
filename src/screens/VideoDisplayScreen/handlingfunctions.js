@@ -22,7 +22,7 @@ export function msToTime(s) {
 
 export function skipFowardTrack(downloadData, setNewSongData, currentID, isRecently){
     const index = downloadData.findIndex(object => {
-      return object.id === currentID;
+      return object.id === currentID[0];
     });
     
 
@@ -32,7 +32,7 @@ export function skipFowardTrack(downloadData, setNewSongData, currentID, isRecen
         const forwardThumbNail =  downloadData[index + 1].data.videoThumbNail
         const forwardAudioURI = null
         const forwardTitle = downloadData[index + 1].data.videoTitle
-        const forwardID = downloadData[index + 1].id
+        const forwardID = [downloadData[index + 1].id, downloadData[index + 1].data.videoId]
         const forwardArtist = downloadData[index + 1].data.videoArtist
         setNewSongData(forwardThumbNail, forwardAudioURI, forwardTitle, forwardID, forwardArtist)
        }
@@ -40,7 +40,7 @@ export function skipFowardTrack(downloadData, setNewSongData, currentID, isRecen
         const forwardThumbNail =  downloadData[index + 1].snippet.thumbnails.high.url
         const forwardAudioURI = null
         const forwardTitle = downloadData[index + 1].snippet.title
-        const forwardID = downloadData[index + 1].id
+        const forwardID = [downloadData[index + 1].id, downloadData[index + 1].id.videoId]
         const forwardArtist = downloadData[index + 1].snippet.channelTitle
         setNewSongData(forwardThumbNail, forwardAudioURI, forwardTitle, forwardID, forwardArtist)
        }
@@ -58,7 +58,7 @@ export function skipFowardTrack(downloadData, setNewSongData, currentID, isRecen
 
 export function skipBackwardTrack(downloadData, setNewSongData, currentID, isRecently){
     const index = downloadData.findIndex(object => {
-        return object.id === currentID;
+        return object.id === currentID[0];
     });
     
     if (index >= 0){
@@ -66,15 +66,15 @@ export function skipBackwardTrack(downloadData, setNewSongData, currentID, isRec
             const backwardThumbNail =  downloadData[index - 1].data.videoThumbNail
             const backwardAudioURI = null
             const backwardTitle = downloadData[index - 1].data.videoTitle
-            const backwardID = downloadData[index - 1].id
+            const backwardID = [downloadData[index - 1].id, downloadData[index - 1].data.videoId]
             const backwardArtist = downloadData[index - 1].data.videoArtist
             setNewSongData(backwardThumbNail, backwardAudioURI, backwardTitle, backwardID, backwardArtist)
-           }
+        }
            else {
             const backwardThumbNail =  downloadData[index - 1].snippet.thumbnails.high.url
             const backwardAudioURI = null
             const backwardTitle = downloadData[index - 1].snippet.title
-            const backwardID = downloadData[index - 1].id
+            const backwardID = [downloadData[index - 1].id, downloadData[index - 1].id.videoId]
             const backwardArtist = downloadData[index - 1].snippet.channelTitle
             setNewSongData(backwardThumbNail, backwardAudioURI, backwardTitle, backwardID, backwardArtist)
            }
@@ -84,10 +84,10 @@ export function skipBackwardTrack(downloadData, setNewSongData, currentID, isRec
     }
 }
 
-export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, currentVideoID, props){
+export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID){
     let childPath;
     let theDownload;
-
+    
     if (isVideo){
       let info = await ytdl.getInfo(currentVideoID);
       let audioFormats = ytdl.filterFormats(info.formats, 'audioandvideo');
@@ -131,7 +131,7 @@ export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, curre
                         saveAudioPodCastData(snapshot)
                         setModalVisible(false)
                     } else {
-                        saveAudioData(snapshot, props);
+                        saveAudioData(snapshot);
                         setModalVisible(false)
                     }
                     
@@ -147,65 +147,5 @@ export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, curre
     
 }
 
-
-function saveAudioData(downloadURL, props){
-    db.collection('audioDownloads')
-        .doc(auth.currentUser.uid)
-        .collection("userAudios")
-        .add({
-            audio: downloadURL,
-            thumbNail: currentThumbnail,
-            title: currentTitle,
-            creation: firebase.firestore.FieldValue.serverTimestamp()
-        })
-
-        props.navigation.replace('MusicScreen', {thumbNail: currentThumbnail,
-            audioURI: downloadURL, 
-            title: currentTitle,
-            downloadData: downloadURL,
-                        audioID: '2121'
-                            })
-
-}
-
-export function saveAudioPodCastData(downloadURL){
-    db.collection('podcastDownloads')
-        .doc(auth.currentUser.uid)
-        .collection("userPodcasts")
-        .add({
-            audio: downloadURL,
-            thumbNail: currentThumbnail,
-            title: currentTitle,
-        })
-
-}
-
-export function saveVideoData(downloadURL){
-    db.collection('videoDownloads')
-        .doc(auth.currentUser.uid)
-        .collection("userVideos")
-        .add({
-            videoURI: downloadURL,
-            thumbNail: currentThumbnail,
-            title: currentTitle,
-            creation: firebase.firestore.FieldValue.serverTimestamp()
-        })
-
-}
-
-export function savePlaylistData(){
-    db.collection('playlists')
-        .doc(auth.currentUser.uid)
-        .collection("userPlaylists")
-        .add({
-
-            playlistTitle: plInfo[0],
-            playListThumbnail: plInfo[1],
-            playlistVideos: playlistVideos,
-
-            
-        })
-
-}
 
 

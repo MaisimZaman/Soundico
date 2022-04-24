@@ -28,7 +28,7 @@ export default function MusicPlayer(props){
 
  
 
-  const {thumbNail, audioURI, title,audioID, downloadData, playListName, notCustom} = props.route.params
+  const {thumbNail, audioURI, title,audioID, downloadData, playListName, notCustom, artist='unknown'} = props.route.params
 
   const [playListAudioURI, setPlayListAudioURI] = useState(audioURI)
   
@@ -88,7 +88,16 @@ export default function MusicPlayer(props){
   
   
   
-    
+    useEffect(() => {
+      if (status.durationMillis != undefined){
+        if (status.durationMillis > 0){
+          if (status.positionMillis == status.durationMillis){
+            skipFowardTrack()
+          }
+        }
+      }
+      
+    }, [status])
 
     useEffect(() => {   
       async function run(){
@@ -328,7 +337,7 @@ export default function MusicPlayer(props){
                 <Text ellipsizeMode="tail" numberOfLines={1} style={styles.song}>
                   {currentTitle}
                 </Text>
-                <Text style={styles.artist}>{currentSongData.artist}</Text>
+                <Text style={styles.artist}>{artist}</Text>
               </View>
               <View style={styles.containerFavorite}>
                 <TouchIcon

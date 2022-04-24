@@ -28,7 +28,8 @@ import { setIsAudioOnly,
   selectAudioID, 
   selectTitle,
   selectAudioURI,
-  setDownloadData
+  setDownloadData,
+  selectAuthor
 } from '../../../services/slices/navSlice';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -39,10 +40,11 @@ import { SECONDARY_BG } from '../../services/backgroundImage';
 export default function VideoDisplay(props) {
     const {width, height} = Dimensions.get("screen");
     const [modalVisible, setModalVisible] = useState(false);
-    const {videoId, videoThumbNail, videoTitle, Search, isPlaylist, isRecently=true,  artist, downloadData} = props.route.params;
+    const {rId, videoId, videoThumbNail, videoTitle, Search, isPlaylist, isRecently,  artist, downloadData, plInfo, playlistVideos} = props.route.params;
     const currentVideoID = useSelector(selectAudioID)
     const currentThumbnail = useSelector(selectThumbNail)
     const currentTitle = useSelector(selectTitle)
+    const currentArtist = useSelector(selectAuthor)
     const [currentPosition, setCurrentPosition] = useState(0)
     const [status, setStatus] = useState(0);
     const [recentlyPlayed, setRecentlyPlayed] = useState([])
@@ -55,14 +57,18 @@ export default function VideoDisplay(props) {
     const timePast = msToTime(status != 0 ? status.positionMillis : 0);
     const timeLeft = msToTime(status != 0 ? status.durationMillis - status.positionMillis : 0);
 
+
+    
+
     const dispatch = useDispatch()
 
+    
     useEffect(() => {
       dispatch(setAudioURI(null))
       setCurrentPosition(0)
       setStatus(0)
       dispatch(setIsAudioOnly(false))
-      dispatch(setAudioID(videoId))
+      dispatch(setAudioID([rId, videoId]))
       dispatch(setThumbNail(videoThumbNail))
       dispatch(setAuthor(artist))
       dispatch(setTitle(videoTitle))
@@ -72,11 +78,13 @@ export default function VideoDisplay(props) {
     }, [])
 
     useEffect(() => {
+
+      
      
         async function main(){
           setCurrentPosition(0)
           setStatus(0)
-          let info = await ytdl.getInfo(currentVideoID);
+          let info = await ytdl.getInfo(currentVideoID[1]);
           let audioFormats = ytdl.filterFormats(info.formats, 'audioandvideo');
           //setPlayingVideo(audioFormats[0].url);
          
@@ -85,7 +93,7 @@ export default function VideoDisplay(props) {
 
         main()
         
-    }, [currentVideoID])
+    }, [currentVideoID, currentTitle])
 
    
     useEffect(() => {
@@ -113,7 +121,7 @@ export default function VideoDisplay(props) {
             interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
             playThroughEarpieceAndroid: false
          });
-    }, [currentVideoID])
+    }, [])
 
     
     useEffect( () => {
@@ -122,9 +130,9 @@ export default function VideoDisplay(props) {
             .doc(auth.currentUser.uid)
             .collection("userRecents")
             .add({
-                videoId: currentVideoID,
-                videoThumbNail: currentThumbnail,
-                videoTitle: currentTitle,
+                videoId: videoId,
+                videoThumbNail: videoThumbNail,
+                videoTitle: videoTitle,
                 videoArtist: artist,
                 creation: firebase.firestore.FieldValue.serverTimestamp()
             })
@@ -133,6 +141,7 @@ export default function VideoDisplay(props) {
         
         
     },[])
+
 
     function renderVideoPlayer(){
       if (playingVideo == null){
@@ -155,6 +164,73 @@ export default function VideoDisplay(props) {
         />
         )
     }
+
+    function saveAudioData(downloadURL){
+     
+      db.collection('audioDownloads')
+          .doc(auth.currentUser.uid)
+          .collection("userAudios")
+          .add({
+              audio: downloadURL,
+              thumbNail: currentThumbnail,
+              title: currentTitle,
+              //creation: firebase.firestore.FieldValue.serverTimestamp(),
+              channelTitle: artist
+          })
+  
+        props.navigation.replace({thumbNail: currentThumbnail,
+              audioURI: downloadURL, 
+              title: currentTitle,
+              downloadData: downloadURL,
+                          audioID: '2121'
+                              })
+  
+  }
+  
+   function saveAudioPodCastData(downloadURL){
+      console.log("this is running correctly")
+      db.collection('podcastDownloads')
+          .doc(auth.currentUser.uid)
+          .collection("userPodcasts")
+          .add({
+              audio: downloadURL,
+              thumbNail: currentThumbnail,
+              title: currentTitle,
+              channelTitle: artist
+          })
+  
+  }
+  
+   function saveVideoData(downloadURL){
+      db.collection('videoDownloads')
+          .doc(auth.currentUser.uid)
+          .collection("userVideos")
+          .add({
+              videoURI: downloadURL,
+              thumbNail: currentThumbnail,
+              title: currentTitle,
+              //creation: firebase.firestore.FieldValue.serverTimestamp()
+              channelTitle: artist
+          })
+  
+  }
+  
+   function savePlaylistData(){
+      db.collection('playlists')
+          .doc(auth.currentUser.uid)
+          .collection("userPlaylists")
+          .add({
+  
+              playlistTitle: plInfo[0],
+              playListThumbnail: plInfo[1],
+              playlistVideos: playlistVideos,
+  
+              
+          })
+  
+  }
+  
+  
 
     function setNewSongData(thumbNail, audioURI, title,audioID, artist){
       dispatch(setThumbNail(thumbNail))
@@ -194,9 +270,9 @@ export default function VideoDisplay(props) {
           <View style={[gStyle.flexRowSpace, styles.containerDetails]}>
             <View style={styles.containerSong}>
               <Text ellipsizeMode="tail" numberOfLines={1} style={styles.song}>
-                {videoTitle}
+                {currentTitle}
               </Text>
-              <Text style={styles.artist}>{artist}</Text>
+              <Text style={styles.artist}>{currentArtist}</Text>
             </View>
             <View style={styles.containerFavorite}>
               <TouchIcon
@@ -246,7 +322,7 @@ export default function VideoDisplay(props) {
               <TouchIcon
                 icon={<FontAwesome color={colors.white} name="step-forward" />}
                 iconSize={32}
-                onPress={() => skipFowardTrack(downloadData, setNewSongData, currentVideoID, isRecently)}
+                onPress={() => skipFowardTrack(downloadData,setNewSongData, currentVideoID, isRecently)}
               />
              
             </View>
@@ -270,7 +346,7 @@ export default function VideoDisplay(props) {
           </View>
         </View>
         
-             <RenderModal props={props} modalVisible={modalVisible} currentVideoID={currentVideoID} setModalVisible={setModalVisible} isPlaylist={isPlaylist}></RenderModal>
+             <RenderModal  modalVisible={modalVisible}  setModalVisible={setModalVisible} isPlaylist={isPlaylist} saveAudioData={saveAudioData} saveAudioPodCastData={saveAudioPodCastData} currentVideoID={currentVideoID[1]} saveVideoData={saveVideoData} savePlaylistData={savePlaylistData} ></RenderModal>
         </ImageBackground>
       </View>
       

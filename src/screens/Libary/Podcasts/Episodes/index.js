@@ -36,13 +36,14 @@ export default function Episodes({navigation}) {
             audioURI: item.data.audio, 
             title: item.data.title,
             downloadData: episodes,
-            audioID: item.id
+            audioID: item.id,
+            artist: item.data.channelTitle
              })}>
           <EpisodiePodcast
             name={item.data.title}
             photo={item.data.thumbNail}
-            informations={"tune in to elon musk debate"}
-            ChanelPodcast={"Jack Studios"}
+            informations={"Play"}
+            ChanelPodcast={item.data.channelTitle?item.data.channelTitle :  "Unknown"}
             AudioURI={item.data.audio}
           />
           </TouchableOpacity>

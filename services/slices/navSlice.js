@@ -4,7 +4,7 @@ const initialState = {
     thumbNail: null,
     audioURI: null,
     title: null,
-    audioID: null,
+    audioID: [null, null],
     author: "unknown",
     downloadData: null,
     soundOBJ: null,

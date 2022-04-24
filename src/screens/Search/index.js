@@ -161,7 +161,7 @@ export default function Search({navigation}) {
       navigation.navigate('VideoScreen', {videoId: item.id,  videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: true })
     }
     else {
-      navigation.navigate('VideoScreen', {videoId: item.id.videoId,  videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: true })
+      navigation.navigate('VideoScreen', {rId: item.id, videoId: item.id.videoId,  videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: true, downloadData: allYTData, isRecently: false })
     }
   }
 

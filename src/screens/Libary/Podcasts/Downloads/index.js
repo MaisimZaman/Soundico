@@ -72,7 +72,8 @@ export default function Downloads({navigation}) {
                                                                       audioURI: item.data.audio, 
                                                                       title: item.data.title,
                                                                       downloadData: downloadData,
-                                                                                  audioID: item.id
+                                                                                  audioID: item.id,
+                                                                                  artist: item.data.channelTitle
                                                                                    })}>
               <Playlist
                 name={item.data.title}

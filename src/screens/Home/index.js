@@ -25,13 +25,9 @@ export default function Home({navigation}) {
   const [currentPlaylistData, setCurrentPlaylistData] = useState()
 
 
-  
-
-  
-
 
   useEffect(() => {
-    const searches = ["Elon Musk",   "millionaire mindset", "Cosmos podcasts", "poltical podcasts", "Tesla podcasts", 'motivational videos']
+    const searches = ["Elon Musk",   "How to be a millionaire", "Cosmos podcasts", "poltical podcasts", "Tesla podcasts", 'motivational videos']
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
     Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchText}&key=${API_KEY}`)
       .then(res => {
@@ -136,6 +132,7 @@ export default function Home({navigation}) {
           color="#acacac"
           style={{ alignSelf: 'flex-end', marginTop: 20, marginRight: 10 }}
         />
+        
         <Title>Recently Played</Title>
         <FlatList
           data={recently}
@@ -143,7 +140,7 @@ export default function Home({navigation}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {videoId: item.data.videoId, videoThumbNail:item.data.videoThumbNail, videoTitle: item.data.videoTitle, artist: item.data.videoArtist, Search: false, isRecently: true, downloadData: recently})}>
+            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', { rId: item.id, videoId: item.data.videoId, videoThumbNail:item.data.videoThumbNail, videoTitle: item.data.videoTitle, artist: item.data.videoArtist, Search: false, isRecently: true, downloadData: recently})}>
               <AlbunsList
                 name={item.data.videoTitle}
                 photoAlbum={item.data.videoThumbNail}
@@ -159,7 +156,7 @@ export default function Home({navigation}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: false, downloadData: podcasts })}>
+            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {rId: item.id,videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: false, downloadData: podcasts, isRecently: false, })}>
               <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} podcast={true} />
             </TouchableOpacity>
           )}
@@ -171,7 +168,7 @@ export default function Home({navigation}) {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: false, downloadData: madeForYou })}>
+            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {rId: item.id, videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: false, downloadData: madeForYou, isRecently: false, })}>
             <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} />
             </TouchableOpacity>
           )}
