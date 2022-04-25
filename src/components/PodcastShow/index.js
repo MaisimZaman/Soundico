@@ -7,10 +7,14 @@ import {
   ChanelPodcastName,
 } from './styles';
 
-export default function PodcastShow({ photoAlbum, name }) {
+
+
+
+export default function PodcastShow({ photoAlbum, name, isSearch }) {
   return (
-    <Container>
+    <Container >
       <Image
+      isSearch={isSearch}
         source={{
           uri: photoAlbum,
         }}

@@ -13,6 +13,8 @@ import { TextButton } from '../../components/AuthComponents';
 import { Container, Title } from './styles';
 import { BG_IMAGE } from '../../services/backgroundImage';
 
+
+
 export default function Search({navigation}) {
   const [yourTop, setYourTop] = useState([]);
   //const [allGenres, setAllGenres] = useState([]);
@@ -22,6 +24,13 @@ export default function Search({navigation}) {
   const [currentPlaylistData, setCurrentPlaylistData] = useState([])
   const [placeholder, setPlaceholder] = useState('Search for Music')
   const [searchType, setSearchType] = useState('Music')
+  const [searchOn, setSearchOn] = useState(false)
+
+  useEffect(() => {
+    if (searchText == ''){
+      setSearchOn(false)
+    }
+  }, [searchText])
 
   useEffect(() => {
     if (searchType == 'Music'){
@@ -44,28 +53,29 @@ export default function Search({navigation}) {
 
   const allGenres = [
     {
-      name: "Music",
+      name: "Pop",
+      color: "#0e3fed",
+      photoAlbum: ""
+    },
+    {
+      name: "Motivational",
+      color: "#0eed55"
+    },
+    {
+      name: "Rock",
+      color: "#ed0e0e"
+    },
+    {
+      name: "Electro",
       color: "#4d6feb"
     },
     {
-      name: "Podcasts",
-      color: "#4d6feb"
+      name: "Folk",
+      color: "#510eed"
     },
     {
-      name: "Interviews",
-      color: "#4d6feb"
-    },
-    {
-      name: "Speaches",
-      color: "#4d6feb"
-    },
-    {
-      name: "Motivational Speaches",
-      color: "#4d6feb"
-    },
-    {
-      name: "Stories",
-      color: "#4d6feb"
+      name: "Clasical",
+      color: "#deed0e"
     },
 
   ]
@@ -113,17 +123,17 @@ export default function Search({navigation}) {
         setYTData(ytData)
       })
         
-        
+      
     }
     else {
-      Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchText + searchType}&key=${API_KEY}`)
+      Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText + searchType}&key=${API_KEY}`)
       .then(res => {
         const ytData = res.data.items;
         setYTData(ytData)
       })
     }
 
-    
+    setSearchOn(true)
     
   }
 
@@ -167,14 +177,14 @@ export default function Search({navigation}) {
 
 
   function renderSearches(){
-    if (searchText != ''){
+    if (searchOn){
       return (
         <FlatList
           data={allYTData}
           keyExtractor={(item) => item.etag}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => searchForType(item, item.id.playlistId)}>
-              <PodcastShow name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url}></PodcastShow>
+              <PodcastShow isSearch={true} name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url}></PodcastShow>
             </TouchableOpacity>
             
           )}

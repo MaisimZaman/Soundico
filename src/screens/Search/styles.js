@@ -4,8 +4,10 @@ export const Container = styled.View`
   flex: 1;
   flex-direction: column;
   justify-content: flex-end;
-  margin-top: 20px;
+  margin-top: 50%;
+  margin-bottom: 25%;
 `;
+
 
 export const Title = styled.Text`
   font-size: ${(props) => (props.search ? 35 : 20)}px;

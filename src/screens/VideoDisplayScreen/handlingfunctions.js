@@ -84,67 +84,72 @@ export function skipBackwardTrack(downloadData, setNewSongData, currentID, isRec
     }
 }
 
-export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID){
-    let childPath;
-    let theDownload;
-    
-    if (isVideo){
-      let info = await ytdl.getInfo(currentVideoID);
-      let audioFormats = ytdl.filterFormats(info.formats, 'audioandvideo');
-        theDownload = audioFormats[0].url
-        console.log(urls)
-        childPath = `videoDownloads/${auth.currentUser.uid}/${Math.random().toString(36)}`;
-    }
-    else {
-        let info = await ytdl.getInfo(String(currentVideoID));
-        let audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
-        theDownload = audioFormats[0].url
-        console.log(theDownload)
-        childPath = `audioDownloads/${auth.currentUser.uid}/${Math.random().toString(36)}`;
-    }
-
-  
-    
-    
-    const response = await fetch(theDownload);
-    const blob = await response.blob();
-
-    const task = firebase
-        .storage()
-        .ref()
-        .child(childPath)
-        .put(blob);
-
-    const taskProgress = snapshot => {
-        console.log(`transferred: ${snapshot.bytesTransferred}`)
-    }
-    const taskCompleted = () => {
-        task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                console.log("This happened")
-
-                if (isVideo){
-                    saveVideoData(snapshot)
-                    setModalVisible(false)
+export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing){
+   if (!downloadProcessing){
+        let childPath;
+        let theDownload;
         
-                } else {
-                    if (isPodCast){
-                        saveAudioPodCastData(snapshot)
-                        setModalVisible(false)
-                    } else {
-                        saveAudioData(snapshot);
-                        setModalVisible(false)
-                    }
-                    
-                }  
-            
-        })
-    }
-    const taskError = snapshot => {
-        console.log(snapshot)
-    }
+        if (isVideo){
+        let info = await ytdl.getInfo(currentVideoID);
+        let audioFormats = ytdl.filterFormats(info.formats, 'audioandvideo');
+            theDownload = audioFormats[0].url
+            console.log(urls)
+            childPath = `videoDownloads/${auth.currentUser.uid}/${Math.random().toString(36)}`;
+        }
+        else {
+            let info = await ytdl.getInfo(String(currentVideoID));
+            let audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
+            theDownload = audioFormats[0].url
+            console.log(theDownload)
+            childPath = `audioDownloads/${auth.currentUser.uid}/${Math.random().toString(36)}`;
+        }
 
-    task.on("state_changed", taskProgress, taskError, taskCompleted);
     
+        
+        
+        const response = await fetch(theDownload);
+        const blob = await response.blob();
+
+        const task = firebase
+            .storage()
+            .ref()
+            .child(childPath)
+            .put(blob);
+
+        const taskProgress = snapshot => {
+            console.log(`transferred: ${snapshot.bytesTransferred}`)
+        }
+        const taskCompleted = () => {
+            task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                    console.log("This happened")
+
+                    if (isVideo){
+                        setDownloadProcessing(true)
+                        saveVideoData(snapshot)
+                        setModalVisible(false)
+            
+                    } else {
+                        if (isPodCast){
+                            setDownloadProcessing(true)
+                            saveAudioPodCastData(snapshot)
+                            setModalVisible(false)
+                        } else {
+                            setDownloadProcessing(true)
+                            saveAudioData(snapshot);
+                            setModalVisible(false)
+                        }
+                        
+                    }  
+                
+            })
+        }
+        const taskError = snapshot => {
+            console.log(snapshot)
+        }
+
+        task.on("state_changed", taskProgress, taskError, taskCompleted);
+   }
+        
 }
 
 

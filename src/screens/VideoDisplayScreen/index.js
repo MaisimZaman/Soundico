@@ -17,7 +17,8 @@ import RenderModal from './downloadModal';
 //import { styles } from './styles';
 import { styles } from './styles';
 // components
-import { setIsAudioOnly, 
+import { 
+  setIsAudioOnly, 
   setAudioID, 
   setThumbNail, 
   setAuthor, 
@@ -37,6 +38,7 @@ import { SECONDARY_BG } from '../../services/backgroundImage';
 
 
 
+
 export default function VideoDisplay(props) {
     const {width, height} = Dimensions.get("screen");
     const [modalVisible, setModalVisible] = useState(false);
@@ -48,6 +50,7 @@ export default function VideoDisplay(props) {
     const [currentPosition, setCurrentPosition] = useState(0)
     const [status, setStatus] = useState(0);
     const [recentlyPlayed, setRecentlyPlayed] = useState([])
+    const [downloadProcessing, setDownloadProcessing] = useState(false)
     const playingVideo  = useSelector(selectAudioURI);
     
     //const [playingVideo, setPlayingVideo] = useState('null')
@@ -75,6 +78,7 @@ export default function VideoDisplay(props) {
       dispatch(setSoundStatus(0))
       dispatch(setIsAudioOnly(false))
       dispatch(setDownloadData(downloadData))
+      
     }, [])
 
     useEffect(() => {
@@ -177,6 +181,7 @@ export default function VideoDisplay(props) {
               //creation: firebase.firestore.FieldValue.serverTimestamp(),
               channelTitle: artist
           })
+      setDownloadProcessing(false)
   
         props.navigation.replace({thumbNail: currentThumbnail,
               audioURI: downloadURL, 
@@ -198,6 +203,7 @@ export default function VideoDisplay(props) {
               title: currentTitle,
               channelTitle: artist
           })
+      setDownloadProcessing(false)
   
   }
   
@@ -212,6 +218,7 @@ export default function VideoDisplay(props) {
               //creation: firebase.firestore.FieldValue.serverTimestamp()
               channelTitle: artist
           })
+        setDownloadProcessing(false)
   
   }
   
@@ -346,7 +353,7 @@ export default function VideoDisplay(props) {
           </View>
         </View>
         
-             <RenderModal  modalVisible={modalVisible}  setModalVisible={setModalVisible} isPlaylist={isPlaylist} saveAudioData={saveAudioData} saveAudioPodCastData={saveAudioPodCastData} currentVideoID={currentVideoID[1]} saveVideoData={saveVideoData} savePlaylistData={savePlaylistData} ></RenderModal>
+             <RenderModal setDownloadProcessing={setDownloadProcessing} downloadProcessing={downloadProcessing}  modalVisible={modalVisible}  setModalVisible={setModalVisible} isPlaylist={isPlaylist} saveAudioData={saveAudioData} saveAudioPodCastData={saveAudioPodCastData} currentVideoID={currentVideoID[1]} saveVideoData={saveVideoData} savePlaylistData={savePlaylistData} ></RenderModal>
         </ImageBackground>
       </View>
       

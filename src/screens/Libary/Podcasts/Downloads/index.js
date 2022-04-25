@@ -20,7 +20,7 @@ import { BG_IMAGE } from '../../../../services/backgroundImage';
 export default function Downloads({navigation}) {
 
   const [downloadData, setDownloadData] = useState([]);
-  const [page, setPage] = useState(7)
+  const [page, setPage] = useState(downloadData.length -1)
   //const [modalVisible, setModalVisible] = useState(false);
 
  
@@ -30,7 +30,7 @@ export default function Downloads({navigation}) {
      db.collection('audioDownloads')
                       .doc(auth.currentUser.uid)
                       .collection('userAudios')
-                      //.orderBy('creation', 'desc')
+                      .orderBy('creation', 'desc')
                       .onSnapshot((snapshot) => setDownloadData(snapshot.docs.map(doc => ({
                         id: doc.id,
                         data: doc.data()

@@ -432,7 +432,8 @@ const styles = StyleSheet.create({
   image: {
     height: device.width - 48,
     marginVertical: device.iPhoneNotch ? 36 : 8,
-    width: device.width - 48
+    width: device.width - 48,
+    borderRadius: 12
   },
   containerDetails: {
     marginBottom: 16

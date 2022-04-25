@@ -5,7 +5,7 @@ import {  downloadAudioOrVideo  } from './handlingfunctions';
 
 import { styles } from './styles';
 // components
-export default function RenderModal({modalVisible, setModalVisible, isPlaylist, saveAudioData, savePlaylistData, currentVideoID,  saveAudioPodCastData, saveVideoData}){
+export default function RenderModal({modalVisible, setModalVisible, isPlaylist, saveAudioData, savePlaylistData, currentVideoID,  saveAudioPodCastData, saveVideoData, downloadProcessing, setDownloadProcessing}){
         
     function renderPlaylistDownload(){
         return (
@@ -30,17 +30,17 @@ export default function RenderModal({modalVisible, setModalVisible, isPlaylist, 
                 <Text style={styles.modalText}>How would you like to download it?</Text>
                 <Pressable
                   style={[styles.button1, styles.buttonClose]}
-                  onPress={() => downloadAudioOrVideo(true, false, saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID )}>
+                  onPress={() => downloadAudioOrVideo(true, false, saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing )}>
                   <Text style={styles.textStyle}>Download as Video</Text>
                 </Pressable>
                 <Pressable
                   style={[styles.button2, styles.buttonClose]}
-                  onPress={() => downloadAudioOrVideo(false, false,  saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID)}>
+                  onPress={() => downloadAudioOrVideo(false, false,  saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing)}>
                   <Text style={styles.textStyle}>Download Music Audio only</Text>
                 </Pressable>
                 <Pressable
                   style={[styles.button2, styles.buttonClose]}
-                  onPress={() => downloadAudioOrVideo(false, true, saveVideoData=saveVideoData,saveAudioData=saveAudioData, saveAudioData=saveAudioData, saveAudioPodCastData=saveAudioPodCastData,currentVideoID=currentVideoID)}>
+                  onPress={() => downloadAudioOrVideo(false, true, saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing)}>
                   <Text style={styles.textStyle}>Download as Podcast Audio</Text>
                 </Pressable>
                 {isPlaylist ? renderPlaylistDownload() : null}
