@@ -99,7 +99,7 @@ export default function Home({navigation}) {
   async function getPlayListData(item, playlistId){
    
 
-    const response = await Axios.get(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&key=${API_KEY}`)
+    const response = await Axios.get(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=100&playlistId=${playlistId}&key=${API_KEY}`)
     const playlistVideos = response.data.items
     const videoId = playlistVideos[0].snippet.resourceId.videoId
     const videoThumbNail = playlistVideos[0].snippet.thumbnails.high.url

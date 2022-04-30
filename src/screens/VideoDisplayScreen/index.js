@@ -183,7 +183,7 @@ export default function VideoDisplay(props) {
           })
       setDownloadProcessing(false)
   
-        props.navigation.replace({thumbNail: currentThumbnail,
+        props.navigation.replace("MusicScreen", {thumbNail: currentThumbnail,
               audioURI: downloadURL, 
               title: currentTitle,
               downloadData: downloadURL,

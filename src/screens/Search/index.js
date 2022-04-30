@@ -13,6 +13,11 @@ import { TextButton } from '../../components/AuthComponents';
 import { Container, Title } from './styles';
 import { BG_IMAGE } from '../../services/backgroundImage';
 
+import {useSelector} from 'react-redux'
+
+
+import { selectAudioURI } from '../../../services/slices/navSlice';
+
 
 
 export default function Search({navigation}) {
@@ -25,6 +30,7 @@ export default function Search({navigation}) {
   const [placeholder, setPlaceholder] = useState('Search for Music')
   const [searchType, setSearchType] = useState('Music')
   const [searchOn, setSearchOn] = useState(false)
+  const audioURI = useSelector(selectAudioURI)
 
   useEffect(() => {
     if (searchText == ''){
@@ -108,7 +114,7 @@ export default function Search({navigation}) {
   function searchForVideos(){
     console.log(searchType)
     if (searchType == "Playlists"){
-      Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${searchText}&type=playlist&key=${API_KEY}`)
+      Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText}&type=playlist&key=${API_KEY}`)
       .then(res => {
         const ytData = res.data.items;
         setYTData(ytData)
@@ -117,7 +123,7 @@ export default function Search({navigation}) {
     else if (searchType == "Video Link"){
       const searchID = searchText.slice(17, 28)
       console.warn(searchID)
-      Axios.get(`https://youtube.googleapis.com/youtube/v3/videos?part=snippet&id=${searchID}&key=${API_KEY}`)
+      Axios.get(`https://youtube.googleapis.com/youtube/v3/videos?part=snippet&maxResults=30&id=${searchID}&key=${API_KEY}`)
       .then(res => {
         const ytData = res.data.items;
         setYTData(ytData)
@@ -126,7 +132,7 @@ export default function Search({navigation}) {
       
     }
     else {
-      Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText + searchType}&key=${API_KEY}`)
+      Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText + searchType}&key=${API_KEY}`)
       .then(res => {
         const ytData = res.data.items;
         setYTData(ytData)
@@ -151,13 +157,13 @@ export default function Search({navigation}) {
   async function getPlayListData(item, playlistId){
    
     console.warn(playlistId)
-    const response = await Axios.get(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&key=${API_KEY}`)
+    const response = await Axios.get(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=100&playlistId=${playlistId}&key=${API_KEY}`)
     const playlistVideos = response.data.items
-    const videoId = playlistVideos[0].snippet.resourceId.videoId
-    const videoThumbNail = playlistVideos[0].snippet.thumbnails.high.url
-    const videoTitle = playlistVideos[0].snippet.title
+    const videoId = playlistVideos.snippet.resourceId.videoId
+    const videoThumbNail = playlistVideos.snippet.thumbnails.high.url
+    const videoTitle = playlistVideos.snippet.title
     setCurrentPlaylistData([videoId, videoThumbNail, videoTitle, playlistVideos])
-    navigation.navigate('VideoScreen', {videoId: videoId, videoThumbNail:videoThumbNail, videoTitle: videoTitle, Search: true, isPlaylist: true, playlistVideos: playlistVideos, plInfo: [item.snippet.title, item.snippet.thumbnails.high.url]})
+    navigation.navigate("AlbumScreen", {title:currentPlaylistData[2], photoAlbum: currentPlaylistData[1], playlistVideos: currentPlaylistData[3], isCustom: false })
 
   }
 
@@ -213,7 +219,7 @@ export default function Search({navigation}) {
   return (
     <ImageBackground style={styles.image} source={ BG_IMAGE}>
      
-    <Container >
+    <Container playerOn={audioURI == null ? false : true}>
       <Title YOffSet={YOffSet} search>
         Search
       </Title>

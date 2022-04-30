@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
       width: 185,
       height: 185,
       margin: 15,
+      borderRadius: 18
     },
     innerContainer: {
       flexDirection: "row",

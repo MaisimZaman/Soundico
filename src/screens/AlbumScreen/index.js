@@ -22,7 +22,8 @@ function AlbumScreen(props){
       title: item.data.title,
       audioID: item.id,
       downloadData: albums,
-      playListName: title
+      playListName: title,
+      
 
       })
 
@@ -36,7 +37,8 @@ function AlbumScreen(props){
       audioID: item.id,
       downloadData: albums,
       playListName: title,
-      notCustom: true
+      notCustom: true,
+      artist: item.data.channelTitle
 
     })
 
@@ -56,7 +58,7 @@ function AlbumScreen(props){
             <SongListItem
               id={item.id}
               title={isCustom ? item.data.title : item.snippet.title}
-              artist={isCustom ? auth.currentUser.displayName:  item.snippet.channelTitle}
+              artist={isCustom ? item.data.channelTitle:  item.snippet.channelTitle}
               imageUri={isCustom ? item.data.thumbNail : item.snippet.thumbnails.high.url}
               navigationFunc={navigateToMusicPlayer}
               item={item}

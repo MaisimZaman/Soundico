@@ -11,7 +11,7 @@ import { colors, device, func, gStyle } from './constants/index';
 import ModalHeader from './ModalHeader';
 import TouchIcon from './TouchIcon';
 import { useDispatch } from 'react-redux';
-import { setThumbNail,  setAudioURI, setTitle, setAudioID, setDownloadData, setSoundOBJ, setSoundStatus, setIsAudioOnly} from '../../../services/slices/navSlice';
+import { setThumbNail,  setAudioURI, setTitle, setAudioID, setDownloadData, setSoundOBJ, setSoundStatus, setIsAudioOnly, setAuthor, selectAuthor} from '../../../services/slices/navSlice';
 import { useSelector } from 'react-redux';
 import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectSoundOBJ, selectSoundStatus} from '../../../services/slices/navSlice';
 import { BG_IMAGE } from '../../services/backgroundImage';
@@ -28,7 +28,7 @@ export default function MusicPlayer(props){
 
  
 
-  const {thumbNail, audioURI, title,audioID, downloadData, playListName, notCustom, artist='unknown'} = props.route.params
+  const {thumbNail, audioURI, title,audioID, downloadData, playListName, notCustom, artist} = props.route.params
 
   const [playListAudioURI, setPlayListAudioURI] = useState(audioURI)
   
@@ -40,6 +40,10 @@ export default function MusicPlayer(props){
   const currentAudioURI = useSelector(selectAudioURI)
   const currentTitle = useSelector(selectTitle)
   const currentAudioID = useSelector(selectAudioID)
+  const currentArtist = useSelector(selectAuthor)
+
+
+  console.warn(artist)
 
 
     const screenProps = {
@@ -147,7 +151,7 @@ export default function MusicPlayer(props){
         
      });
      
-     setNewSongData(thumbNail, audioURI, title,audioID)
+     setNewSongData(thumbNail, audioURI, title,audioID, artist)
       dispatch(setDownloadData(downloadData))
     
     }, [])
@@ -185,12 +189,13 @@ export default function MusicPlayer(props){
         : undefined;
     }, [sound, currentAudioID]);
 
-    function setNewSongData(thumbNail, audioURI, title,audioID){
+    function setNewSongData(thumbNail, audioURI, title,audioID, artist){
           dispatch(setThumbNail(thumbNail))
           dispatch(setAudioURI(audioURI))
           dispatch(setAudioID(audioID))
           dispatch(setTitle(title))
           dispatch(setIsAudioOnly(true))
+          dispatch(setAuthor(artist))
          
     }
     
@@ -224,7 +229,8 @@ export default function MusicPlayer(props){
           const forwardAudioURI = downloadData[index + 1].data.audio
           const forwardTitle = downloadData[index + 1].data.title
           const forwardID = downloadData[index + 1].id
-          setNewSongData(forwardThumbNail, forwardAudioURI, forwardTitle, forwardID)
+          const forwardArtist = downloadData[index + 1].data.channelTitle
+          setNewSongData(forwardThumbNail, forwardAudioURI, forwardTitle, forwardID, forwardArtist)
           setPaused(false)
 
         }
@@ -244,7 +250,8 @@ export default function MusicPlayer(props){
         const backwardAudioURI = downloadData[index - 1].data.audio
         const backwardTitle = downloadData[index - 1].data.title
         const backwardID = downloadData[index - 1].id
-        setNewSongData(backwardThumbNail, backwardAudioURI, backwardTitle, backwardID)
+        const backwardArtist = downloadData[index + 1].data.channelTitle
+        setNewSongData(backwardThumbNail, backwardAudioURI, backwardTitle, backwardID, backwardArtist)
         setPaused(false)
 
       }
@@ -337,7 +344,7 @@ export default function MusicPlayer(props){
                 <Text ellipsizeMode="tail" numberOfLines={1} style={styles.song}>
                   {currentTitle}
                 </Text>
-                <Text style={styles.artist}>{artist}</Text>
+                <Text style={styles.artist}>{currentArtist}</Text>
               </View>
               <View style={styles.containerFavorite}>
                 <TouchIcon

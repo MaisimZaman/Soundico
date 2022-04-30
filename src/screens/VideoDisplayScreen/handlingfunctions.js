@@ -69,6 +69,7 @@ export function skipBackwardTrack(downloadData, setNewSongData, currentID, isRec
             const backwardID = [downloadData[index - 1].id, downloadData[index - 1].data.videoId]
             const backwardArtist = downloadData[index - 1].data.videoArtist
             setNewSongData(backwardThumbNail, backwardAudioURI, backwardTitle, backwardID, backwardArtist)
+        
         }
            else {
             const backwardThumbNail =  downloadData[index - 1].snippet.thumbnails.high.url

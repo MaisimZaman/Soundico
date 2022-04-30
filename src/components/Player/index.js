@@ -92,7 +92,8 @@ export default function Player({navigation, soundOBj}) {
         audioURI: audiouURI, 
         title: Title,
         downloadData: downloadData,
-        audioID: audioID
+        audioID: audioID,
+        artist: Artist
         })
     }
     else {

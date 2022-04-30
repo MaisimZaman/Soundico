@@ -5,7 +5,7 @@ export const Container = styled.View`
   flex-direction: column;
   justify-content: flex-end;
   margin-top: 50%;
-  margin-bottom: 25%;
+  margin-bottom: ${props => props.playerOn ? "2%" : "25%"};
 `;
 
 

@@ -4,6 +4,7 @@ export const Container = styled.View`
   flex: 1;
   flex-direction: row;
   justify-content: flex-start;
+  border-radius: 20px;
   
 `;
 
@@ -15,6 +16,7 @@ export const Image = styled.Image.attrs({
   align-self: center;
   background: #80808055;
   margin: 10px 20px 5px;
+  border-radius: 20px;
 `;
 
 export const InformationContainer = styled.View`

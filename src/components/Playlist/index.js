@@ -12,6 +12,7 @@ import {
 
 export default function Playlist({ name, photoAlbum, create = false,backgroundColor='null' }) {
   return (
+    
 <View style={{backgroundColor: backgroundColor}}>
     <Container>
       <Image

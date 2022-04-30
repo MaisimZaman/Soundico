@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     image: {
       width: 75,
       height: 75,
+      borderRadius: 15
     },
     innerContainer: {
       justifyContent: "space-around",

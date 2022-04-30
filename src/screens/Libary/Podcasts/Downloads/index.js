@@ -97,15 +97,15 @@ export default function Downloads({navigation}) {
   return (
     <View>
       <TextButton
-                    contentContainerStyle={{
-                        height: 40,
-                        marginTop: 10,
-                        borderRadius: 30,
-                        backgroundColor: "#054c85"
-                    }}
-                    label="Create a playlist?"
-                    onPress={() => navigation.navigate('NamePlaylist')}
-                />
+          contentContainerStyle={{
+              height: 40,
+              marginTop: 10,
+              borderRadius: 30,
+              backgroundColor: "#054c85"
+          }}
+          label="Create a playlist?"
+          onPress={() => navigation.navigate('NamePlaylist')}
+        />
       {renderBody()}
      
     </View>

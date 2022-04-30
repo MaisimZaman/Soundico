@@ -22,6 +22,9 @@ CardStyleInterpolators
 
 const Stack = createStackNavigator();
 
+
+
+
 const MyTheme = {
   ...DefaultTheme,
   dark: true,
