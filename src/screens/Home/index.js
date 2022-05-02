@@ -27,7 +27,7 @@ export default function Home({navigation}) {
 
 
   useEffect(() => {
-    const searches = ["Elon Musk",   "How to be a millionaire", "Cosmos podcasts", "poltical podcasts", "Tesla podcasts", 'motivational videos']
+    const searches = ["Elon Musk",   "millionaire", "Cosmos podcasts", "poltical podcasts", " podcasts", 'motivational videos']
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
     Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText}&key=${API_KEY}`)
       .then(res => {
@@ -40,7 +40,7 @@ export default function Home({navigation}) {
   }, [navigation])
 
   useEffect(() => {
-    const searches = ["Space", "Car", "airplane"]
+    const searches = ["Space", "Car bass", "aviation short", "relaxing short", "nature shorts"]
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
     Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText}Music&key=${API_KEY}`)
       .then(res => {
@@ -53,7 +53,7 @@ export default function Home({navigation}) {
   }, [navigation])
 
   useEffect(() => {
-    const searches = ["Car Music", "Spider-man Music", "Intersteller Music", "Clasical music", "Workout Music"]
+    const searches = ["Car Music",  "Car bass", "Space Music", "Clasical music", 'relaxing nature  music short']
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
     Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText}&type=playlist&key=${API_KEY}`)
       .then(res => {

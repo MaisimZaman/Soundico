@@ -17,6 +17,8 @@ import {useSelector} from 'react-redux'
 
 
 import { selectAudioURI } from '../../../services/slices/navSlice';
+import Artist from '../../components/Artist';
+
 
 
 
@@ -31,6 +33,11 @@ export default function Search({navigation}) {
   const [searchType, setSearchType] = useState('Music')
   const [searchOn, setSearchOn] = useState(false)
   const audioURI = useSelector(selectAudioURI)
+
+  
+  //useEffect(() => {
+  //  searchForVideos()
+  //}, [searchTypes])
 
   useEffect(() => {
     if (searchText == ''){
@@ -50,6 +57,9 @@ export default function Search({navigation}) {
     }
     else if (searchType == 'Playlists'){
       setPlaceholder("Search for playlists")
+    }
+    else if (searchType == 'Channel'){
+      setPlaceholder("Search for Channel")
     }
 
 
@@ -106,6 +116,11 @@ export default function Search({navigation}) {
       name: "Playlists",
       color: "#1e2ee6",
       id: 4
+    },
+    {
+      name: "Channel",
+      color: "#1e2ee6",
+      id: 5
     }
 
   ]
@@ -131,7 +146,18 @@ export default function Search({navigation}) {
         
       
     }
-    else {
+    else if (searchType == 'Channel'){
+      
+      console.warn("true")
+      Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText}&type=channel&key=${API_KEY}`)
+      .then(res => {
+        const ytData = res.data.items;
+        setYTData(ytData)
+      })
+        
+      
+    }
+    else  {
       Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText + searchType}&key=${API_KEY}`)
       .then(res => {
         const ytData = res.data.items;
@@ -143,21 +169,12 @@ export default function Search({navigation}) {
     
   }
 
-  useEffect(() => {
-    async function getData() {
-      const response = await api.get('/Categories');
-
-      setYourTop(response.data.TopGenres);
-      //setAllGenres(response.data.All);
-    }
-
-    getData();
-  }, []);
+ 
 
   async function getPlayListData(item, playlistId){
    
     console.warn(playlistId)
-    const response = await Axios.get(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=100&playlistId=${playlistId}&key=${API_KEY}`)
+    const response = await Axios.get(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=30&playlistId=${playlistId}&key=${API_KEY}`)
     const playlistVideos = response.data.items
     const videoId = playlistVideos.snippet.resourceId.videoId
     const videoThumbNail = playlistVideos.snippet.thumbnails.high.url
@@ -165,6 +182,13 @@ export default function Search({navigation}) {
     setCurrentPlaylistData([videoId, videoThumbNail, videoTitle, playlistVideos])
     navigation.navigate("AlbumScreen", {title:currentPlaylistData[2], photoAlbum: currentPlaylistData[1], playlistVideos: currentPlaylistData[3], isCustom: false })
 
+  }
+
+  async function getChannelData(item, channelId){
+    const response = await Axios.get(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet,id&order=date&maxResults=20`)
+    const channelVideos = response.data.items
+    setCurrentPlaylistData(channelVideos)
+    navigation.navigate("AlbumScreen", {title:item.snippet.title, photoAlbum: item.snippet.thumbnails.high.url, playlistVideos: currentPlaylistData, isCustom: false, searchedVideo: true })
   }
 
 
@@ -176,6 +200,9 @@ export default function Search({navigation}) {
     else if (searchType == "Video Link"){
       navigation.navigate('VideoScreen', {videoId: item.id,  videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: true })
     }
+    else if (searchType ==  "Channel"){
+      getChannelData(item, playlistId)
+    }
     else {
       navigation.navigate('VideoScreen', {rId: item.id, videoId: item.id.videoId,  videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: true, downloadData: allYTData, isRecently: false })
     }
@@ -184,6 +211,21 @@ export default function Search({navigation}) {
 
   function renderSearches(){
     if (searchOn){
+      if (searchType == 'Channel'){
+        return (
+          <FlatList
+            data={allYTData}
+            keyExtractor={(item) => item.etag}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => searchForType(item, item.id.channelId)}>
+                <Artist isSearch={true} name={item.snippet.title} photo={item.snippet.thumbnails.high.url}></Artist>
+              </TouchableOpacity>
+              
+            )}
+          ></FlatList>
+        )
+
+      }
       return (
         <FlatList
           data={allYTData}

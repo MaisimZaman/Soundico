@@ -3,25 +3,8 @@ import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 
 
-const AlbumHeader = ({ name, creator, imageUri, likes, firstItem, musicNavigator }) => (
-  <View style={styles.container}>
-    <Image source={{ uri: imageUri }} style={styles.image} />
-    <Text style={styles.name}>{name}</Text>
-    <View style={styles.innerContainer}>
-      <Text style={styles.creator}>By {creator}</Text>
-      <Text style={styles.likes}>{likes} Likes</Text>
-    </View>
-    <TouchableOpacity onPress={() => musicNavigator(firstItem)}>
-      <View style={styles.button}>
-        <Text style={styles.buttonText}>PLAY</Text>
-      </View>
-    </TouchableOpacity>
-  </View>
-);
-
-export default AlbumHeader;
-
-const styles = StyleSheet.create({
+const AlbumHeader = ({ name, creator, imageUri, likes, firstItem, musicNavigator, searchedVideo }) => {
+  const styles = StyleSheet.create({
     container: {
       alignItems: "center",
       padding: 20,
@@ -30,7 +13,7 @@ const styles = StyleSheet.create({
       width: 185,
       height: 185,
       margin: 15,
-      borderRadius: 18
+      borderRadius: searchedVideo ? 100 :  18
     },
     innerContainer: {
       flexDirection: "row",
@@ -65,3 +48,26 @@ const styles = StyleSheet.create({
       fontSize: 20,
     },
   });
+
+  return (
+    <View style={styles.container}>
+    <Image source={{ uri: imageUri }} style={styles.image} />
+    <Text style={styles.name}>{name}</Text>
+    <View style={styles.innerContainer}>
+      <Text style={styles.creator}>By {creator}</Text>
+      <Text style={styles.likes}>{likes} Likes</Text>
+    </View>
+    <TouchableOpacity onPress={() => musicNavigator(firstItem)}>
+      <View style={styles.button}>
+        <Text style={styles.buttonText}>PLAY</Text>
+      </View>
+    </TouchableOpacity>
+  </View>
+  )
+  
+
+  
+};
+
+export default AlbumHeader;
+

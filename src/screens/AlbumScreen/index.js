@@ -9,7 +9,7 @@ import SongListItem from "./components/songListItem";
 
 
 function AlbumScreen(props){
-  const {title, photoAlbum,playlistVideos, isCustom} = props.route.params
+  const {title, photoAlbum,playlistVideos, isCustom, searchedVideo} = props.route.params
   const [albums, setAlbums] = useState(playlistVideos);
 
  function navigateToMusicPlayer(item){
@@ -29,18 +29,17 @@ function AlbumScreen(props){
 
     }
     else {
-      props.navigation.navigate("MusicScreen", 
-    {
-      thumbNail:item.snippet.thumbnails.high.url,
-      audioURI: item.snippet.resourceId.videoId,
-      title: item.snippet.title,
-      audioID: item.id,
-      downloadData: albums,
-      playListName: title,
-      notCustom: true,
-      artist: item.data.channelTitle
-
+      props.navigation.navigate('VideoScreen', { 
+      rId: item.id, 
+      videoId: searchedVideo ? item.id.videoId :  item.snippet.resourceId.videoId, 
+      videoThumbNail:item.snippet.thumbnails.high.url, 
+      videoTitle: item.snippet.title, 
+      artist: item.snippet.channelTitle, 
+      Search: false, 
+      isRecently: false, 
+      downloadData: albums
     })
+     
 
     }
     
@@ -75,6 +74,7 @@ function AlbumScreen(props){
             musicNavigator={navigateToMusicPlayer}
             artistHeadline={"First album"}
             likes={900}
+            searchedVideo={searchedVideo}
           />
         }
       />
