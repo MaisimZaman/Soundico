@@ -129,7 +129,7 @@ export default function Search({navigation}) {
   function searchForVideos(){
     console.log(searchType)
     if (searchType == "Playlists"){
-      Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText}&type=playlist&key=${API_KEY}`)
+      Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText} music&type=playlist&key=${API_KEY}`)
       .then(res => {
         const ytData = res.data.items;
         setYTData(ytData)
@@ -173,14 +173,14 @@ export default function Search({navigation}) {
 
   async function getPlayListData(item, playlistId){
    
-    console.warn(playlistId)
+    console.log(playlistId)
     const response = await Axios.get(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=30&playlistId=${playlistId}&key=${API_KEY}`)
     const playlistVideos = response.data.items
-    const videoId = playlistVideos.snippet.resourceId.videoId
-    const videoThumbNail = playlistVideos.snippet.thumbnails.high.url
-    const videoTitle = playlistVideos.snippet.title
+    const videoId = playlistVideos[0].snippet.resourceId.videoId
+    const videoThumbNail = playlistVideos[0].snippet.thumbnails.high.url
+    const videoTitle = playlistVideos[0].snippet.title
     setCurrentPlaylistData([videoId, videoThumbNail, videoTitle, playlistVideos])
-    navigation.navigate("AlbumScreen", {title:currentPlaylistData[2], photoAlbum: currentPlaylistData[1], playlistVideos: currentPlaylistData[3], isCustom: false })
+    navigation.navigate("AlbumScreen", {title:currentPlaylistData[2], photoAlbum: currentPlaylistData[1], playlistVideos: currentPlaylistData[3], isCustom: false, searchedVideo: true })
 
   }
 

@@ -38,7 +38,8 @@ export default function Downloads({navigation}) {
 
     //return unsubscribe;
     
-  }, [navigation])
+    
+  }, [])
 
 
   
@@ -95,7 +96,7 @@ export default function Downloads({navigation}) {
   }
   
   return (
-    <View>
+    <>
       <TextButton
           contentContainerStyle={{
               height: 40,
@@ -108,7 +109,7 @@ export default function Downloads({navigation}) {
         />
       {renderBody()}
      
-    </View>
+    </>
   );
 }
 

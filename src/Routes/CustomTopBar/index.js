@@ -38,7 +38,7 @@ const SubTabsNavigatorMusic = createMaterialTopTabNavigator();
 const SubTabsMusic = () => (
   <SubTabsNavigatorMusic.Navigator
     tabBarPosition="top"
-    initialRouteName="Playlists"
+    initialRouteName="Saved"
     backBehavior="initialRoute"
     tabBarOptions={{
       indicatorStyle: stylesSubTabs.topbarIndicator,
@@ -47,9 +47,9 @@ const SubTabsMusic = () => (
 
       tabStyle: {},
     }}>
+    <SubTabsNavigatorMusic.Screen name="Saved" component={Downloads} />
     <SubTabsNavigatorMusic.Screen name="Playlists" component={Playlists} />
-    <SubTabsNavigatorMusic.Screen name="Artists" component={Artists} />
-    <SubTabsNavigatorMusic.Screen name="Albums" component={Albums} />
+    <SubTabsNavigatorMusic.Screen name="Local" component={Albums} />
   </SubTabsNavigatorMusic.Navigator>
 );
 
