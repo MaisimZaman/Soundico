@@ -65,7 +65,7 @@ const SubTabsPodcast = () => (
       style: stylesSubTabs.topbarContainer,
     }}>
     <SubTabsNavigatorPodcast.Screen name="Episodes" component={Episodes} />
-    <SubTabsNavigatorPodcast.Screen name="Downloads" component={Downloads} />
+    <SubTabsNavigatorPodcast.Screen name="Channels" component={Artists} />
     <SubTabsNavigatorPodcast.Screen name="Shows" component={Shows} />
   </SubTabsNavigatorPodcast.Navigator>
 );

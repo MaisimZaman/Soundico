@@ -24,13 +24,13 @@ export default function Downloads({navigation}) {
   //const [modalVisible, setModalVisible] = useState(false);
 
  
-
+  console.warn(downloadData.length)
 
   useEffect(() => {
      db.collection('audioDownloads')
                       .doc(auth.currentUser.uid)
-                      .collection('userAudios')
-                      .orderBy('creation', 'desc')
+                      .collection('userAudios', )
+                      .orderBy('creation','desc')
                       .onSnapshot((snapshot) => setDownloadData(snapshot.docs.map(doc => ({
                         id: doc.id,
                         data: doc.data()

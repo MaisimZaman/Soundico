@@ -59,6 +59,7 @@ export default function VideoDisplay(props) {
     const [video, setVideo] = useState(useRef(null))
     const timePast = msToTime(status != 0 ? status.positionMillis : 0);
     const timeLeft = msToTime(status != 0 ? status.durationMillis - status.positionMillis : 0);
+   
 
 
     
@@ -66,10 +67,12 @@ export default function VideoDisplay(props) {
     const dispatch = useDispatch()
 
     
+  //console.warn(videoId)
+    
     useEffect(() => {
       dispatch(setAudioURI(null))
-      setCurrentPosition(0)
-      setStatus(0)
+      //setCurrentPosition(0)
+      //,setStatus(0)
       dispatch(setIsAudioOnly(false))
       dispatch(setAudioID([rId, videoId]))
       dispatch(setThumbNail(videoThumbNail))
@@ -178,7 +181,7 @@ export default function VideoDisplay(props) {
               audio: downloadURL,
               thumbNail: currentThumbnail,
               title: currentTitle,
-              //creation: firebase.firestore.FieldValue.serverTimestamp(),
+              creation: firebase.firestore.FieldValue.serverTimestamp(),
               channelTitle: artist
           })
       setDownloadProcessing(false)
@@ -215,7 +218,7 @@ export default function VideoDisplay(props) {
               videoURI: downloadURL,
               thumbNail: currentThumbnail,
               title: currentTitle,
-              //creation: firebase.firestore.FieldValue.serverTimestamp()
+              creation: firebase.firestore.FieldValue.serverTimestamp(),
               channelTitle: artist
           })
         setDownloadProcessing(false)
@@ -335,7 +338,7 @@ export default function VideoDisplay(props) {
             </View>
             <TouchIcon
               icon={<Feather color={colors.greyLight} name="repeat" />}
-              onPress={() => null}
+              onPress={() => video.current.setPositionAsync(0)}
             />
           </View>
 

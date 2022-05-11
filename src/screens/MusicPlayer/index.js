@@ -18,6 +18,7 @@ import { BG_IMAGE } from '../../services/backgroundImage';
 import ytdl from 'react-native-ytdl';
 import { convertTime } from './helpers';
 import { auth, db } from '../../../services/firebase';
+//import MusicControl from 'react-native-music-control';
 
 
 
@@ -43,7 +44,6 @@ export default function MusicPlayer(props){
   const currentArtist = useSelector(selectAuthor)
 
 
-  console.warn(artist)
 
 
     const screenProps = {

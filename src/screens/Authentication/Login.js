@@ -4,7 +4,8 @@ import {
     Text,
     Image,
     ImageBackground,
-    StyleSheet
+    StyleSheet,
+    KeyboardAvoidingView 
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
@@ -18,6 +19,7 @@ import { COLORS, FONTS, SIZES, images, icons } from "./constants";
 
 import {auth, db} from '../../../services/firebase'
 import { BG_IMAGE } from '../../services/backgroundImage';
+
 
 function Login({ navigation }){
 
@@ -100,7 +102,7 @@ function Login({ navigation }){
                         height: 60,
                         marginTop: 30,
                         borderRadius: 30,
-                        backgroundColor: "#024af2"
+                        backgroundColor: "#177aeb"
                     }}
                     label="LOGIN"
                     onPress={signIn}
@@ -111,7 +113,7 @@ function Login({ navigation }){
                     style={{
                         textAlign: 'center',
                         marginTop: SIZES.radius,
-                        color: COLORS.gray80,
+                        color: '#177aeb',
                         ...FONTS.body3
                     }}
                 >
@@ -175,7 +177,7 @@ function Login({ navigation }){
                     <TextButton
                         label="Sign Up Now"
                         labelStyle={{
-                            color: COLORS.primary
+                            color: '#177aeb'
                         }}
                         contentContainerStyle={{
                             marginLeft: SIZES.radius,
@@ -191,27 +193,24 @@ function Login({ navigation }){
     return (
         <ImageBackground style={styles.image} source={ BG_IMAGE}>
             {/* Background */}
-            <Image
-                source={images.bg}
-                resizeMode="cover"
-                style={{
-                    position: 'absolute',
-                    top: 0,
-                    width: SIZES.width,
-                    height: 300
-                }}
-            />
+            
 
             {/* Title */}
             <Text
                 style={{
                     marginTop: 60,
                     textAlign: 'center',
-                    ...FONTS.h1
+                    ...FONTS.h1,
+                    color: "white"
                 }}
             >
-                Login to Soundico 
+                Soundico 
             </Text>
+                
+            <Image 
+                style={{height: 130, width: 130, marginLeft: "30%", marginRight: "30%"}} 
+                source={require('../../../assets/transparent_soundico.png')}
+            ></Image>
 
             <KeyboardAwareScrollView
                 enableOnAndroid={true}
@@ -230,6 +229,7 @@ function Login({ navigation }){
                 {/* Buttons */}
                 {renderButtons()}
             </KeyboardAwareScrollView>
+            
         </ImageBackground>
     )
 }

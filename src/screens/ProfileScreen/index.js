@@ -285,7 +285,6 @@ function ProfileScreen(props){
 
                 {renderProfileSection1()}
 
-                {renderProfileSection2()}
             </ScrollView>
         </View>
         </ImageBackground>
