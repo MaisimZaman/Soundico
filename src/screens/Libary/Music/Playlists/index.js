@@ -41,7 +41,8 @@ export default function Playlists({navigation}) {
     
     <Container>
       <FlatList
-        data={playlists}
+        data={playlists.slice(0, playlists.length -1)}
+        initialNumToRender={playlists.length}
         keyExtractor={(item) => `${item.id}`}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => navigation.navigate("AlbumScreen", {title:item.data.playlistTitle, photoAlbum: item.data.playListThumbnail, playlistVideos: item.data.playlistVideos, isCustom: item.data.isCustom })}>

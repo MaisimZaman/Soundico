@@ -59,35 +59,34 @@ export default function VideoDisplay(props) {
     const [video, setVideo] = useState(useRef(null))
     const timePast = msToTime(status != 0 ? status.positionMillis : 0);
     const timeLeft = msToTime(status != 0 ? status.durationMillis - status.positionMillis : 0);
-   
-
-
-    
 
     const dispatch = useDispatch()
 
     
-  //console.warn(videoId)
+  console.log(playingVideo)
+
+
+
+  
+  
     
-    useEffect(() => {
-      dispatch(setAudioURI(null))
-      //setCurrentPosition(0)
-      //,setStatus(0)
-      dispatch(setIsAudioOnly(false))
-      dispatch(setAudioID([rId, videoId]))
-      dispatch(setThumbNail(videoThumbNail))
-      dispatch(setAuthor(artist))
-      dispatch(setTitle(videoTitle))
-      dispatch(setSoundStatus(0))
-      dispatch(setIsAudioOnly(false))
-      dispatch(setDownloadData(downloadData))
-      
-    }, [])
+  useEffect(() => {
+    dispatch(setAudioURI(null))
+    //setCurrentPosition(0)
+    //,setStatus(0)
+    dispatch(setIsAudioOnly(false))
+    dispatch(setAudioID([rId, videoId]))
+    dispatch(setThumbNail(videoThumbNail))
+    dispatch(setAuthor(artist))
+    dispatch(setTitle(videoTitle))
+    dispatch(setSoundStatus(0))
+    dispatch(setIsAudioOnly(false))
+    dispatch(setDownloadData(downloadData))
+    
+  }, [])
 
     useEffect(() => {
 
-      
-     
         async function main(){
           setCurrentPosition(0)
           setStatus(0)
@@ -99,8 +98,9 @@ export default function VideoDisplay(props) {
         }
 
         main()
+        main()
         
-    }, [currentVideoID, currentTitle])
+    }, [currentVideoID, currentTitle, videoId])
 
    
     useEffect(() => {
@@ -109,6 +109,8 @@ export default function VideoDisplay(props) {
         if (video){
           await video.current.playAsync()
         }
+
+        
       
     }
 
@@ -196,7 +198,7 @@ export default function VideoDisplay(props) {
   }
   
    function saveAudioPodCastData(downloadURL){
-      console.log("this is running correctly")
+      //console.log("this is running correctly")
       db.collection('podcastDownloads')
           .doc(auth.currentUser.uid)
           .collection("userPodcasts")

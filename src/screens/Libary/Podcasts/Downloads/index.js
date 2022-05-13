@@ -27,14 +27,20 @@ export default function Downloads({navigation}) {
   console.warn(downloadData.length)
 
   useEffect(() => {
-     db.collection('audioDownloads')
+    function maindownloadLoad(){
+      db.collection('audioDownloads')
                       .doc(auth.currentUser.uid)
-                      .collection('userAudios', )
+                      .collection('userAudios')
                       .orderBy('creation','desc')
                       .onSnapshot((snapshot) => setDownloadData(snapshot.docs.map(doc => ({
                         id: doc.id,
                         data: doc.data()
                     }))))
+
+    }
+
+    maindownloadLoad()
+   
 
     //return unsubscribe;
     
@@ -66,6 +72,7 @@ export default function Downloads({navigation}) {
         <FlatList
           data={qDownloads}
           keyExtractor={(item, index) => item.id}
+          initialNumToRender={downloadData.length}
           renderItem={({ item }) => (
             <TouchableOpacity
 
@@ -79,9 +86,9 @@ export default function Downloads({navigation}) {
               <Playlist
                 name={item.data.title}
                 photoAlbum={item.data.thumbNail}
-                create={false}
-                onEndReachedThreshold={0.7}
-              onEndReached={() => setPage(page => page+7)}
+            
+                //create={false}
+        
               />
             </TouchableOpacity>
           )}
