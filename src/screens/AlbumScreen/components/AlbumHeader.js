@@ -3,6 +3,8 @@ import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 
 
+
+
 const AlbumHeader = ({ name, creator, imageUri, likes, firstItem, musicNavigator, searchedVideo }) => {
   const styles = StyleSheet.create({
     container: {
@@ -10,8 +12,8 @@ const AlbumHeader = ({ name, creator, imageUri, likes, firstItem, musicNavigator
       padding: 20,
     },
     image: {
-      width: 185,
-      height: 185,
+      width: 200,
+      height: 200,
       margin: 15,
       borderRadius: searchedVideo ? 100 :  18
     },
@@ -50,7 +52,9 @@ const AlbumHeader = ({ name, creator, imageUri, likes, firstItem, musicNavigator
   });
 
   return (
+    
     <View style={styles.container}>
+      
     <Image source={{ uri: imageUri }} style={styles.image} />
     <Text style={styles.name}>{name}</Text>
     <View style={styles.innerContainer}>

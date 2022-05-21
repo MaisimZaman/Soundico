@@ -6,6 +6,11 @@ import { BG_IMAGE } from "../../services/backgroundImage";
 import AlbumHeader from "./components/AlbumHeader";
 import SongListItem from "./components/songListItem";
 
+import ModalHeader from "../MusicPlayer/ModalHeader";
+
+import { Feather } from '@expo/vector-icons' 
+import {colors} from '../MusicPlayer/constants'
+
 
 
 function AlbumScreen(props){
@@ -50,6 +55,18 @@ function AlbumScreen(props){
 
   return (
     <ImageBackground style={styles.image} source={ BG_IMAGE}>
+      <ModalHeader
+          left={<Feather color={colors.greyLight} name="chevron-down" />}
+          leftPress={() => props.navigation.goBack()}
+          right={ <Feather onPress={() => props.navigation.navigate('PlayListOptions', {
+            title: title, 
+            photoAlbum: photoAlbum,
+            playlistVideos: playlistVideos, 
+            isCustom: isCustom, 
+           
+          })} color={colors.greyLight} name="more-horizontal" />}
+          text={title}
+        />
       <FlatList
         data={albums}
         keyExtractor={(item) => item.id}

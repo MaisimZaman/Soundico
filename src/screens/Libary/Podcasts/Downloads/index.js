@@ -24,7 +24,9 @@ export default function Downloads({navigation}) {
   //const [modalVisible, setModalVisible] = useState(false);
 
  
-  console.warn(downloadData.length)
+  //console.warn(downloadData.length)
+
+  
 
   useEffect(() => {
     function maindownloadLoad(){

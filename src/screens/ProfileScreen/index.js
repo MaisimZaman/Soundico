@@ -18,14 +18,82 @@ import {
     LineDivider
 } from "./ProfileComponents";
 import { COLORS, FONTS, SIZES, icons, images } from '../Authentication/constants';
-import {auth} from '../../../services/firebase'
+import {auth, db} from '../../../services/firebase'
+import firebase from 'firebase'
 import { BG_IMAGE } from '../../services/backgroundImage';
+import * as ImagePicker from 'expo-image-picker';
 
 
 function ProfileScreen(props){
 
     const [newCourseNotification, setNewCourseNotification] = useState(false)
     const [studyReminder, setStudyReminder] = useState(false)
+
+    async function setProfilePicture(){
+    
+
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1.7, 1],
+            quality: 1,
+            
+        });
+    
+        if (!result.cancelled) {
+            const image = result.uri;
+            const uri = image;
+            const childPath = `profile-images/${auth.currentUser.uid}/${Math.random().toString(36)}`;
+        
+
+            const response = await fetch(uri);
+            const blob = await response.blob();
+
+            const task = firebase
+                .storage()
+                .ref()
+                .child(childPath)
+                .put(blob);
+
+            const taskProgress = snapshot => {
+                console.log(`transferred: ${snapshot.bytesTransferred}`)
+            }
+
+            const taskCompleted = () => {
+                task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                
+                saveImageData(snapshot);
+                console.log(snapshot)
+            })
+            }
+
+            const taskError = snapshot => {
+                console.log(snapshot)
+            }
+
+            task.on("state_changed", taskProgress, taskError, taskCompleted);
+        }
+
+
+        function saveImageData(downloadURL){
+
+            db.collection("users")
+                    .doc(auth.currentUser.uid)
+                    .set({
+                        photoURL: downloadURL,
+                        
+                    })
+
+            auth.currentUser.updateProfile({
+                photoURL: downloadURL
+                }).then(() => {
+                navigation.goBack()
+                }).catch((error) => {
+                console.warn(error)
+                }); 
+
+        }
+    }
 
     function renderHeader() {
         return (
@@ -74,7 +142,7 @@ function ProfileScreen(props){
                         width: 80,
                         height: 80,
                     }}
-                    onPress={() => props.navigation.navigate("UpdateProfilePic")}
+                    onPress={setProfilePicture}
                 >
                     <Image
                         source={{uri: auth.currentUser.photoURL}}

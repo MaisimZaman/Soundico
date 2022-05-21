@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Audio } from 'expo-av';
 
-import { Image, StyleSheet, Text, View, ImageBackground, Modal, Pressable } from 'react-native';
+import { Image, StyleSheet, Text, View, ImageBackground, Modal, Pressable, PermissionsAndroid, Platform, Alert } from 'react-native';
 import { Feather, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
@@ -18,6 +18,13 @@ import { BG_IMAGE } from '../../services/backgroundImage';
 import ytdl from 'react-native-ytdl';
 import { convertTime } from './helpers';
 import { auth, db } from '../../../services/firebase';
+import * as FileSystem from 'expo-file-system';
+
+//import * as ImagePicker from 'expo-image-picker';
+import * as MediaLibrary from 'expo-media-library';
+
+
+//import TrackPlayer from 'react-native-track-player';
 //import MusicControl from 'react-native-music-control';
 
 
@@ -43,20 +50,58 @@ export default function MusicPlayer(props){
   const currentAudioID = useSelector(selectAudioID)
   const currentArtist = useSelector(selectAuthor)
 
+  const [progress, setProgress] = useState(0);
+
+  
 
 
+  
 
-    const screenProps = {
-      length: 20,
-      album: "Intersteller Alubum",
-      image: "https://m.media-amazon.com/images/I/71otC8duVIL._SL1367_.jpg",
-      audioURI: "https://firebasestorage.googleapis.com/v0/b/music-app-51eec.appspot.com/o/audioDownloads%2F8GBeLfePnWMuIWa2wtXDfsNiblm2%2F0.71tclh3shq?alt=media&token=965f8451-8715-4588-87df-cb5be296c317",
-      title: "Dreaming of the crash",
-      artist: "Hanz zimmer"
+  async function downloadSongToDevice(){
+
+
+    const uri = "http://techslides.com/demos/sample-videos/small.mp4"
+      let fileUri = FileSystem.documentDirectory + `${currentTitle}.mp3`;
+      FileSystem.downloadAsync(currentAudioURI, fileUri)
+      .then(({ uri }) => {
+        
+          saveFile(uri);
+          console.log(uri)
+         
+        })
+        .catch(error => {
+          console.error(error);
+        })
+        Alert.alert(`${currentTitle} downloaded onto device`)
+        //Alert(`${currentTitle} downloaded onto device`)
+
+    
+      
+  
+    async function saveFile(fileUri){
+        
+        const { status }  = await MediaLibrary.requestPermissionsAsync();
+        
+        if (status === "granted") {
+
+          console.log("This is def going through")
+          const asset = await MediaLibrary.createAssetAsync(fileUri)
+          await MediaLibrary.createAlbumAsync("SoundicoDownloads", asset, false)
+          
+            
+        }
+        
     }
+    
+  
+    
+  }
 
+
+
+
+    
     const { navigation } = props;
-    const  currentSongData  = screenProps;
     const [favorited, setFavourited] = useState(false)
     const [paused, setPaused] = useState(false)
     const sound = useSelector(selectSoundOBJ)
@@ -103,32 +148,30 @@ export default function MusicPlayer(props){
       
     }, [status])
 
+
+
     useEffect(() => {   
       async function run(){
         setCurrentPosition(0)
-        if (notCustom == true){
-          let info = await ytdl.getInfo(String(playListAudioURI));
-          let audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
-          const theAudioURI = audioFormats[0].url
-          dispatch(setAudioURI(theAudioURI))
-          const { sound, status } = await Audio.Sound.createAsync({uri: currentAudioURI}, { shouldPlay: true }, (status) => dispatch(setSoundStatus(status)));
-          dispatch(setSoundOBJ(sound))
-        }
-        else {
-          const { sound, status } = await Audio.Sound.createAsync({uri: currentAudioURI}, { shouldPlay: true }, (status) => dispatch(setSoundStatus(status)));
+        
+        
+        const { sound } = await Audio.Sound.createAsync({uri: currentAudioURI}, { shouldPlay: true }, (status) => dispatch(setSoundStatus(status)));
 
             
             //setSound(sound)
-            dispatch(setSoundOBJ(sound))
+          dispatch(setSoundOBJ(sound))
             //console.warn(status.durationMillis)
-            
-      
-            
-        }
-        
+
+          //await TrackPlayer.setupPlayer();
+    
+        // Add a track to the queue
 
       }
+      
+  
       run()
+
+    
 
       
     }, [currentAudioID, repeat])
@@ -163,7 +206,7 @@ export default function MusicPlayer(props){
         if (paused == false){
           
   
-          console.log('Playing Sound');
+  
            //await sound.playAsync();
            
           
@@ -307,6 +350,12 @@ export default function MusicPlayer(props){
                     onPress={deleteMusicItem}>
                     <Text style={styles.textStyle}>Delete song</Text>
                   </Pressable>
+
+                  <Pressable
+                    style={[styles.button1, styles.buttonClose]}
+                    onPress={downloadSongToDevice}>
+                    <Text style={styles.textStyle}>Download song</Text>
+                  </Pressable>
                 
                   <Pressable
                     style={[styles.button3, styles.buttonClose]}
@@ -357,6 +406,7 @@ export default function MusicPlayer(props){
             <View >
               <Slider
                 minimumValue={0}
+        
                 maximumValue={status.durationMillis}
                 value={status.positionMillis}
                 minimumTrackTintColor={colors.white}
@@ -381,19 +431,19 @@ export default function MusicPlayer(props){
               <View style={gStyle.flexRowCenterAlign}>
                 <TouchIcon
                   icon={<FontAwesome color={colors.white} name="step-backward" />}
-                  iconSize={32}
+                  iconSize={40}
                   onPress={skipBackwardTrack}
                 />
                 <View style={gStyle.pH3}>
                   <TouchIcon
                     icon={<FontAwesome color={colors.white} name={iconPlay} />}
-                    iconSize={64}
+                    iconSize={80}
                     onPress={togglePlay}
                   />
                 </View>
                 <TouchIcon
                   icon={<FontAwesome color={colors.white} name="step-forward" />}
-                  iconSize={32}
+                  iconSize={40}
                   onPress={skipFowardTrack}
                 />
                

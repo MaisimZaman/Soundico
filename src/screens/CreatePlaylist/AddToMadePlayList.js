@@ -13,6 +13,9 @@ export default function AddToMadePlaylist(props){
     const [searchText, setSearchText] = useState('')
     const [allPlaylists, setAllPlaylists] = useState([])
     const [currentItem, setCurrentItem] = useState(null)
+
+
+                                                                                                                                                             
     
 
     useEffect(() => {
@@ -75,14 +78,6 @@ export default function AddToMadePlaylist(props){
                 setAllPlaylists(sPlaylists);
             })
             
-
-        
-
-
-        
-
- 
-       
     }
 
     function itemStyle(item){
