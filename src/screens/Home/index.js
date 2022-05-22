@@ -22,7 +22,7 @@ export default function Home({navigation}) {
   const [madeForYou, setMadeForYou] = useState([]);
   const [popularPlaylists, setPopularPlaylists] = useState([]);
   const [yourPlaylists, setYourPlaylists] = useState([]);
-  const [currentPlaylistData, setCurrentPlaylistData] = useState()
+  //const [currentPlaylistData, setCurrentPlaylistData] = useState([])
 
 
 
@@ -96,17 +96,34 @@ export default function Home({navigation}) {
   }, [navigation])
 
 
-  async function getPlayListData(item, playlistId){
+   async function getPlayListData(item, playlistId){
    
+    
+    let response = []
+      response = await Axios.get(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=100&playlistId=${playlistId}&key=${API_KEY}`)  
+      if (response != []){
 
-    const response = await Axios.get(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=100&playlistId=${playlistId}&key=${API_KEY}`)
-    const playlistVideos = response.data.items
-    const videoId = playlistVideos[0].snippet.resourceId.videoId
-    const videoThumbNail = playlistVideos[0].snippet.thumbnails.high.url
-    const videoTitle = playlistVideos[0].snippet.title
-    setCurrentPlaylistData([videoId, videoThumbNail, videoTitle, playlistVideos])
-    navigation.navigate("AlbumScreen", {title:currentPlaylistData[2], photoAlbum: currentPlaylistData[1], playlistVideos: currentPlaylistData[3], isCustom: false })
-    //navigation.navigate('VideoScreen', {videoId: currentPlaylistData[0], videoThumbNail:currentPlaylistData[1], videoTitle: currentPlaylistData[2], Search: false, isPlaylist: true, playlistVideos: currentPlaylistData[3], plInfo: [item.snippet.title, item.snippet.thumbnails.high.url]})
+        const playlistVideos = response.data.items
+        //const videoId = playlistVideos[0].snippet.resourceId.videoId
+        const videoThumbNail = playlistVideos[0].snippet.thumbnails.high.url
+        const videoTitle = playlistVideos[0].snippet.title
+        
+        
+        
+        
+        navigation.navigate("AlbumScreen", {title:videoTitle, photoAlbum: videoThumbNail, playlistVideos: playlistVideos, isCustom: false })
+      
+      }
+
+    
+
+    
+
+   
+    
+    
+
+    
 
   }
 
@@ -176,7 +193,7 @@ export default function Home({navigation}) {
         <Title>Most Popular Playlists</Title>
         <FlatList
           data={popularPlaylists}
-          keyExtractor={(item) => `${item.id}`}
+          keyExtractor={(item) => item.id.playlistId}
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (

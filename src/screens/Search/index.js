@@ -173,14 +173,16 @@ export default function Search({navigation}) {
 
   async function getPlayListData(item, playlistId){
    
-    console.log(playlistId)
-    const response = await Axios.get(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=30&playlistId=${playlistId}&key=${API_KEY}`)
+
+    
+    const response = await Axios.get(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=100&playlistId=${playlistId}&key=${API_KEY}`)
     const playlistVideos = response.data.items
     const videoId = playlistVideos[0].snippet.resourceId.videoId
     const videoThumbNail = playlistVideos[0].snippet.thumbnails.high.url
     const videoTitle = playlistVideos[0].snippet.title
-    setCurrentPlaylistData([videoId, videoThumbNail, videoTitle, playlistVideos])
-    navigation.navigate("AlbumScreen", {title:currentPlaylistData[2], photoAlbum: currentPlaylistData[1], playlistVideos: currentPlaylistData[3], isCustom: false, searchedVideo: true })
+    
+    navigation.navigate("AlbumScreen", {title:videoTitle, photoAlbum: videoThumbNail, playlistVideos: playlistVideos, isCustom: false, searchedVideo: true })
+    
 
   }
 
@@ -217,7 +219,7 @@ export default function Search({navigation}) {
             data={allYTData}
             keyExtractor={(item) => item.etag}
             renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => searchForType(item, item.id.channelId)}>
+              <TouchableOpacity onPress={() => searchForType(item, item.id.playlistId)}>
                 <Artist isSearch={true} name={item.snippet.title} photo={item.snippet.thumbnails.high.url}></Artist>
               </TouchableOpacity>
               
