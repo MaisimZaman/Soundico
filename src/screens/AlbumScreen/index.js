@@ -75,7 +75,7 @@ function AlbumScreen(props){
               id={item.id}
               title={isCustom ? item.data.title : item.snippet.title}
               artist={isCustom ? item.data.channelTitle:  item.snippet.channelTitle}
-              imageUri={isCustom ? item.data.thumbNail : item.snippet.thumbNail}
+              imageUri={isCustom ? item.data.thumbNail : item.snippet.thumbnails.high.url}
               navigationFunc={navigateToMusicPlayer}
               item={item}
               uri={"null"}
