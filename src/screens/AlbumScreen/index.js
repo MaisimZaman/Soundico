@@ -37,7 +37,7 @@ function AlbumScreen(props){
       props.navigation.navigate('VideoScreen', { 
       rId: item.id, 
       videoId: searchedVideo ? item.id.videoId :  item.snippet.resourceId.videoId, 
-      videoThumbNail:item.snippet.thumbnails.high.url, 
+      videoThumbNail:item ? item.snippet.thumbnails.high.url : item.data.thumbNail, 
       videoTitle: item.snippet.title, 
       artist: item.snippet.channelTitle, 
       Search: false, 

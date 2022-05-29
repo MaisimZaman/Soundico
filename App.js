@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import { StatusBar, ImageBackground, StyleSheet } from 'react-native';
 import Routes from './src/Routes';
 import 'react-native-gesture-handler';
@@ -15,13 +15,15 @@ import AddToPlaylist from './src/screens/CreatePlaylist/AddToPlaylist';
 import AddToMadePlaylist from './src/screens/CreatePlaylist/AddToMadePlayList';
 import TopicContent from './src/screens/TopicContent/TopicContent';
 import PlaylistOptions from './src/screens/CreatePlaylist/PlaylistOptions';
+//import TrackPlayer from 'react-native-track-player';
 import { Provider } from 'react-redux';
 import {store} from './services/store'
 import { BG_IMAGE } from './src/services/backgroundImage';
 
-CardStyleInterpolators
+
 
 const Stack = createStackNavigator();
+
 
 
 
@@ -57,8 +59,22 @@ function MainPage(){
 }
 
 export default function App(){
-  
 
+  /*
+  useEffect(() => {
+    
+    async function setUpTrackPlayer(){
+      await TrackPlayer.setupPlayer()
+     
+     TrackPlayer.registerPlaybackService(async () => {});
+    }
+
+    setUpTrackPlayer()
+    
+  },[])
+  */
+  
+  
   return (
     <Provider store={store}>
       <NavigationContainer theme={MyTheme}>

@@ -60,7 +60,7 @@ export default function Downloads({navigation}) {
               <Text >No downloads yet</Text>
           </View>
       )
-  }
+    }
   
   else if (downloadData.length > 7) {
 

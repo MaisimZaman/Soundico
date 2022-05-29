@@ -34,9 +34,9 @@ export default function MusicPlayer(props){
 
   const dispatch = useDispatch();
 
- 
+  const defaultThumbnail = 'https://t3.ftcdn.net/jpg/04/54/66/12/360_F_454661277_NtQYM8oJq2wOzY1X9Y81FlFa06DVipVD.jpg'
 
-  const {thumbNail, audioURI, title,audioID, downloadData, playListName, notCustom, artist} = props.route.params
+  const {thumbNail, audioURI, title,audioID, downloadData, playListName, notCustom, artist, isDdownload} = props.route.params
 
   const [playListAudioURI, setPlayListAudioURI] = useState(audioURI)
   
@@ -72,21 +72,39 @@ export default function MusicPlayer(props){
         .catch(error => {
           console.error(error);
         })
-        Alert.alert(`${currentTitle} downloaded onto device`)
+        //Alert.alert(`${currentTitle} downloaded onto device`)
         //Alert(`${currentTitle} downloaded onto device`)
 
     
       
   
     async function saveFile(fileUri){
-        
+      console.warn(fileUri)
+      const checkAndroidPermission = async () => {
+        try {
+          const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
+          await PermissionsAndroid.request(permission);
+          console.warn("This ran")
+          Promise.resolve();
+        } catch (error) {
+          Promise.reject(error);
+        }
+      };
+      await checkAndroidPermission();
+      
         const { status }  = await MediaLibrary.requestPermissionsAsync();
+
+        
         
         if (status === "granted") {
+          
+            
+          
 
           console.log("This is def going through")
           const asset = await MediaLibrary.createAssetAsync(fileUri)
           await MediaLibrary.createAlbumAsync("SoundicoDownloads", asset, false)
+          
           
             
         }
@@ -257,13 +275,15 @@ export default function MusicPlayer(props){
         return object.id === currentAudioID;
       });
 
+    
+
       if (index < downloadData.length){
-        if (notCustom == true){
-          const forwardThumbNail = downloadData[index + 1].snippet.thumbnails.high.url
-          const forwardAudioURI = "null"
-          const forwardTitle = downloadData[index + 1].snippet.title
+        if (isDdownload){
+          const forwardThumbNail = defaultThumbnail
+          const forwardAudioURI = downloadData[index + 1].uri
+          const forwardTitle = downloadData[index + 1].filename.slice(0, -4)
           const forwardID = downloadData[index + 1].id
-          setNewSongData(forwardThumbNail, downloadData[index + 1].snippet.resourceId.videoId, forwardTitle, forwardID)
+          setNewSongData(forwardThumbNail, forwardAudioURI, forwardTitle, forwardID)
           setPaused(false)
 
         }
@@ -289,18 +309,38 @@ export default function MusicPlayer(props){
       });
 
       if (index >= 0){
-        const  backwardThumbNail = downloadData[index - 1].data.thumbNail
-        const backwardAudioURI = downloadData[index - 1].data.audio
-        const backwardTitle = downloadData[index - 1].data.title
-        const backwardID = downloadData[index - 1].id
-        const backwardArtist = downloadData[index + 1].data.channelTitle
+        if (isDdownload){
+          const  backwardThumbNail = defaultThumbnail
+          const backwardAudioURI = downloadData[index - 1].uri
+          const backwardTitle = downloadData[index - 1].filename.slice(0, -4)
+          const backwardID = downloadData[index - 1].id
+          const backwardArtist = 'unknown'
         setNewSongData(backwardThumbNail, backwardAudioURI, backwardTitle, backwardID, backwardArtist)
+
+        } else {
+          const  backwardThumbNail = downloadData[index - 1].data.thumbNail
+          const backwardAudioURI = downloadData[index - 1].data.audio
+          const backwardTitle = downloadData[index - 1].data.title
+          const backwardID = downloadData[index - 1].id
+          const backwardArtist = downloadData[index + 1].data.channelTitle
+          setNewSongData(backwardThumbNail, backwardAudioURI, backwardTitle, backwardID, backwardArtist)
+        }
         setPaused(false)
 
       }
     }
 
     function shuffleTrack(){
+      if (isDdownload){
+        const randomTrack = Math.floor(Math.random() * downloadData.length);
+        const  randomThumbNail = defaultThumbnail
+        const randomAudioURI = downloadData[randomTrack].uri
+        const randomTitle = downloadData[randomTrack].filename.slice(0, -4)
+        const randomID = downloadData[randomTrack].id
+        setNewSongData(randomThumbNail, randomAudioURI, randomTitle, randomID)
+        setPaused(false)
+
+      } else {
         const randomTrack = Math.floor(Math.random() * downloadData.length);
         const  randomThumbNail = downloadData[randomTrack].data.thumbNail
         const randomAudioURI = downloadData[randomTrack].data.audio
@@ -308,6 +348,7 @@ export default function MusicPlayer(props){
         const randomID = downloadData[randomTrack].id
         setNewSongData(randomThumbNail, randomAudioURI, randomTitle, randomID)
         setPaused(false)
+      }
         
     }
 
