@@ -59,9 +59,15 @@ export default function MusicPlayer(props){
 
   async function downloadSongToDevice(){
 
+    function replaceIllegalChars(string){
+      return string.replace('#','')
+      .replace('|', '')
+      .replace('%', '')
+      .replace('$', '')
+    }
 
     const uri = "http://techslides.com/demos/sample-videos/small.mp4"
-      let fileUri = FileSystem.documentDirectory + `${currentTitle}.mp3`;
+      let fileUri = FileSystem.documentDirectory + `${replaceIllegalChars(currentTitle)}.mp3`;
       FileSystem.downloadAsync(currentAudioURI, fileUri)
       .then(({ uri }) => {
         
