@@ -39,7 +39,7 @@ function AlbumScreen(props){
       videoId: searchedVideo ? item.id.videoId :  item.snippet.resourceId.videoId, 
       videoThumbNail:item ? item.snippet.thumbnails.high.url : item.data.thumbNail, 
       videoTitle: item.snippet.title, 
-      artist: item.snippet.channelTitle, 
+      artist: searchedVideo ?  item.snippet.channelTitle : item.data.channelTitle, 
       Search: false, 
       isRecently: false, 
       downloadData: albums

@@ -107,6 +107,7 @@ export default function AddToMadePlaylist(props){
 
             <FlatList
                 data={allPlaylists}
+                initialNumToRender={allPlaylists.length}
                 keyExtractor={(item, index) => String(index)}
                 renderItem={({ item }) => (
             <TouchableOpacity

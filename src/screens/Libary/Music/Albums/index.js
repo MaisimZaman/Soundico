@@ -8,6 +8,7 @@ import * as MediaLibrary from 'expo-media-library';
 export default function Albums({navigation}) {
 
   const [audioFiles, setAudioFiles] = useState([]);
+  
   const defaultThumbnail = 'https://t3.ftcdn.net/jpg/04/54/66/12/360_F_454661277_NtQYM8oJq2wOzY1X9Y81FlFa06DVipVD.jpg'
 
   useEffect(() => {
@@ -26,14 +27,23 @@ export default function Albums({navigation}) {
   
 
   async function getAudioFiles(){
+    const albumData = await MediaLibrary.getAlbumAsync("SoundicoDownloads")
+    
+
     const media = await MediaLibrary.getAssetsAsync({
       mediaType: 'audio',
-      
-      //albumId: "1825329292"
+      album: albumData,
+      sortBy: 'creationTime',
+      first: 30
+
     })
+
+    
 
     setAudioFiles(media.assets)
   }
+
+  console.log(audioFiles)
 
 
 
