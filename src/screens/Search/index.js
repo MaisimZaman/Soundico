@@ -148,7 +148,7 @@ export default function Search({navigation}) {
     }
     else if (searchType == 'Channel'){
       
-      console.warn("true")
+      
       Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText}&type=channel&key=${API_KEY}`)
       .then(res => {
         const ytData = res.data.items;
