@@ -1,35 +1,41 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { colors, gStyle } from '../MusicPlayer/constants/index';
 
-const LineItemSong = ({ active=false, downloaded=false, onPress, songData }) => {
+const LineItemSong = ({ active=false, downloaded=false, onPress, songData, imageUri }) => {
   const activeColor = active ? colors.brandPrimary : colors.white;
 
   return (
     <View style={styles.container}>
+        <Image source={{ uri: imageUri }} style={{width: 60, height: 60, borderRadius: 10, marginRight: "10%"}} />
       <TouchableOpacity
         activeOpacity={gStyle.activeOpacity}
-        onPress={() => onPress(songData)}
+        onPress={onPress}
         style={gStyle.flex5}
       >
-        <Text style={[styles.title, { color: activeColor }]}>
-          {songData.title}
-        </Text>
-        <View style={gStyle.flexRow}>
-          {downloaded && (
-            <View style={styles.circleDownloaded}>
-              <Ionicons color={colors.blackBg} name="arrow-down" size={14} />
+          
+          
+          <Text style={[styles.title, { color: activeColor }]}>
+            {songData.title}
+            </Text>
+            <View style={gStyle.flexRow}>
+            {downloaded && (
+                <View style={styles.circleDownloaded}>
+                <Ionicons color={colors.blackBg} name="arrow-down" size={14} />
+                </View>
+            )}
+            <Text style={styles.artist}>{songData.artist}</Text>
             </View>
-          )}
-          <Text style={styles.artist}>{songData.artist}</Text>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
 
-      <View style={styles.containerRight}>
-        <Feather color={colors.greyLight} name="more-horizontal" size={20} />
-      </View>
+        <View style={styles.containerRight}>
+            <Feather color={colors.greyLight} name="more-horizontal" size={20} />
+        </View>
+            
+      
+      
     </View>
   );
 };
@@ -61,7 +67,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 16,
-    width: '100%'
+    width: '100%',
+    flexDirection: "row",
+  },
+  innerContainer: {
+    justifyContent: "space-around",
+    marginLeft: 15
   },
   title: {
     ...gStyle.textSpotify16,

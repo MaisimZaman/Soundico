@@ -22,16 +22,26 @@ import Axios from 'axios'
 
 
 export default function TopicContent(props) {
-    const {topic} = props.route.params
+    const {topic, color} = props.route.params
     const [content, setAllContent] = useState([])
     const [showMusicBar, setShowMuiscBar] = useState(true)
     const scrollY = React.useRef(new Animated.Value(0)).current;
 
-    const space_img = "https://wallpaperaccess.com/full/469611.jpg"
+    let cover_img = "https://thumbs.dreamstime.com/b/music-note-background-19549888.jpg"
+
+    
+
+    useEffect(() => {
+      if (topic == 'Clasical'){
+       cover_img = "https://thumbs.dreamstime.com/b/music-note-background-19549888.jpg"
+      } else {
+        console.warn("this is not clasical")
+      }
+    }, [])
 
     useEffect(() => {
         
-        Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${topic}&key=${API_KEY}`)
+        Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=${topic + 'music'}&key=${API_KEY}`)
           .then(res => {
             const thisContent = res.data.items;
             setAllContent(thisContent)
@@ -73,12 +83,12 @@ export default function TopicContent(props) {
         <Animated.View
           style={[styles.headerLinear, { opacity: opacityHeading }]}
         >
-          <LinearGradient fill={'#00FFFF'} height={89} />
+          <LinearGradient fill={color} height={89} />
         </Animated.View>
         <View style={styles.header}>
           <TouchIcon
             icon={<Feather color={colors.white} name="chevron-left" />}
-            onPress={() => navigation.goBack(null)}
+            onPress={() => props.navigation.goBack(null)}
           />
           <Animated.View 
           style={{ opacity: opacityShuffle }}
@@ -94,10 +104,10 @@ export default function TopicContent(props) {
 
       <View style={styles.containerFixed}>
         <View style={styles.containerLinear}>
-          <LinearGradient fill={'#00FFFF'} />
+          <LinearGradient fill={color} />
         </View>
         <View style={styles.containerImage}>
-        <Image source={{uri: space_img}} style={styles.image} />
+        <Image source={{uri: cover_img}} style={styles.image} />
         </View>
         <View style={styles.containerTitle}>
           <Text ellipsizeMode="tail" numberOfLines={1} style={styles.title}>
@@ -153,8 +163,18 @@ export default function TopicContent(props) {
               <LineItemSong
                 //active={song === track.title}
                 //downloaded={downloaded}
-                key={track.snippet.title}
-                //onPress={onChangeSong}
+                imageUri={track.snippet.thumbnails.high.url}
+                key={track.id.videoId}
+                onPress={() => props.navigation.navigate('VideoScreen', 
+                {
+                  rId: track.id, 
+                  videoId: track.id.videoId,  
+                  videoThumbNail:track.snippet.thumbnails.high.url, 
+                  videoTitle: track.snippet.title, 
+                  artist: track.snippet.channelTitle, 
+                  Search: false, 
+                  downloadData: content, 
+                  isRecently: false })}
                 songData={{
                   album: topic,
                   artist: track.snippet.channelTitle,
@@ -235,7 +255,8 @@ const styles = StyleSheet.create({
   image: {
     height: 148,
     marginBottom: device.web ? 0 : 16,
-    width: 148
+    width: 148,
+    borderRadius: 20
   },
   containerTitle: {
     marginTop: device.web ? 8 : 0,

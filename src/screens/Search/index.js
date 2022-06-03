@@ -75,11 +75,11 @@ export default function Search({navigation}) {
     },
     {
       name: "Motivational",
-      color: "#0eed55"
+      color: "#0b9665"
     },
     {
       name: "Rock",
-      color: "#ed0e0e"
+      color: "#ad830e"
     },
     {
       name: "Electro",
@@ -91,8 +91,17 @@ export default function Search({navigation}) {
     },
     {
       name: "Clasical",
-      color: "#deed0e"
+      color: "#e0501b"
     },
+    {
+      name: "Rap/Hip Hop",
+      color: "#730e0e"
+    },
+    {
+      name: "Rhythm and blues",
+      color: "#55cfd4"
+    },
+
 
   ]
 
@@ -250,7 +259,7 @@ export default function Search({navigation}) {
           keyExtractor={(item) => `${item.id}`}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-              <GenreMusic name={item.name} color={item.color} navigationFunc={() => navigation.navigate('TopicContent', {topic: item.name})} />
+              <GenreMusic name={item.name} color={item.color} navigationFunc={() => navigation.navigate('TopicContent', {topic: item.name, color: item.color})} />
            
           )}
         />
