@@ -25,19 +25,39 @@ export default function TopicContent(props) {
     const {topic, color} = props.route.params
     const [content, setAllContent] = useState([])
     const [showMusicBar, setShowMuiscBar] = useState(true)
+    const [cover_img, setCoverImage] = useState("https://thumbs.dreamstime.com/b/music-note-background-19549888.jpg")
     const scrollY = React.useRef(new Animated.Value(0)).current;
-
-    let cover_img = "https://thumbs.dreamstime.com/b/music-note-background-19549888.jpg"
 
     
 
+    
+    
     useEffect(() => {
       if (topic == 'Clasical'){
-       cover_img = "https://thumbs.dreamstime.com/b/music-note-background-19549888.jpg"
-      } else {
+       setCoverImage("https://thumbs.dreamstime.com/b/music-note-background-19549888.jpg")
+      } 
+      else if (topic == "Electro"){
+        setCoverImage("https://play.soundplate.com/uploads/img/5d11344a2df60.jpg")
+      }  
+      else if (topic == "Motivational"){
+        setCoverImage("https://i1.sndcdn.com/artworks-DeBbggke0IxzGrMx-s2HILw-t500x500.jpg")
+      }    
+      else if (topic == "Pop"){
+        setCoverImage("https://play-lh.googleusercontent.com/zWXih1je17LhskElV-vhePIZt2Y-ITOBnew2lY5sx-njXutzQNyXOzx82z-nPhvQ8dA")
+      }
+      else if (topic == "Rock"){
+        setCoverImage("https://cdn-images.audioaddict.com/1/5/d/b/a/a/15dbaa1f6a26c234d4977f10e9ea8808.png")
+      }
+      else if (topic == "Rap/Hip Hop"){
+        setCoverImage("https://images.fineartamerica.com/images/artworkimages/mediumlarge/2/ghetto-blaster-boombox-graphic-iz-stock-works.jpg")
+      }
+      else if (topic == "Rhythm and blues"){
+        setCoverImage("https://www.musicgrotto.com/wp-content/uploads/2021/03/man-sitting-playing-blues-guitar.png")
+      }
+      else {
         console.warn("this is not clasical")
       }
-    }, [])
+    }, [props.navigation])
 
     useEffect(() => {
         
@@ -50,9 +70,27 @@ export default function TopicContent(props) {
         })
 
 
-      
+        
     
     }, [props.navigation])
+
+
+    function shufflePlay(){
+      const randomTrack = Math.floor(Math.random() * content.length);
+
+      
+
+      props.navigation.navigate('VideoScreen', 
+                {
+                  rId: content[randomTrack].id, 
+                  videoId: content[randomTrack].id.videoId,  
+                  videoThumbNail:content[randomTrack].snippet.thumbnails.high.url, 
+                  videoTitle: content[randomTrack].snippet.title, 
+                  artist: content[randomTrack].snippet.channelTitle, 
+                  Search: false, 
+                  downloadData: content, 
+                  isRecently: false })
+    }
 
     const stickyArray = device.web ? [] : [0];
     const headingRange = device.web ? [140, 200] : [230, 280];
@@ -88,7 +126,7 @@ export default function TopicContent(props) {
         <View style={styles.header}>
           <TouchIcon
             icon={<Feather color={colors.white} name="chevron-left" />}
-            onPress={() => props.navigation.goBack(null)}
+            onPress={() => props.navigation.goBack()}
           />
           <Animated.View 
           style={{ opacity: opacityShuffle }}
@@ -139,7 +177,7 @@ export default function TopicContent(props) {
           </Animated.View>
           <View style={styles.containerShuffle}>
             <TouchText
-              onPress={() => null}
+              onPress={shufflePlay}
               style={styles.btn}
               styleText={styles.btnText}
               text="Shuffle Play"
