@@ -4,6 +4,7 @@ import React, {useState, useEffect} from 'react'
 import { BG_IMAGE } from '../../services/backgroundImage';
 import { auth, db } from '../../../services/firebase';
 import { TextButton } from '../ProfileScreen/ProfileComponents';
+import firebase from 'firebase';
 
 
 
@@ -55,6 +56,7 @@ export default function AddToPlaylist(props) {
                 playlistTitle: playListTitle,
                 playListThumbnail: selectedDownloads[0].data.thumbNail,
                 playlistVideos: selectedDownloads,
+                creation: firebase.firestore.FieldValue.serverTimestamp(),
                 isCustom: true
 
                 

@@ -103,28 +103,15 @@ export default function MusicPlayer(props){
         
         
         if (status === "granted") {
-          
-            
-          
-
-          console.log("This is def going through")
           const asset = await MediaLibrary.createAssetAsync(fileUri)
           await MediaLibrary.createAlbumAsync("SoundicoDownloads", asset, false)
-          
-          
-            
         }
         
     }
     
   
     
-  }
-
-
-
-
-    
+  } 
     const { navigation } = props;
     const [favorited, setFavourited] = useState(false)
     const [paused, setPaused] = useState(false)
@@ -173,6 +160,9 @@ export default function MusicPlayer(props){
     }, [status])
 
 
+  
+
+
 
     useEffect(() => {   
       async function run(){
@@ -184,6 +174,10 @@ export default function MusicPlayer(props){
             
             //setSound(sound)
           dispatch(setSoundOBJ(sound))
+
+
+
+          
             //console.warn(status.durationMillis)
 
           //await TrackPlayer.setupPlayer();
@@ -427,7 +421,7 @@ export default function MusicPlayer(props){
           <ImageBackground style={styles.bgImage} resizeMode='cover' source={ BG_IMAGE}>
           <ModalHeader
             left={<Feather color={colors.greyLight} name="chevron-down" />}
-            leftPress={() => navigation.goBack(null)}
+            leftPress={() => {navigation.goBack(); dispatch(setAudioURI(null))}}
             right={ <Feather onPress={() => setModalVisible(true)} color={colors.greyLight} name="more-horizontal" />}
             text={playListName != undefined ? playListName + " Playlist" : "Downloads"}
           />

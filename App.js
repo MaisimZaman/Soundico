@@ -19,6 +19,7 @@ import PlaylistOptions from './src/screens/CreatePlaylist/PlaylistOptions';
 import { Provider } from 'react-redux';
 import {store} from './services/store'
 import { BG_IMAGE } from './src/services/backgroundImage';
+//import MusicControl from 'react-native-music-control'
 
 
 

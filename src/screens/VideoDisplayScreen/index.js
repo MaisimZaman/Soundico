@@ -120,7 +120,7 @@ export default function VideoDisplay(props) {
 
 
     useEffect(() => {
-        
+        dispatch(setAudioURI(null))
         Audio.setAudioModeAsync({
             allowsRecordingIOS: false,
             staysActiveInBackground: true,
@@ -270,7 +270,7 @@ export default function VideoDisplay(props) {
         <ImageBackground style={styles.bgImage} resizeMode='cover' source={BG_IMAGE}>
         <ModalHeader
           left={<Feather color={colors.greyLight} name="chevron-down" />}
-          leftPress={() => props.navigation.goBack()}
+          leftPress={() => {props.navigation.goBack(); dispatch(setAudioURI(null))}}
           right={ <Feather onPress={() => setModalVisible(true)} color={colors.greyLight} name="more-horizontal" />}
           text={"Preview"}
         />

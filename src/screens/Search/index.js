@@ -34,6 +34,8 @@ export default function Search({navigation}) {
   const [searchOn, setSearchOn] = useState(false)
   const audioURI = useSelector(selectAudioURI)
 
+  console.log(allYTData.length)
+
   
   //useEffect(() => {
   //  searchForVideos()
@@ -138,7 +140,7 @@ export default function Search({navigation}) {
   function searchForVideos(){
     console.log(searchType)
     if (searchType == "Playlists"){
-      Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText} music&type=playlist&key=${API_KEY}`)
+      Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText+'music'}&type=playlist&key=${API_KEY}`)
       .then(res => {
         const ytData = res.data.items;
         setYTData(ytData)
@@ -167,7 +169,7 @@ export default function Search({navigation}) {
       
     }
     else  {
-      Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText + searchType}&key=${API_KEY}`)
+      Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText + 'music'}&type=video&key=${API_KEY}`)
       .then(res => {
         const ytData = res.data.items;
         setYTData(ytData)
@@ -273,12 +275,21 @@ export default function Search({navigation}) {
     <ImageBackground style={styles.image} source={ BG_IMAGE}>
      
     <Container playerOn={audioURI == null ? false : true}>
-      <Title YOffSet={YOffSet} search>
+      <Title  YOffSet={YOffSet} search>
         Search
       </Title>
 
     <TextInput 
-    style={{flexDirection: "row", alignItems: 'center', justifyContent: 'space-evenly', backgroundColor: "#fff", height: 45, width: "94%", borderRadius: 10}}
+    style={{
+    flexDirection: "row", 
+    alignItems: 'center', 
+    //fontFamily: 'OpenSans-Italic' ,
+    justifyContent: 'space-evenly', 
+    backgroundColor: "#fff", 
+    height: 45, 
+    width: "94%", 
+    borderRadius: 10, 
+    marginLeft: "3%"}}
     placeholder={placeholder}
     onChangeText={(text) => setSearchText(text)}
     value={searchText}

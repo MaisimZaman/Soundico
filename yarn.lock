@@ -6626,10 +6626,10 @@ react-native-keyboard-aware-scroll-view@^0.9.5:
     prop-types "^15.6.2"
     react-native-iphone-x-helper "^1.0.3"
 
-react-native-music-control@^1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/react-native-music-control/-/react-native-music-control-1.4.1.tgz#a1212c082f39783ff10befec1ef53cade585933e"
-  integrity sha512-IBiP2Yhb9iUPutXFFfNWKnf+CG/up9oPlMqY6qq1MDlhJ6giMCGQ+qO/Qd5hoDE0ZfxyqShs3CZaSch+oV/2zg==
+react-native-music-control@0.4.13:
+  version "0.4.13"
+  resolved "https://registry.yarnpkg.com/react-native-music-control/-/react-native-music-control-0.4.13.tgz#717a0f77ccda9b324d06e421b145ef21c189bdc0"
+  integrity sha512-x2+TEI/d9e3XiDJ2W53fd4cpCGo1InAJXO7PYrtHamVv28OINSlTxgO7toJ/C0Cde1vjOE1XLd/JU3yWjWd22w==
 
 react-native-reanimated@~2.2.0:
   version "2.2.0"

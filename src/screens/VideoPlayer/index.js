@@ -7,6 +7,7 @@ import { auth, db } from '../../../services/firebase';
 import { BG_IMAGE } from '../../services/backgroundImage';
 //import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
+
 //import * as Permissions from 'expo-permissions';
 
 
@@ -23,6 +24,7 @@ export default function VideoPlayer(props) {
     const [status, setStatus] = useState({});
 
     useEffect(() => {
+        
         Audio.setAudioModeAsync({
             allowsRecordingIOS: false,
             staysActiveInBackground: true,
