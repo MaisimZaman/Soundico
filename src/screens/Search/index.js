@@ -186,12 +186,12 @@ export default function Search({navigation}) {
    
 
     
-    const response = await Axios.get(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=100&playlistId=${playlistId}&key=${API_KEY}`)
+    const response = await Axios.get(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=${API_KEY}`)
     const playlistVideos = response.data.items
     const videoId = playlistVideos[0].snippet.resourceId.videoId
     const videoThumbNail = playlistVideos[0].snippet.thumbnails.high.url
     const videoTitle = playlistVideos[0].snippet.title
-    
+    setCurrentPlaylistData(playlistVideos)
     navigation.navigate("AlbumScreen", {title:videoTitle, photoAlbum: videoThumbNail, playlistVideos: playlistVideos, isCustom: false, searchedVideo: true })
     
 
@@ -200,8 +200,8 @@ export default function Search({navigation}) {
   async function getChannelData(item, channelId){
     const response = await Axios.get(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet,id&order=date&maxResults=20`)
     const channelVideos = response.data.items
-    setCurrentPlaylistData(channelVideos)
-    navigation.navigate("AlbumScreen", {title:item.snippet.title, photoAlbum: item.snippet.thumbnails.high.url, playlistVideos: currentPlaylistData, isCustom: false, searchedVideo: true })
+    //setCurrentPlaylistData(channelVideos)
+    navigation.navigate("AlbumScreen", {title:item.snippet.title, photoAlbum: item.snippet.thumbnails.high.url, playlistVideos: channelVideos, isCustom: false, searchedVideo: true })
   }
 
 
@@ -214,9 +214,11 @@ export default function Search({navigation}) {
       navigation.navigate('VideoScreen', {videoId: item.id,  videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: true })
     }
     else if (searchType ==  "Channel"){
+      
       getChannelData(item, playlistId)
     }
     else {
+      
       navigation.navigate('VideoScreen', {rId: item.id, videoId: item.id.videoId,  videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: true, downloadData: allYTData, isRecently: false })
     }
   }
@@ -228,10 +230,10 @@ export default function Search({navigation}) {
         return (
           <FlatList
             data={allYTData}
-            keyExtractor={(item) => item.etag}
+            keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => searchForType(item, item.id.playlistId)}>
-                <Artist isSearch={true} name={item.snippet.title} photo={item.snippet.thumbnails.high.url}></Artist>
+                <Artist isSearch={false} name={item.snippet.title} photo={item.snippet.thumbnails.high.url}></Artist>
               </TouchableOpacity>
               
             )}
