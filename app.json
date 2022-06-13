@@ -10,6 +10,7 @@
     "plugins": [
       [
         "expo-media-library",
+        
         {
           "photosPermission": "Allow Soundico to access your photos.",
           "savePhotosPermission": "Allow Soundico to save photos.",

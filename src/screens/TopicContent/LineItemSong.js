@@ -9,7 +9,7 @@ const LineItemSong = ({ active=false, downloaded=false, onPress, songData, image
 
   return (
     <View style={styles.container}>
-        <Image source={{ uri: imageUri }} style={{width: 60, height: 60, borderRadius: 10, marginRight: "10%"}} />
+        <Image source={{ uri: imageUri }} style={{width: 80, height: 60, borderRadius: 10, marginRight: "10%"}} />
       <TouchableOpacity
         activeOpacity={gStyle.activeOpacity}
         onPress={onPress}

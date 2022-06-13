@@ -22,7 +22,7 @@ import TouchIcon from "../MusicPlayer/TouchIcon";
 
 
 
-function AlbumScreen(props){
+export default function ChannelScreen(props){
   const {title, photoAlbum,playlistVideos, isCustom, searchedVideo} = props.route.params
   const [albums, setAlbums] = useState(playlistVideos);
   const scrollY = React.useRef(new Animated.Value(0)).current;
@@ -221,13 +221,14 @@ style={styles.containerScroll}
 </Animated.ScrollView>
 </View>
 
+
 )
 
 
   
 };
 
-export default AlbumScreen;
+
 
 const styles = StyleSheet.create({
   blurview: {
@@ -287,6 +288,7 @@ const styles = StyleSheet.create({
     marginBottom: device.web ? 0 : 16,
     width: 148,
     borderRadius: 20
+    
   },
   containerTitle: {
     marginTop: device.web ? 8 : 0,

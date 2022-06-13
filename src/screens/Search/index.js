@@ -19,6 +19,8 @@ import {useSelector} from 'react-redux'
 import { selectAudioURI } from '../../../services/slices/navSlice';
 import Artist from '../../components/Artist';
 
+import LineItemSong from '../TopicContent/LineItemSong';
+
 
 
 
@@ -211,7 +213,8 @@ export default function Search({navigation}) {
       getPlayListData(item, playlistId)
     }
     else if (searchType == "Video Link"){
-      navigation.navigate('VideoScreen', {videoId: item.id,  videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: true })
+      navigation.navigate('VideoScreen', {videoId: item.id,  videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: true, channelId: item.snippet.channelId })
+        
     }
     else if (searchType ==  "Channel"){
       
@@ -219,7 +222,7 @@ export default function Search({navigation}) {
     }
     else {
       
-      navigation.navigate('VideoScreen', {rId: item.id, videoId: item.id.videoId,  videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: true, downloadData: allYTData, isRecently: false })
+      navigation.navigate('VideoScreen', {rId: item.id, videoId: item.id.videoId,  videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: true, downloadData: allYTData, isRecently: false, channelId: item.snippet.channelId })
     }
   }
 
@@ -246,9 +249,21 @@ export default function Search({navigation}) {
           data={allYTData}
           keyExtractor={(item) => item.etag}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => searchForType(item, item.id.playlistId)}>
-              <PodcastShow isSearch={true} name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url}></PodcastShow>
-            </TouchableOpacity>
+                    <LineItemSong
+                //active={song === track.title}
+                //downloaded={downloaded}
+                imageUri={item.snippet.thumbnails.high.url}
+                key={item.id}
+                onPress={() => searchForType(item, item.id.playlistId)}
+                songData={{
+                  album: item.snippet.title,
+                  artist: item.snippet.channelTitle,
+                  image: item.snippet.thumbnails.high.url,
+                  length: 32919,
+                  title: item.snippet.title
+                }}
+              />
+          
             
           )}
         ></FlatList>

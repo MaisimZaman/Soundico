@@ -15,6 +15,7 @@ import AddToPlaylist from './src/screens/CreatePlaylist/AddToPlaylist';
 import AddToMadePlaylist from './src/screens/CreatePlaylist/AddToMadePlayList';
 import TopicContent from './src/screens/TopicContent/TopicContent';
 import PlaylistOptions from './src/screens/CreatePlaylist/PlaylistOptions';
+import ChannelScreen from './src/screens/AlbumScreen/ChannelScreen';
 //import TrackPlayer from 'react-native-track-player';
 import { Provider } from 'react-redux';
 import {store} from './services/store'
@@ -61,19 +62,9 @@ function MainPage(){
 
 export default function App(){
 
-  /*
-  useEffect(() => {
-    
-    async function setUpTrackPlayer(){
-      await TrackPlayer.setupPlayer()
-     
-     TrackPlayer.registerPlaybackService(async () => {});
-    }
-
-    setUpTrackPlayer()
-    
-  },[])
-  */
+  
+  
+  
   
   
   return (
@@ -87,6 +78,7 @@ export default function App(){
           <Stack.Screen name='MusicScreen' component={MusicPlayer}></Stack.Screen>
           <Stack.Screen name='VideoPlayer' component={VideoPlayer}></Stack.Screen>
           <Stack.Screen name='AlbumScreen' component={AlbumScreen}></Stack.Screen>
+          <Stack.Screen name='ChannelScreen' component={ChannelScreen}></Stack.Screen>
           <Stack.Screen name='NamePlaylist' component={NamePlaylist}></Stack.Screen>
           <Stack.Screen name='AddToPlaylist' component={AddToPlaylist}></Stack.Screen>
           <Stack.Screen name='AddToMadePlaylist' component={AddToMadePlaylist}></Stack.Screen>

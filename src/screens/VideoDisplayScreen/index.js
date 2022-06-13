@@ -16,6 +16,10 @@ import { msToTime,  skipBackwardTrack,  skipFowardTrack  } from './handlingfunct
 import RenderModal from './downloadModal';
 //import { styles } from './styles';
 import { styles } from './styles';
+
+import { API_KEY } from '../Search/YoutubeApi';
+
+import Axios from 'axios';
 // components
 import { 
   setIsAudioOnly, 
@@ -42,7 +46,7 @@ import { SECONDARY_BG } from '../../services/backgroundImage';
 export default function VideoDisplay(props) {
     const {width, height} = Dimensions.get("screen");
     const [modalVisible, setModalVisible] = useState(false);
-    const {rId, videoId, videoThumbNail, videoTitle, Search, isPlaylist, isRecently,  artist, downloadData, plInfo, playlistVideos} = props.route.params;
+    const {rId, videoId, videoThumbNail, videoTitle, Search, isPlaylist, isRecently,  artist, downloadData, plInfo, playlistVideos, channelId} = props.route.params;
     const currentVideoID = useSelector(selectAudioID)
     const currentThumbnail = useSelector(selectThumbNail)
     const currentTitle = useSelector(selectTitle)
@@ -98,7 +102,7 @@ export default function VideoDisplay(props) {
         }
 
         main()
-        main()
+        //main()
         
     }, [currentVideoID, currentTitle, videoId])
 
@@ -143,7 +147,8 @@ export default function VideoDisplay(props) {
                 videoThumbNail: videoThumbNail,
                 videoTitle: videoTitle,
                 videoArtist: artist,
-                creation: firebase.firestore.FieldValue.serverTimestamp()
+                creation: firebase.firestore.FieldValue.serverTimestamp(),
+                channelId: channelId
             })
 
         }
@@ -184,7 +189,8 @@ export default function VideoDisplay(props) {
               thumbNail: currentThumbnail,
               title: currentTitle,
               creation: firebase.firestore.FieldValue.serverTimestamp(),
-              channelTitle: artist
+              channelTitle: artist,
+              channelId: channelId
           })
       setDownloadProcessing(false)
   
@@ -255,6 +261,15 @@ export default function VideoDisplay(props) {
   }
 
 
+
+  async function handleNavigteToChannel(item){
+    const response = await Axios.get(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet,id&order=date&maxResults=20`)
+    const channelVideos = response.data.items
+    //setCurrentPlaylistData(channelVideos)
+    props.navigation.navigate("ChannelScreen", {title:currentArtist, photoAlbum: currentThumbnail, playlistVideos: channelVideos, isCustom: false, searchedVideo: true })
+  }
+
+
     async function togglePlayVideo(){
 
       if (status.isPlaying){
@@ -284,14 +299,16 @@ export default function VideoDisplay(props) {
               <Text ellipsizeMode="tail" numberOfLines={1} style={styles.song}>
                 {currentTitle}
               </Text>
-              <Text style={styles.artist}>{currentArtist}</Text>
+              <TouchableOpacity onPress={handleNavigteToChannel}>
+                  <Text  style={styles.artist}>{currentArtist}</Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.containerFavorite}>
               <TouchIcon
                 icon={<FontAwesome color={colors.brandPrimary} name={'heart'} />}
                 onPress={() => null}
               />
-            </View>
+            </View> 
           </View>
 
           <View >
@@ -321,19 +338,19 @@ export default function VideoDisplay(props) {
             <View style={gStyle.flexRowCenterAlign}>
               <TouchIcon
                 icon={<FontAwesome color={colors.white} name="step-backward" />}
-                iconSize={40}
+                iconSize={50}
                 onPress={() => skipBackwardTrack(downloadData, setNewSongData, currentVideoID, isRecently)}
               />
               <View style={gStyle.pH3}>
                 <TouchIcon
                   icon={<FontAwesome color={colors.white} name={iconPlay} />}
-                  iconSize={80}
+                  iconSize={90}
                   onPress={togglePlayVideo}
                 />
               </View>
               <TouchIcon
                 icon={<FontAwesome color={colors.white} name="step-forward" />}
-                iconSize={40}
+                iconSize={50}
                 onPress={() => skipFowardTrack(downloadData,setNewSongData, currentVideoID, isRecently)}
               />
              
