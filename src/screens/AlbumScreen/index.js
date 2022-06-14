@@ -23,7 +23,7 @@ import TouchIcon from "../MusicPlayer/TouchIcon";
 
 
 function AlbumScreen(props){
-  const {title, photoAlbum,playlistVideos, isCustom, searchedVideo} = props.route.params
+  const {title, photoAlbum,playlistVideos, isCustom, searchedVideo, isPlaylist} = props.route.params
   const [albums, setAlbums] = useState(playlistVideos);
   const scrollY = React.useRef(new Animated.Value(0)).current;
   const [showMusicBar, setShowMuiscBar] = useState(true)
@@ -110,6 +110,8 @@ function AlbumScreen(props){
 
     
   }
+
+  
 
   return (
         
@@ -199,18 +201,20 @@ style={styles.containerScroll}
     />
   </View>
 
+
+
   {albums &&
     albums.map((item) => (
       <LineItemSong
         //active={song === track.title}
         //downloaded={downloaded}
-        imageUri={isCustom ? item.data.thumbNail : item.snippet.thumbnails.high.url}
+        imageUri={isCustom ? item.data.thumbNail :  item.snippet.thumbnails.high.url}
         key={item.id}
         onPress={() => navigateToMusicPlayer(item)}
         songData={{
           album: title,
           artist: isCustom ? item.data.channelTitle:  item.snippet.channelTitle,
-          image: isCustom ? item.data.thumbNail : item.snippet.thumbnails.high.url,
+          image: isCustom ? item.data.thumbNail :  item.snippet.thumbnails.high.url,
           length: 32919,
           title: isCustom ? item.data.title : item.snippet.title
         }}

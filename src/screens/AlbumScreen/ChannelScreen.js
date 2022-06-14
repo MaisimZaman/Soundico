@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     height: 148,
     marginBottom: device.web ? 0 : 16,
     width: 148,
-    borderRadius: 20
+    borderRadius: 100
     
   },
   containerTitle: {

@@ -266,7 +266,7 @@ export default function VideoDisplay(props) {
     const response = await Axios.get(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet,id&order=date&maxResults=20`)
     const channelVideos = response.data.items
     //setCurrentPlaylistData(channelVideos)
-    props.navigation.navigate("ChannelScreen", {title:currentArtist, photoAlbum: currentThumbnail, playlistVideos: channelVideos, isCustom: false, searchedVideo: true })
+    props.navigation.replace("ChannelScreen", {title:currentArtist, photoAlbum: currentThumbnail, playlistVideos: channelVideos, isCustom: false, searchedVideo: true })
   }
 
 
@@ -338,19 +338,19 @@ export default function VideoDisplay(props) {
             <View style={gStyle.flexRowCenterAlign}>
               <TouchIcon
                 icon={<FontAwesome color={colors.white} name="step-backward" />}
-                iconSize={50}
+                iconSize={45}
                 onPress={() => skipBackwardTrack(downloadData, setNewSongData, currentVideoID, isRecently)}
               />
               <View style={gStyle.pH3}>
                 <TouchIcon
                   icon={<FontAwesome color={colors.white} name={iconPlay} />}
-                  iconSize={90}
+                  iconSize={85}
                   onPress={togglePlayVideo}
                 />
               </View>
               <TouchIcon
                 icon={<FontAwesome color={colors.white} name="step-forward" />}
-                iconSize={50}
+                iconSize={45}
                 onPress={() => skipFowardTrack(downloadData,setNewSongData, currentVideoID, isRecently)}
               />
              

@@ -194,16 +194,17 @@ export default function Search({navigation}) {
     const videoThumbNail = playlistVideos[0].snippet.thumbnails.high.url
     const videoTitle = playlistVideos[0].snippet.title
     setCurrentPlaylistData(playlistVideos)
-    navigation.navigate("AlbumScreen", {title:videoTitle, photoAlbum: videoThumbNail, playlistVideos: playlistVideos, isCustom: false, searchedVideo: true })
+    navigation.navigate("AlbumScreen", {title:videoTitle, photoAlbum: videoThumbNail, playlistVideos: playlistVideos, isCustom: false, searchedVideo: true, isPlaylist: true })
     
 
   }
 
   async function getChannelData(item, channelId){
+    console.warn(channelId)
     const response = await Axios.get(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet,id&order=date&maxResults=20`)
     const channelVideos = response.data.items
     //setCurrentPlaylistData(channelVideos)
-    navigation.navigate("AlbumScreen", {title:item.snippet.title, photoAlbum: item.snippet.thumbnails.high.url, playlistVideos: channelVideos, isCustom: false, searchedVideo: true })
+    navigation.navigate("ChannelScreen", {title:item.snippet.title, photoAlbum: item.snippet.thumbnails.high.url, playlistVideos: channelVideos, isCustom: false, searchedVideo: true })
   }
 
 
@@ -228,6 +229,7 @@ export default function Search({navigation}) {
 
 
   function renderSearches(){
+    
     if (searchOn){
       if (searchType == 'Channel'){
         return (
@@ -235,7 +237,7 @@ export default function Search({navigation}) {
             data={allYTData}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => searchForType(item, item.id.playlistId)}>
+              <TouchableOpacity onPress={() => searchForType(item, item.snippet.channelId)}>
                 <Artist isSearch={false} name={item.snippet.title} photo={item.snippet.thumbnails.high.url}></Artist>
               </TouchableOpacity>
               
