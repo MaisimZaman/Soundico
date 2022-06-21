@@ -6,11 +6,9 @@
     "slug": "musiccoapp",
     "privacy": "public",
     "version": "0.0.1",
-    "sdkVersion": "42.0.0",
     "plugins": [
       [
         "expo-media-library",
-        
         {
           "photosPermission": "Allow Soundico to access your photos.",
           "savePhotosPermission": "Allow Soundico to save photos.",
@@ -39,7 +37,6 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        
         "UIBackgroundModes": [
           "audio"
         ]

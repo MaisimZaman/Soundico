@@ -78,6 +78,8 @@ function AlbumScreen(props){
 
  function navigateToMusicPlayer(item){
 
+  
+
     if (isCustom){
       props.navigation.navigate("MusicScreen", 
       {

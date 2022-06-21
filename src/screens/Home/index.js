@@ -22,11 +22,34 @@ export default function Home({navigation}) {
   const [madeForYou, setMadeForYou] = useState([]);
   const [popularPlaylists, setPopularPlaylists] = useState([]);
   const [yourPlaylists, setYourPlaylists] = useState([]);
+  const [recordList, setRecordList] = useState([])
   //const [currentPlaylistData, setCurrentPlaylistData] = useState([])
+
+
+  useEffect(() => {
+    var docRef = db.collection("searchRecord").doc(auth.currentUser.uid);
+
+    docRef.get().then((doc) => {
+      if (doc.exists) {
+
+          setRecordList(doc.data().recordList)
+          
+      } else {
+         setRecordList([])
+        
+      }
+  }).catch((error) => {
+      console.log("Error getting document:", error);
+  });
+  }, [])
+
+
+  
 
 
 
   useEffect(() => {
+
     const searches = ["Elon Musk",   "millionaire mindset speach",  'motivational videos']
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
     Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText}&key=${API_KEY}`)
@@ -40,7 +63,14 @@ export default function Home({navigation}) {
   }, [navigation])
 
   useEffect(() => {
-    const searches = ["Space", "Car bass", "aviation short", "clasical", "Adventure"]
+    let searches;
+
+    if (recordList.length == 0){
+      searches = ["Space", "Car bass", "aviation short", "clasical", "Adventure"]
+    } else {
+      searches = recordList
+    }
+    
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
     Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText}Music&key=${API_KEY}`)
       .then(res => {

@@ -21,6 +21,8 @@ import Artist from '../../components/Artist';
 
 import LineItemSong from '../TopicContent/LineItemSong';
 
+import { auth, db } from '../../../services/firebase';
+
 
 
 
@@ -34,6 +36,9 @@ export default function Search({navigation}) {
   const [placeholder, setPlaceholder] = useState('Search for Music')
   const [searchType, setSearchType] = useState('Music')
   const [searchOn, setSearchOn] = useState(false)
+  const [createNewRecord, setCreateNewRecord] = useState(true)
+  const [recordList, setRecordList] = useState([])
+  const [searchHit, setSearchHit] = useState(false)
   const audioURI = useSelector(selectAudioURI)
 
   console.log(allYTData.length)
@@ -47,7 +52,52 @@ export default function Search({navigation}) {
     if (searchText == ''){
       setSearchOn(false)
     }
+
+    
   }, [searchText])
+
+
+  useEffect(() => {
+    var docRef = db.collection("searchRecord").doc(auth.currentUser.uid);
+
+    docRef.get().then((doc) => {
+      if (doc.exists) {
+
+          setRecordList(doc.data().recordList)
+          setCreateNewRecord(false)
+      } else {
+         setRecordList([])
+         setCreateNewRecord(true)
+      }
+  }).catch((error) => {
+      console.log("Error getting document:", error);
+  });
+
+
+    function addToReccomendeds(){
+
+      if (!createNewRecord){
+        db.collection('searchRecord')
+            .doc(auth.currentUser.uid)
+            .update({
+                recordList:[...recordList, searchText] 
+            })
+      } else {
+        db.collection('searchRecord')
+            .doc(auth.currentUser.uid)
+            .set({
+                recordList:[searchText] 
+            })
+      }
+      
+    }
+
+
+    if (searchText != ""){
+      addToReccomendeds()
+    }
+    
+  }, [searchHit])
 
   useEffect(() => {
     if (searchType == 'Music'){
@@ -140,6 +190,7 @@ export default function Search({navigation}) {
 
 
   function searchForVideos(){
+    setSearchHit(!searchHit)
     console.log(searchType)
     if (searchType == "Playlists"){
       Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText+'music'}&type=playlist&key=${API_KEY}`)
