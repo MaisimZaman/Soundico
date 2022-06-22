@@ -23,7 +23,7 @@ import TouchIcon from "../MusicPlayer/TouchIcon";
 
 
 function AlbumScreen(props){
-  const {title, photoAlbum,playlistVideos, isCustom, searchedVideo, isPlaylist} = props.route.params
+  const {title, photoAlbum,playlistVideos, isCustom, searchedVideo, isPlaylist, channelId} = props.route.params
   const [albums, setAlbums] = useState(playlistVideos);
   const scrollY = React.useRef(new Animated.Value(0)).current;
   const [showMusicBar, setShowMuiscBar] = useState(true)
@@ -68,7 +68,9 @@ function AlbumScreen(props){
                   artist: albums[randomTrack].snippet.channelTitle, 
                   Search: false, 
                   downloadData: albums, 
-                  isRecently: false })
+                  isRecently: false,
+                  channelId: channelId
+                 })
       }
 
       
@@ -97,7 +99,7 @@ function AlbumScreen(props){
     else {
       props.navigation.navigate('VideoScreen', { 
       rId: item.id, 
-      videoId: !isCustom ? item.id.videoId :  item.snippet.resourceId.videoId, 
+      videoId: !isCustom ? item.id.videoId :  item.id.videoId, 
       videoThumbNail:!isCustom ? item.snippet.thumbnails.high.url : item.data.thumbNail, 
       videoTitle: item.snippet.title, 
       artist: !isCustom ?  item.snippet.channelTitle : item.data.channelTitle, 

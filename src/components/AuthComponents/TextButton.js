@@ -17,6 +17,8 @@ const TextButton = ({
             style={{
                 alignItems: 'center',
                 justifyContent: 'center',
+                borderRadius: 20,
+                
                 backgroundColor: COLORS.primary,
                 ...contentContainerStyle
             }}

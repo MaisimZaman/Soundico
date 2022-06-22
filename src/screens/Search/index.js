@@ -77,17 +77,37 @@ export default function Search({navigation}) {
     function addToReccomendeds(){
 
       if (!createNewRecord){
-        db.collection('searchRecord')
+
+        if (searchType == 'Playlists'){
+          db.collection('searchRecord')
+            .doc(auth.currentUser.uid)
+            .update({
+                playListRecordList:[...recordList, searchText] 
+            })
+        }
+        else {
+          db.collection('searchRecord')
             .doc(auth.currentUser.uid)
             .update({
                 recordList:[...recordList, searchText] 
             })
+        }
+        
       } else {
-        db.collection('searchRecord')
+        if (searchType == 'Playlists'){
+          db.collection('searchRecord')
+            .doc(auth.currentUser.uid)
+            .set({
+              playListRecordList:[searchText] 
+            })
+        } else {
+          db.collection('searchRecord')
             .doc(auth.currentUser.uid)
             .set({
                 recordList:[searchText] 
             })
+        }
+        
       }
       
     }
@@ -244,8 +264,8 @@ export default function Search({navigation}) {
     const videoId = playlistVideos[0].snippet.resourceId.videoId
     const videoThumbNail = playlistVideos[0].snippet.thumbnails.high.url
     const videoTitle = playlistVideos[0].snippet.title
-    setCurrentPlaylistData(playlistVideos)
-    navigation.navigate("AlbumScreen", {title:videoTitle, photoAlbum: videoThumbNail, playlistVideos: playlistVideos, isCustom: false, searchedVideo: true, isPlaylist: true })
+    //setCurrentPlaylistData(playlistVideos)
+    navigation.navigate("AlbumScreen", {title:videoTitle, photoAlbum: videoThumbNail, playlistVideos: playlistVideos, isCustom: false, searchedVideo: true, isPlaylist: true, channelId: item.snippet.channelId })
     
 
   }
@@ -255,7 +275,7 @@ export default function Search({navigation}) {
     const response = await Axios.get(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet,id&order=date&maxResults=20`)
     const channelVideos = response.data.items
     //setCurrentPlaylistData(channelVideos)
-    navigation.navigate("ChannelScreen", {title:item.snippet.title, photoAlbum: item.snippet.thumbnails.high.url, playlistVideos: channelVideos, isCustom: false, searchedVideo: true })
+    navigation.navigate("ChannelScreen", {title:item.snippet.title, photoAlbum: item.snippet.thumbnails.high.url, playlistVideos: channelVideos, isCustom: false, searchedVideo: true, channelId: item.snippet.channelId })
   }
 
 
@@ -377,18 +397,20 @@ export default function Search({navigation}) {
                     keyExtractor={item => `TopSearches-${item.id}`}
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{
-                        marginTop: 12
+                        marginTop: 15
                     }}
                     renderItem={({ item, index }) => (
                         <TextButton
                             label={item.name}
                             onPress={() => setSearchType(item.name)}
                             contentContainerStyle={{
-                                paddingVertical: 12,
+                                paddingVertical: 8,
                                 paddingHorizontal: 14,
                                 marginLeft: index == 0 ? 14 : 12,
                                 marginRight: index == searchTypes.length - 1 ? 14 : 0,
-                                borderRadius: 12,
+                                borderRadius: 60,
+                                //height: "45%",
+                                
                                 backgroundColor: "#E5E5E5"
                             }}
                             labelStyle={{

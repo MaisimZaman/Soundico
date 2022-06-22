@@ -101,7 +101,7 @@ function MyTabs(){
           options={{
             tabBarLabel: "Profile",
             tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name='face-profile' color={color} size={28} />
+              <MaterialCommunityIcons name='face-man' color={color} size={28} />
             )
           }}
         />

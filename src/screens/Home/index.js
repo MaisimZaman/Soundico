@@ -23,6 +23,7 @@ export default function Home({navigation}) {
   const [popularPlaylists, setPopularPlaylists] = useState([]);
   const [yourPlaylists, setYourPlaylists] = useState([]);
   const [recordList, setRecordList] = useState([])
+  const [playListRecordList, setPlayListRecordList] = useState([])
   //const [currentPlaylistData, setCurrentPlaylistData] = useState([])
 
 
@@ -32,10 +33,17 @@ export default function Home({navigation}) {
     docRef.get().then((doc) => {
       if (doc.exists) {
 
+        if (doc.data().recordList!= undefined){
           setRecordList(doc.data().recordList)
+        }
+        if (doc.data().playListRecordList != undefined){
+          setPlayListRecordList(doc.data().playListRecordList)
+        }
+          
           
       } else {
          setRecordList([])
+         setPlayListRecordList([])
         
       }
   }).catch((error) => {
@@ -80,10 +88,16 @@ export default function Home({navigation}) {
         
     })
 
-  }, [navigation])
+  }, [navigation, recordList])
 
   useEffect(() => {
-    const searches = ["Car Music",   "Space Music"]
+    let searches;
+    if (playListRecordList.length == 0){
+       searches = ["Car Music",   "Relaxing Music", "Adventure Music", "Study Music"]
+    } else {
+      searches = playListRecordList
+    }
+    
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
     Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText}&type=playlist&key=${API_KEY}`)
       .then(res => {
@@ -96,7 +110,7 @@ export default function Home({navigation}) {
         
     })
 
-  }, [navigation])
+  }, [navigation, playListRecordList])
 
   useEffect(() => {
     let unsubscribe = db.collection('playlists')
