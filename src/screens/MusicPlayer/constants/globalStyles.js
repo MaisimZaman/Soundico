@@ -7,7 +7,7 @@ const spaceGrid = 8;
 export default {
   activeOpacity: 0.7,
   container: {
-    backgroundColor: colors.blackBg,
+    backgroundColor: "#1c1c26",
     flex: 1
   },
   containerAbsolute: {
@@ -66,7 +66,7 @@ export default {
   textSpotifyBold18: { fontFamily: fonts.spotifyBold, fontSize: 18 },
   textSpotifyBold20: { fontFamily: fonts.spotifyBold, fontSize: 20 },
   textSpotifyBold22: { fontFamily: fonts.spotifyBold, fontSize: 22 },
-  textSpotifyBold24: { fontFamily: fonts.spotifyBold, fontSize: 24 },
+  textSpotifyBold24: { fontFamily: fonts.spotifyBold, fontSize: 26 },
 
   // spacers
   // ///////////////////////////////////////////////////////////////////////////

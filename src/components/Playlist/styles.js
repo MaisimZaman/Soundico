@@ -16,7 +16,7 @@ export const Image = styled.Image.attrs({
   align-self: center;
   background: #80808055;
   margin: 10px 20px 5px;
-  border-radius: 20px;
+  border-radius: 10px;
 `;
 
 export const InformationContainer = styled.View`

@@ -14,7 +14,7 @@ import { useDispatch } from 'react-redux';
 import { setThumbNail,  setAudioURI, setTitle, setAudioID, setDownloadData, setSoundOBJ, setSoundStatus, setIsAudioOnly, setAuthor, selectAuthor} from '../../../services/slices/navSlice';
 import { useSelector } from 'react-redux';
 import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectSoundOBJ, selectSoundStatus} from '../../../services/slices/navSlice';
-import { BG_IMAGE } from '../../services/backgroundImage';
+import { BG_IMAGE, SECONDARY_BG } from '../../services/backgroundImage';
 import ytdl from 'react-native-ytdl';
 import { convertTime } from './helpers';
 import { auth, db } from '../../../services/firebase';
@@ -418,7 +418,7 @@ export default function MusicPlayer(props){
     return (
       
         <View style={gStyle.container}>
-          <ImageBackground style={styles.bgImage} resizeMode='cover' source={ BG_IMAGE}>
+          <ImageBackground style={styles.bgImage} resizeMode='cover' source={BG_IMAGE}>
           <ModalHeader
             left={<Feather color={colors.greyLight} name="chevron-down" />}
             leftPress={() => {navigation.goBack(); dispatch(setAudioURI(null))}}

@@ -60,12 +60,9 @@ function MainPage(){
   );
 }
 
-export default function App(){
 
-  
-  
-  
-  
+
+export default function App(){
   
   return (
     <Provider store={store}>

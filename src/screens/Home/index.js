@@ -12,7 +12,7 @@ import { API_KEY } from '../Search/YoutubeApi';
 import { Container, Title } from './styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { auth, db } from '../../../services/firebase';
-import { BG_IMAGE } from '../../services/backgroundImage';
+import { BG_IMAGE, SECONDARY_BG } from '../../services/backgroundImage';
 
 
 export default function Home({navigation}) {
@@ -83,6 +83,7 @@ export default function Home({navigation}) {
     Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText}Music&key=${API_KEY}`)
       .then(res => {
         const madeForYou = res.data.items;
+        //console.log(madeForYou)
         setMadeForYou(madeForYou)
         
         

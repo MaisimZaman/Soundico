@@ -5,7 +5,7 @@ import {db, auth} from '../../../services/firebase'
 import firebase from 'firebase'
 
 import { Audio, Video } from 'expo-av';
-import { BG_IMAGE } from '../../services/backgroundImage';
+import { BG_IMAGE, SECONDARY_BG } from '../../services/backgroundImage';
 
 import ModalHeader from '../MusicPlayer/ModalHeader';
 import { Feather, FontAwesome, MaterialIcons } from '@expo/vector-icons';
@@ -38,9 +38,6 @@ import {
 } from '../../../services/slices/navSlice';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { SECONDARY_BG } from '../../services/backgroundImage';
-
-
 
 
 export default function VideoDisplay(props) {
@@ -56,7 +53,7 @@ export default function VideoDisplay(props) {
     const [recentlyPlayed, setRecentlyPlayed] = useState([])
     const [downloadProcessing, setDownloadProcessing] = useState(false)
     const playingVideo  = useSelector(selectAudioURI);
-    
+    const [channelThumnail, setChannelThumbail] = useState('')
     //const [playingVideo, setPlayingVideo] = useState('null')
     const iconPlay = status.isPlaying ?   'pause-circle' : 'play-circle';
     
@@ -67,7 +64,7 @@ export default function VideoDisplay(props) {
     const dispatch = useDispatch()
 
     
-  console.log(playingVideo)
+  
 
 
 
@@ -89,7 +86,19 @@ export default function VideoDisplay(props) {
     
   }, [])
 
+
     useEffect(() => {
+      Axios.get(`https://youtube.googleapis.com/youtube/v3/channels?part=snippet&id=${channelId}&key=${API_KEY}`)
+      .then(res => {
+        const channelThumnail = res.data.items[0].snippet.thumbnails.high.url;
+        console.log(channelThumnail)
+        setChannelThumbail(channelThumnail)
+        
+      })
+    }, [currentVideoID, currentTitle, videoId])
+
+    useEffect(() => {
+      
 
         async function main(){
           setCurrentPosition(0)
@@ -99,6 +108,7 @@ export default function VideoDisplay(props) {
           //setPlayingVideo(audioFormats[0].url);
          
           dispatch(setAudioURI(audioFormats[0].url))
+          await video.current.playAsync()
         }
 
         main()
@@ -124,7 +134,7 @@ export default function VideoDisplay(props) {
 
 
     useEffect(() => {
-        dispatch(setAudioURI(null))
+        //dispatch(setAudioURI(null))
         Audio.setAudioModeAsync({
             allowsRecordingIOS: false,
             staysActiveInBackground: true,
@@ -263,10 +273,12 @@ export default function VideoDisplay(props) {
 
 
   async function handleNavigteToChannel(item){
+    
+        
     const response = await Axios.get(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet,id&order=date&maxResults=20`)
-    const channelVideos = response.data.items
-    //setCurrentPlaylistData(channelVideos)
-    props.navigation.replace("ChannelScreen", {title:currentArtist, photoAlbum: currentThumbnail, playlistVideos: channelVideos, isCustom: false, searchedVideo: true })
+    const channelVideos = response.data
+    console.log(channelThumnail)
+    props.navigation.replace("ChannelScreen", {title:currentArtist, photoAlbum:channelThumnail , playlistVideos: channelVideos.items, isCustom: false, searchedVideo: true })
   }
 
 
@@ -282,12 +294,13 @@ export default function VideoDisplay(props) {
 
      return (
         <View style={gStyle.container}>
-        <ImageBackground style={styles.bgImage} resizeMode='cover' source={BG_IMAGE}>
+        <ImageBackground source={BG_IMAGE}  style={styles.bgImage}>
         <ModalHeader
           left={<Feather color={colors.greyLight} name="chevron-down" />}
           leftPress={() => {props.navigation.goBack(); dispatch(setAudioURI(null))}}
           right={ <Feather onPress={() => setModalVisible(true)} color={colors.greyLight} name="more-horizontal" />}
-          text={"Preview"}
+          text={"Now Playing"}
+          
         />
 
 
@@ -313,15 +326,13 @@ export default function VideoDisplay(props) {
 
           <View >
             <Slider
+         
               minimumValue={0}
               maximumValue={status.durationMillis}
               value={status.positionMillis}
               minimumTrackTintColor={colors.white}
               maximumTrackTintColor={colors.grey3}
               onSlidingComplete={ (millis) =>  {video.current.setPositionAsync(millis); setCurrentPosition(millis)}}
-              
-              
-              
               
             />
             <View style={styles.containerTime}>
@@ -376,7 +387,7 @@ export default function VideoDisplay(props) {
         </View>
         
              <RenderModal setDownloadProcessing={setDownloadProcessing} downloadProcessing={downloadProcessing}  modalVisible={modalVisible}  setModalVisible={setModalVisible} isPlaylist={isPlaylist} saveAudioData={saveAudioData} saveAudioPodCastData={saveAudioPodCastData} currentVideoID={currentVideoID[1]} saveVideoData={saveVideoData} savePlaylistData={savePlaylistData} ></RenderModal>
-        </ImageBackground>
+             </ImageBackground>
       </View>
       
     );

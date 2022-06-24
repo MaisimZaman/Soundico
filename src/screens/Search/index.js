@@ -100,7 +100,7 @@ export default function Search({navigation}) {
             .set({
               playListRecordList:[searchText] 
             })
-        } else {
+        } else if (searchType != "Video Link") {
           db.collection('searchRecord')
             .doc(auth.currentUser.uid)
             .set({

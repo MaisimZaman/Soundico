@@ -145,10 +145,10 @@ export default function ChannelScreen(props){
 
 <View style={styles.containerFixed}>
 <View style={styles.containerLinear}>
-<LinearGradient fill={"#555f66"} />
+<Image source={{uri: photoAlbum}}  style={{height: 400, width: 350}}></Image>
 </View>
 <View style={styles.containerImage}>
-<Image source={{uri: photoAlbum}} style={styles.image} />
+
 </View>
 <View style={styles.containerTitle}>
   <Text ellipsizeMode="tail" numberOfLines={1} style={styles.title}>
@@ -156,9 +156,7 @@ export default function ChannelScreen(props){
   </Text>
 </View>
 <View style={styles.containerAlbum}>
-  <Text style={styles.albumInfo}>
-    {`Album by ${"unknown"} · ${2009}`}
-  </Text>
+  
 </View>
 </View>
 
@@ -261,6 +259,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     marginTop: 2,
     paddingHorizontal: 8,
+  
     textAlign: 'center',
     width: device.width - 100
   },
