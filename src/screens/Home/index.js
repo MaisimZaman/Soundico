@@ -33,6 +33,8 @@ export default function Home({navigation}) {
     docRef.get().then((doc) => {
       if (doc.exists) {
 
+        
+
         if (doc.data().recordList!= undefined){
           setRecordList(doc.data().recordList)
         }
@@ -156,7 +158,7 @@ export default function Home({navigation}) {
         
         
         
-        navigation.navigate("AlbumScreen", {title:videoTitle, photoAlbum: videoThumbNail, playlistVideos: playlistVideos, isCustom: false })
+        navigation.navigate("AlbumScreen", {title:videoTitle, photoAlbum: videoThumbNail, playlistVideos: playlistVideos, isCustom: false, isPlaylist: true })
       
       }
 

@@ -241,8 +241,14 @@ export default function Search({navigation}) {
         
       
     }
-    else  {
+    else if (searchType == 'Music') {
       Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText + 'music'}&type=video&key=${API_KEY}`)
+      .then(res => {
+        const ytData = res.data.items;
+        setYTData(ytData)
+      })
+    } else {
+      Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText}&type=video&key=${API_KEY}`)
       .then(res => {
         const ytData = res.data.items;
         setYTData(ytData)

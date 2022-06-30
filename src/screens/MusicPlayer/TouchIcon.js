@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { TouchableOpacity } from 'react-native';
 import { gStyle } from './constants';
 
-const TouchIcon = ({ icon, iconSize, onPress, style }) => {
+const TouchIcon = ({ icon, iconSize, onPress, style, disabled }) => {
   return (
     <TouchableOpacity
     activeOpacity={gStyle.activeOpacity}
     onPress={onPress}
+    disabled={disabled}
     hitSlop={{ bottom: 5, left: 5, right: 5, top: 5 }}
     style={[gStyle.flexCenter, style]}
   >

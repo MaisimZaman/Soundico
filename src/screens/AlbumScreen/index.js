@@ -28,6 +28,8 @@ function AlbumScreen(props){
   const scrollY = React.useRef(new Animated.Value(0)).current;
   const [showMusicBar, setShowMuiscBar] = useState(true)
 
+  console.log(albums[0])
+
   const stickyArray = device.web ? [] : [0];
     const headingRange = device.web ? [140, 200] : [230, 280];
     const shuffleRange = device.web ? [40, 80] : [40, 80];
@@ -62,7 +64,7 @@ function AlbumScreen(props){
         props.navigation.navigate('VideoScreen', 
                 {
                   rId: albums[randomTrack].id, 
-                  videoId: albums[randomTrack].id.videoId,  
+                  videoId: isPlaylist ? albums[randomTrack].snippet.resourceId.videoId : albums[randomTrack].id.videoId,  
                   videoThumbNail:albums[randomTrack].snippet.thumbnails.high.url, 
                   videoTitle: albums[randomTrack].snippet.title, 
                   artist: albums[randomTrack].snippet.channelTitle, 
@@ -79,6 +81,9 @@ function AlbumScreen(props){
     }
 
  function navigateToMusicPlayer(item){
+
+    //console.warn(item.snippet.resourceId.videoId)
+    //console.log(item.snippet.resourceId.videoId)
 
   
 
@@ -99,13 +104,14 @@ function AlbumScreen(props){
     else {
       props.navigation.navigate('VideoScreen', { 
       rId: item.id, 
-      videoId: !isCustom ? item.id.videoId :  item.id.videoId, 
+      videoId: !isCustom ? item.snippet.resourceId.videoId :  item.id.videoId, 
       videoThumbNail:!isCustom ? item.snippet.thumbnails.high.url : item.data.thumbNail, 
       videoTitle: item.snippet.title, 
       artist: !isCustom ?  item.snippet.channelTitle : item.data.channelTitle, 
       Search: false, 
       isRecently: false, 
-      downloadData: albums
+      downloadData: albums,
+      isPlaylist: isPlaylist
     })
      
 

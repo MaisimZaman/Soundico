@@ -4,6 +4,7 @@ const initialState = {
     thumbNail: null,
     audioURI: null,
     title: null,
+    channelId: null,
     audioID: [null, null],
     author: "unknown",
     downloadData: null,
@@ -45,12 +46,27 @@ export const navSlice = createSlice({
         setAuthor: (state, action) => {
             state.author = action.payload;
         },
+        setChannelId: (state, action) => {
+            state.channelId = action.payload;
+        },
         
     },
 
 });
 
-export const {setThumbNail, setAudioURI, setTitle, setAudioID, setDownloadData, setSoundOBJ, setSoundStatus, setIsAudioOnly, setAuthor} = navSlice.actions;
+export const {
+    setThumbNail, 
+    setAudioURI, 
+    setTitle, 
+    setAudioID, 
+    setDownloadData, 
+    setSoundOBJ, 
+    setSoundStatus, 
+    setIsAudioOnly, 
+    setAuthor, 
+    setChannelId
+
+} = navSlice.actions;
 
 export const selectThumbNail = (state) => state.nav.thumbNail
 
@@ -69,6 +85,8 @@ export const selectSoundStatus = (state) => state.nav.soundStatus
 export const selectIsAudioOnly = (state) => state.nav.isAudioOnly
 
 export const selectAuthor = (state) => state.nav.author
+
+export const selectChannelId = (state) => state.nav.channelId
 
 const navReducer = navSlice.reducer
 

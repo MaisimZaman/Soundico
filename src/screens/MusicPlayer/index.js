@@ -211,6 +211,8 @@ export default function MusicPlayer(props){
         playThroughEarpieceAndroid: false,
         
      });
+
+    
      
      setNewSongData(thumbNail, audioURI, title,audioID, artist)
       dispatch(setDownloadData(downloadData))

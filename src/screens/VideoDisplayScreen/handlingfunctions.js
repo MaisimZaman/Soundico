@@ -20,7 +20,7 @@ export function msToTime(s) {
 
 
 
-export function skipFowardTrack(downloadData, setNewSongData, currentID, isRecently){
+export function skipFowardTrack(downloadData, setNewSongData, currentID, isRecently, isPlaylist){
     const index = downloadData.findIndex(object => {
       return object.id === currentID[0];
     });
@@ -32,7 +32,7 @@ export function skipFowardTrack(downloadData, setNewSongData, currentID, isRecen
         const forwardThumbNail =  downloadData[index + 1].data.videoThumbNail
         const forwardAudioURI = null
         const forwardTitle = downloadData[index + 1].data.videoTitle
-        const forwardID = [downloadData[index + 1].id, downloadData[index + 1].data.videoId]
+        const forwardID = [downloadData[index + 1].id,  downloadData[index + 1].data.videoId]
         const forwardArtist = downloadData[index + 1].data.videoArtist
         setNewSongData(forwardThumbNail, forwardAudioURI, forwardTitle, forwardID, forwardArtist)
        }
@@ -40,7 +40,7 @@ export function skipFowardTrack(downloadData, setNewSongData, currentID, isRecen
         const forwardThumbNail =  downloadData[index + 1].snippet.thumbnails.high.url
         const forwardAudioURI = null
         const forwardTitle = downloadData[index + 1].snippet.title
-        const forwardID = [downloadData[index + 1].id, downloadData[index + 1].id.videoId]
+        const forwardID = [downloadData[index + 1].id, isPlaylist ? downloadData[index + 1].snippet.resourceId.videoId : downloadData[index + 1].id.videoId]
         const forwardArtist = downloadData[index + 1].snippet.channelTitle
         setNewSongData(forwardThumbNail, forwardAudioURI, forwardTitle, forwardID, forwardArtist)
        }
@@ -56,7 +56,7 @@ export function skipFowardTrack(downloadData, setNewSongData, currentID, isRecen
   }
 
 
-export function skipBackwardTrack(downloadData, setNewSongData, currentID, isRecently){
+export function skipBackwardTrack(downloadData, setNewSongData, currentID, isRecently, isPlaylist){
     const index = downloadData.findIndex(object => {
         return object.id === currentID[0];
     });
@@ -75,7 +75,7 @@ export function skipBackwardTrack(downloadData, setNewSongData, currentID, isRec
             const backwardThumbNail =  downloadData[index - 1].snippet.thumbnails.high.url
             const backwardAudioURI = null
             const backwardTitle = downloadData[index - 1].snippet.title
-            const backwardID = [downloadData[index - 1].id, downloadData[index - 1].id.videoId]
+            const backwardID = [downloadData[index - 1].id, isPlaylist ? downloadData[index - 1].snippet.resourceId.videoId : downloadData[index - 1].id.videoId]
             const backwardArtist = downloadData[index - 1].snippet.channelTitle
             setNewSongData(backwardThumbNail, backwardAudioURI, backwardTitle, backwardID, backwardArtist)
            }

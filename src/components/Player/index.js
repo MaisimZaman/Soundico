@@ -23,7 +23,7 @@ import { useSelector } from 'react-redux';
 import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectDownloadData, selectSoundStatus, selectAuthor, selectIsAudioOnly} from '../../../services/slices/navSlice';
 
 
-export default function Player({navigation, soundOBj}) {
+export default function Player({navigation}) {
   const [playMusic, setPlayMusic] = useState(true);
   //const soundOBj = useSelector(selectSoundOBJ)
   
@@ -58,25 +58,7 @@ export default function Player({navigation, soundOBj}) {
  
  
 
-  useEffect(() => {
-    async function main(){
-      if (playMusic){
-        
-
-    
-        await soundOBj.playAsync(); 
-      }
-      else if (soundOBj != null && playMusic == false){
-       soundOBj.pauseAsync()
-    
-      }
-
-    }
-
-    main()
-    
-
-  }, [playMusic, audioID, soundOBj])
+ 
 
   //useEffect (() => {
     //return soundOBj

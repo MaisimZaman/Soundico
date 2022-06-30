@@ -12,7 +12,7 @@ export default function CustomTabBar(props) {
   function renderPlayer(){
     if (audioExists != null){
       return (
-        <Player navigation={props.navigation} soundOBj={sound}/>
+        <Player navigation={props.navigation} />
       )
     }
 

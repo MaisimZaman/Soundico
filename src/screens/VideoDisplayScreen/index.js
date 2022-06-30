@@ -29,15 +29,19 @@ import {
   setTitle, 
   setSoundStatus, 
   setAudioURI, 
+  setChannelId,
   selectThumbNail, 
   selectAudioID, 
   selectTitle,
   selectAudioURI,
   setDownloadData,
-  selectAuthor
+  selectAuthor,
+  selectChannelId,
+  selectDownloadData
 } from '../../../services/slices/navSlice';
 
 import { useDispatch, useSelector } from 'react-redux';
+
 
 
 export default function VideoDisplay(props) {
@@ -48,6 +52,8 @@ export default function VideoDisplay(props) {
     const currentThumbnail = useSelector(selectThumbNail)
     const currentTitle = useSelector(selectTitle)
     const currentArtist = useSelector(selectAuthor)
+    const currentChannelId = useSelector(selectChannelId)
+    const currentDownloadData = useSelector(selectDownloadData)
     const [currentPosition, setCurrentPosition] = useState(0)
     const [status, setStatus] = useState(0);
     const [recentlyPlayed, setRecentlyPlayed] = useState([])
@@ -63,14 +69,15 @@ export default function VideoDisplay(props) {
 
     const dispatch = useDispatch()
 
+    const index = downloadData.findIndex(object => {
+      return object.id === currentVideoID[0];
+    });
+
+
+
+
     
-  
 
-
-
-  
-  
-    
   useEffect(() => {
     dispatch(setAudioURI(null))
     //setCurrentPosition(0)
@@ -83,15 +90,16 @@ export default function VideoDisplay(props) {
     dispatch(setSoundStatus(0))
     dispatch(setIsAudioOnly(false))
     dispatch(setDownloadData(downloadData))
+    dispatch(setChannelId(channelId))
     
   }, [])
 
 
     useEffect(() => {
-      Axios.get(`https://youtube.googleapis.com/youtube/v3/channels?part=snippet&id=${channelId}&key=${API_KEY}`)
+      Axios.get(`https://youtube.googleapis.com/youtube/v3/channels?part=snippet&id=${currentChannelId}&key=${API_KEY}`)
       .then(res => {
         const channelThumnail = res.data.items[0].snippet.thumbnails.high.url;
-        console.log(channelThumnail)
+   
         setChannelThumbail(channelThumnail)
         
       })
@@ -134,16 +142,16 @@ export default function VideoDisplay(props) {
 
 
     useEffect(() => {
-        //dispatch(setAudioURI(null))
-        Audio.setAudioModeAsync({
-            allowsRecordingIOS: false,
-            staysActiveInBackground: true,
-            interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS,
-            playsInSilentModeIOS: true,
-            shouldDuckAndroid: true,
-            interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
-            playThroughEarpieceAndroid: false
-         });
+
+         Audio.setAudioModeAsync({
+          allowsRecordingIOS: false,
+          staysActiveInBackground: true,
+          interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS,
+          playsInSilentModeIOS: true,
+          shouldDuckAndroid: true,
+          interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
+          playThroughEarpieceAndroid: false
+       });
     }, [])
 
     
@@ -158,7 +166,7 @@ export default function VideoDisplay(props) {
                 videoTitle: videoTitle,
                 videoArtist: artist,
                 creation: firebase.firestore.FieldValue.serverTimestamp(),
-                channelId: channelId
+                channelId: currentChannelId
             })
 
         }
@@ -200,7 +208,7 @@ export default function VideoDisplay(props) {
               title: currentTitle,
               creation: firebase.firestore.FieldValue.serverTimestamp(),
               channelTitle: artist,
-              channelId: channelId
+              channelId: currentChannelId
           })
       setDownloadProcessing(false)
   
@@ -275,9 +283,9 @@ export default function VideoDisplay(props) {
   async function handleNavigteToChannel(item){
     
         
-    const response = await Axios.get(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet,id&order=date&maxResults=20`)
+    const response = await Axios.get(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${currentChannelId}&part=snippet,id&order=date&maxResults=20`)
     const channelVideos = response.data
-    console.log(channelThumnail)
+
     props.navigation.replace("ChannelScreen", {title:currentArtist, photoAlbum:channelThumnail , playlistVideos: channelVideos.items, isCustom: false, searchedVideo: true })
   }
 
@@ -350,7 +358,8 @@ export default function VideoDisplay(props) {
               <TouchIcon
                 icon={<FontAwesome color={colors.white} name="step-backward" />}
                 iconSize={45}
-                onPress={() => skipBackwardTrack(downloadData, setNewSongData, currentVideoID, isRecently)}
+                disabled={index == 0}
+                onPress={() => skipBackwardTrack(downloadData, setNewSongData, currentVideoID, isRecently, isPlaylist)}
               />
               <View style={gStyle.pH3}>
                 <TouchIcon
@@ -362,7 +371,8 @@ export default function VideoDisplay(props) {
               <TouchIcon
                 icon={<FontAwesome color={colors.white} name="step-forward" />}
                 iconSize={45}
-                onPress={() => skipFowardTrack(downloadData,setNewSongData, currentVideoID, isRecently)}
+                disabled={index == downloadData.length-1}
+                onPress={() => skipFowardTrack(downloadData,setNewSongData, currentVideoID, isRecently, isPlaylist)}
               />
              
             </View>
