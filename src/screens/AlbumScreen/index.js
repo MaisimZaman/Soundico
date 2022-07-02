@@ -28,7 +28,7 @@ function AlbumScreen(props){
   const scrollY = React.useRef(new Animated.Value(0)).current;
   const [showMusicBar, setShowMuiscBar] = useState(true)
 
-  console.log(albums[0])
+  //console.log(albums[0])
 
   const stickyArray = device.web ? [] : [0];
     const headingRange = device.web ? [140, 200] : [230, 280];

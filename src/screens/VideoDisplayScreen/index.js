@@ -280,7 +280,7 @@ export default function VideoDisplay(props) {
 
 
 
-  async function handleNavigteToChannel(item){
+  async function handleNavigteToChannel(){
     
         
     const response = await Axios.get(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${currentChannelId}&part=snippet,id&order=date&maxResults=20`)
@@ -306,7 +306,20 @@ export default function VideoDisplay(props) {
         <ModalHeader
           left={<Feather color={colors.greyLight} name="chevron-down" />}
           leftPress={() => {props.navigation.goBack(); dispatch(setAudioURI(null))}}
-          right={ <Feather onPress={() => setModalVisible(true)} color={colors.greyLight} name="more-horizontal" />}
+          right={ <Feather onPress={() => props.navigation.navigate('MoreOptions', {
+            albumTitle: currentTitle,
+            albumCover: currentThumbnail,
+            albumArtist: currentArtist,
+            setDownloadProcessing: setDownloadProcessing,
+            downloadProcessing: downloadProcessing,
+            isPlaylist: isPlaylist,
+            saveAudioData: saveAudioData,
+            saveAudioPodCastData: saveAudioPodCastData,
+            currentVideoID: currentVideoID[1],
+            saveVideoData: saveVideoData,
+            savePlaylistData: savePlaylistData,
+            handleNavigteToChannel: handleNavigteToChannel
+          })} color={colors.greyLight} name="more-horizontal" />}
           text={"Now Playing"}
           
         />
