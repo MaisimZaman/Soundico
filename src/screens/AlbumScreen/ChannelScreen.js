@@ -145,7 +145,7 @@ export default function ChannelScreen(props){
 
 <View style={styles.containerFixed}>
 <View style={styles.containerLinear}>
-<Image source={{uri: photoAlbum}}  style={{height: 400, width: 350}}></Image>
+<Image source={{uri: photoAlbum}}  style={{height: 400, width: 370}}></Image>
 </View>
 <View style={styles.containerImage}>
 

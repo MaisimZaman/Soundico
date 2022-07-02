@@ -77,6 +77,7 @@ function Register({ navigation }){
                 <FormInput
                     label="Username"
                     value={username}
+                    inputStyle={{color: "white"}}
                     onChange={(value) => {
                         setUsername(value)
                     }}
@@ -88,6 +89,7 @@ function Register({ navigation }){
                     keyboardType="email-address"
                     autoCompleteType="email"
                     value={email}
+                    inputStyle={{color: "white"}}
                     containerStyle={{
                         marginTop: SIZES.height > 800 ? SIZES.padding : SIZES.radius
                     }}
@@ -101,6 +103,7 @@ function Register({ navigation }){
                     label="Password"
                     secureTextEntry={!showPass}
                     autoCompleteType="password"
+                    inputStyle={{color: "white"}}
                     containerStyle={{
                         marginTop: SIZES.height > 800 ? SIZES.padding : SIZES.radius
                     }}
@@ -135,7 +138,7 @@ function Register({ navigation }){
                         height: SIZES.height > 800 ? 60 : 50,
                         marginTop: SIZES.height > 800 ? 30 : 20,
                         borderRadius: 30,
-                        backgroundColor: COLORS.primary
+                        backgroundColor: "#177aeb"
                     }}
                     label="CREATE ACCOUNT"
                 onPress={register}
@@ -146,7 +149,7 @@ function Register({ navigation }){
                     style={{
                         textAlign: 'center',
                         marginTop: SIZES.radius,
-                        color: COLORS.gray80,
+                        color: "#177aeb",
                         ...FONTS.body3
                     }}
                 >
@@ -211,7 +214,7 @@ function Register({ navigation }){
                     <TextButton
                         label="Login"
                         labelStyle={{
-                            color: COLORS.primary
+                            color: "#177aeb"
                         }}
                         contentContainerStyle={{
                             marginLeft: SIZES.radius,
@@ -227,17 +230,6 @@ function Register({ navigation }){
     return (
         <ImageBackground style={styles.image} source={ BG_IMAGE}>
             {/* Title */}
-            <Text
-                style={{
-                    marginTop: SIZES.height > 800 ? 60 : 30,
-                    textAlign: 'center',
-                    ...FONTS.h1
-                }}
-            >
-                Register
-            </Text>
-
-            {/* Form */}
             <KeyboardAwareScrollView
                 enableOnAndroid={true}
                 keyboardDismissMode="on-drag"
@@ -248,6 +240,16 @@ function Register({ navigation }){
                     paddingHorizontal: 30,
                 }}
             >
+           
+
+            <Image 
+                style={{height: 100, width: 100, marginLeft: "30%", marginRight: "30%", marginBottom: "5%", marginTop: "15%"}} 
+                source={require('../../../assets/transparent_soundico.png')}
+            ></Image>
+
+
+            {/* Form */}
+            
                 
                 {renderForm()}
                 {renderButtons()}

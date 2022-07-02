@@ -16,7 +16,7 @@ import AddToMadePlaylist from './src/screens/CreatePlaylist/AddToMadePlayList';
 import TopicContent from './src/screens/TopicContent/TopicContent';
 import PlaylistOptions from './src/screens/CreatePlaylist/PlaylistOptions';
 import ChannelScreen from './src/screens/AlbumScreen/ChannelScreen';
-//import TrackPlayer from 'react-native-track-player';
+
 import { Provider } from 'react-redux';
 import {store} from './services/store'
 import { BG_IMAGE } from './src/services/backgroundImage';

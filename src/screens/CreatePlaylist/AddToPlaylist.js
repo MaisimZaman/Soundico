@@ -20,6 +20,7 @@ export default function AddToPlaylist(props) {
         let unsubscribe = db.collection('audioDownloads')
                           .doc(auth.currentUser.uid)
                           .collection('userAudios')
+                          .orderBy('creation','desc')
                           .onSnapshot((snapshot) => setAllMusic(snapshot.docs.map(doc => ({
                             id: doc.id,
                             data: doc.data()
@@ -104,6 +105,8 @@ export default function AddToPlaylist(props) {
 
     
 
+    
+
     return (
         <ImageBackground style={styles.image} source={ BG_IMAGE}>
             <Text style={{color: "white", fontSize: 24, marginBottom: 15, marginTop: 15}}>Add songs to {playListTitle}</Text>
@@ -118,7 +121,7 @@ export default function AddToPlaylist(props) {
 
             <FlatList
                 data={allMusic}
-                initialNumToRender={allMusic.length}
+                initialNumToRender={allMusic.length -1}
                 keyExtractor={(item, index) => String(index)}
                 renderItem={({ item }) => (
             <TouchableOpacity

@@ -22,7 +22,7 @@
     ],
     "githubUrl": "https://github.com/MaisimZaman/Free-Music-Soundify-",
     "orientation": "portrait",
-    "icon": "./assets/Icon.png",
+    "icon": "./assets/SoundicoLogo.png",
     "splash": {
       "image": "./assets/Splash.png",
       "resizeMode": "contain",

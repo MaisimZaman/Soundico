@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, ImageBackground } from 'react-native';
 
 import Playlist from '../../../../components/Playlist';
 import api from '../../../../services/api';
-
+import {AlbumMessager} from '../Local/styles'
 import { Container } from './styles';
 import { auth, db } from '../../../../../services/firebase';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -35,7 +35,13 @@ export default function Playlists({navigation}) {
     getData();
   }, []);
 
-  
+  if (playlists.length == 0){
+    return (
+        <Container>
+          <AlbumMessager>No created playlists yet</AlbumMessager>
+        </Container>
+    )
+  }
 
   return (
     

@@ -16,9 +16,13 @@ import {
     TextButton,
 } from "../../components/AuthComponents";
 import { COLORS, FONTS, SIZES, images, icons } from "./constants";
-
+import * as firebase from 'firebase';
 import {auth, db} from '../../../services/firebase'
 import { BG_IMAGE } from '../../services/backgroundImage';
+
+
+
+
 
 
 function Login({ navigation }){
@@ -26,6 +30,7 @@ function Login({ navigation }){
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [showPass, setShowPass] = useState(false)
+    
 
     
     useEffect(() => {
@@ -52,6 +57,13 @@ function Login({ navigation }){
         
     }
 
+    function googleSignIn(){
+     
+    }
+
+    
+    
+
     function renderForm() {
         return (
             <View>
@@ -72,6 +84,7 @@ function Login({ navigation }){
                     label="Password"
                     secureTextEntry={!showPass}
                     autoCompleteType="password"
+                    inputStyle={{color: "white"}}
                     containerStyle={{
                         marginTop: SIZES.padding
                     }}
@@ -131,6 +144,7 @@ function Login({ navigation }){
                     <IconLabelButton
                         icon={icons.google}
                         label="Google"
+                        onPress={googleSignIn}
                         containerStyle={{
                             flex: 1,
                             borderRadius: 30,
@@ -192,26 +206,8 @@ function Login({ navigation }){
 
     return (
         <ImageBackground style={styles.image} source={ BG_IMAGE}>
-            {/* Background */}
             
-
-            {/* Title */}
-            <Text
-                style={{
-                    marginTop: 60,
-                    textAlign: 'center',
-                    ...FONTS.h1,
-                    color: "white"
-                }}
-            >
-                Soundico 
-            </Text>
-                
-            <Image 
-                style={{height: 130, width: 130, marginLeft: "30%", marginRight: "30%"}} 
-                source={require('../../../assets/transparent_soundico.png')}
-            ></Image>
-
+            {/* Background */}
             <KeyboardAwareScrollView
                 enableOnAndroid={true}
                 keyboardDismissMode="on-drag"
@@ -220,15 +216,42 @@ function Login({ navigation }){
                 contentContainerStyle={{
                     flex: 1,
                     justifyContent: 'center',
-                    paddingHorizontal: 30
+                    paddingHorizontal: 30,
+                    //marginTop: "20%"
                 }}
             >
+
+            {/* Title */}
+            
+                
+            <Image 
+                style={{height: 130, width: 130, marginLeft: "28%", marginRight: "30%", marginBottom: "5%"}} 
+                source={require('../../../assets/transparent_soundico.png')}
+            ></Image>
+
+            <Text
+                style={{
+               
+                    marginBottom: 20,
+                    textAlign: 'center',
+                    ...FONTS.h1,
+                    color: "white"
+                }}
+            >
+                Soundico 
+            </Text>
+
+            
                 {/* Form */}
                 {renderForm()}
 
                 {/* Buttons */}
                 {renderButtons()}
-            </KeyboardAwareScrollView>
+                </KeyboardAwareScrollView>
+
+                
+
+                
             
         </ImageBackground>
     )

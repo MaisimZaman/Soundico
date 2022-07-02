@@ -11,6 +11,7 @@ import {
   SubMessage,
   ContainerButton,
 } from './styles';
+import {  AlbumMessager } from '../../Music/Local/styles';
 import { TextButton } from '../../../ProfileScreen/ProfileComponents';
 import { auth, db } from '../../../../../services/firebase';
 import { BG_IMAGE } from '../../../../services/backgroundImage';
@@ -54,21 +55,15 @@ export default function Downloads({navigation}) {
 
   function renderBody(){
 
-    if (downloadData.length == 0){
-      return (
-          <View>
-              <Text >No downloads yet</Text>
-          </View>
-      )
-    }
+    
   
-  else if (downloadData.length > 7) {
+   if (downloadData.length > 7) {
 
       var qDownloads = downloadData.slice(0, page)
-  }
-  else {
-      var qDownloads = downloadData;
-  }
+    }
+    else {
+        var qDownloads = downloadData;
+    }
     
       return (       
         <FlatList
@@ -102,6 +97,14 @@ export default function Downloads({navigation}) {
     
     
     
+  }
+
+  if (downloadData.length == 0){
+    return (
+        <Container>
+          <AlbumMessager>No saved content yet</AlbumMessager>
+        </Container>
+    )
   }
   
   return (

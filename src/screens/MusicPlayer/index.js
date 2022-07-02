@@ -16,6 +16,9 @@ import { useSelector } from 'react-redux';
 import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectSoundOBJ, selectSoundStatus} from '../../../services/slices/navSlice';
 import { BG_IMAGE, SECONDARY_BG } from '../../services/backgroundImage';
 import ytdl from 'react-native-ytdl';
+
+//import TrackPlayer from 'react-native-track-player';
+
 import { convertTime } from './helpers';
 import { auth, db } from '../../../services/firebase';
 import * as FileSystem from 'expo-file-system';
@@ -54,7 +57,19 @@ export default function MusicPlayer(props){
 
   
 
+  async function setupPlayer(){
+    await TrackPlayer.setupPlayer();
 
+    await TrackPlayer.add({
+      id: 1,
+      url: {uri: currentAudioURI},
+      title: currentTitle,
+      artist: currentArtist,
+      artwork: {uri: currentThumbNail}
+  })
+
+    await TrackPlayer.play()
+  }
   
 
   async function downloadSongToDevice(){
@@ -145,7 +160,7 @@ export default function MusicPlayer(props){
     const timeLeft = msToTime(status != 0 ? status.durationMillis - status.positionMillis : 0);
   
   
-  
+    
   
   
     useEffect(() => {

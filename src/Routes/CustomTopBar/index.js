@@ -3,7 +3,7 @@ import { StyleSheet, Dimensions } from 'react-native';
 
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
-import Albums from '../../screens/Libary/Music/Albums';
+import Albums from '../../screens/Libary/Music/Local';
 import Artists from '../../screens/Libary/Music/Artists';
 import Playlists from '../../screens/Libary/Music/Playlists';
 import Downloads from '../../screens/Libary/Podcasts/Downloads';
