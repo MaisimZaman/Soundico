@@ -94,7 +94,7 @@ export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, saveV
         let info = await ytdl.getInfo(currentVideoID);
         let audioFormats = ytdl.filterFormats(info.formats, 'audioandvideo');
             theDownload = audioFormats[0].url
-            console.log(urls)
+            console.log(theDownload)
             childPath = `videoDownloads/${auth.currentUser.uid}/${Math.random().toString(36)}`;
         }
         else {

@@ -13,21 +13,21 @@
     },
     {
       "id": 3,
-      "icon": "share-alternative",
-      "title": "Share",
-      "lib": "Entypo"
+      "icon": "playlist-add",
+      "title": "Add to a playlist",
+      "lib": "MaterialIcons"
     },
     {
       "id": 4,
-      "icon": "cloud-download",
-      "title": "Save Track Audio",
-      "lib": "FontAwesome"
+      "icon": "download",
+      "title": "Download onto device",
+      "lib": "Entypo"
     },
     {
       "id": 5,
-      "icon": "folder-video",
-      "title": "Save Track as Video",
-      "lib": "Entypo"
+      "icon": "delete",
+      "title": "Delete from account",
+      "lib": "AntDesign"
     }
     
 ]

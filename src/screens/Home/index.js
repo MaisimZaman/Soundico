@@ -60,7 +60,7 @@ export default function Home({navigation}) {
 
   useEffect(() => {
 
-    const searches = ["Elon Musk",   "millionaire mindset speach",  'motivational videos']
+    const searches = ["Elon Musk",   "Car BASS Music",  'motivational videos']
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
     Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText}&key=${API_KEY}`)
       .then(res => {
@@ -213,7 +213,7 @@ export default function Home({navigation}) {
             </TouchableOpacity>
           )}
         />
-        <Title>Trending podcasts</Title>
+        <Title>Trending</Title>
         <FlatList
           data={podcasts}
           keyExtractor={(item) => `${item.id}`}

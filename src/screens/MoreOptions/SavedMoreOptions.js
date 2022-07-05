@@ -14,18 +14,19 @@ import { BG_IMAGE } from '../../services/backgroundImage'
 import PropTypes from 'prop-types'
 import { device, gStyle, images, colors, fonts } from '../MusicPlayer/constants/index';
 import LineItemCategory from '../TopicContent/LineItemCatagorey'
-import moreOptions from './moreOptions.json'
-import { downloadAudioOrVideo } from '../VideoDisplayScreen/handlingfunctions';
+import moreOptions from './SavedMoreOptions.json'
+import * as FileSystem from 'expo-file-system';
 
-export default function MoreOptions(props) {
+//import * as ImagePicker from 'expo-image-picker';
+import * as MediaLibrary from 'expo-media-library';
+
+export default function SavedMoreOptions(props) {
 
     const {
-        albumTitle, albumCover, albumArtist, 
-        setDownloadProcessing, 
-        downloadProcessing, isPlaylist, saveAudioData, 
-        saveAudioPodCastData, currentVideoID,
-        saveVideoData,savePlaylistData,
-        handleNavigteToChannel
+        albumTitle, albumCover, albumArtist,
+        deleteMusicItem, currentAudioURI,
+        addMusicToPlaylist
+       
     
     } = props.route.params;
 
@@ -33,21 +34,69 @@ export default function MoreOptions(props) {
 
 
     function handleIconClick(item){
-        if (item.id == 2){
-            handleNavigteToChannel()
-        } 
-        else if (item.id == 4) {
-            downloadAudioOrVideo(false, false,  saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing)
-            props.navigation.goBack()
+        if (item.id == 3){
+            addMusicToPlaylist()
+        }
+        if (item.id == 4){
+            downloadSongToDevice()
         }
         else if (item.id == 5){
-          downloadAudioOrVideo(true, false, saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing )
-          props.navigation.goBack()
+            deleteMusicItem()
         }
-
         
         
     }
+
+    async function downloadSongToDevice(){
+
+        function replaceIllegalChars(string){
+          return string.replace('#','')
+          .replace('|', '')
+          .replace('%', '')
+          .replace('$', '')
+        }
+    
+          let fileUri = FileSystem.documentDirectory + `${replaceIllegalChars(currentTitle)}.mp3`;
+          FileSystem.downloadAsync(currentAudioURI, fileUri)
+          .then(({ uri }) => {
+            
+              saveFile(uri);
+              console.log(uri)
+             
+            })
+            .catch(error => {
+              console.error(error);
+            })
+            //Alert.alert(`${currentTitle} downloaded onto device`)
+            //Alert(`${currentTitle} downloaded onto device`)
+    
+        
+          
+      
+        async function saveFile(fileUri){
+          console.warn(fileUri)
+          const checkAndroidPermission = async () => {
+            try {
+              const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
+              await PermissionsAndroid.request(permission);
+              console.warn("This ran")
+              Promise.resolve();
+            } catch (error) {
+              Promise.reject(error);
+            }
+          };
+          await checkAndroidPermission();
+          
+            const { status }  = await MediaLibrary.requestPermissionsAsync();
+    
+            
+            
+            if (status === "granted") {
+              const asset = await MediaLibrary.createAssetAsync(fileUri)
+              await MediaLibrary.createAlbumAsync("SoundicoDownloads", asset, false)
+            }
+            
+        }}
 
     return (
         <ImageBackground style={styles.bgImage} resizeMode='cover' source={BG_IMAGE}>
@@ -110,7 +159,7 @@ export default function MoreOptions(props) {
 
     
 }
-MoreOptions.propTypes = {
+SavedMoreOptions.propTypes = {
     // required
     navigation: PropTypes.object.isRequired,
     route: PropTypes.object.isRequired

@@ -43,7 +43,6 @@ export default function MusicPlayer(props){
 
   const [playListAudioURI, setPlayListAudioURI] = useState(audioURI)
   
-  const [modalVisible, setModalVisible] = useState(false)
 
   
   const status = useSelector(selectSoundStatus)
@@ -185,19 +184,13 @@ export default function MusicPlayer(props){
         
         
         const { sound } = await Audio.Sound.createAsync({uri: currentAudioURI}, { shouldPlay: true }, (status) => dispatch(setSoundStatus(status)));
-
-            
             //setSound(sound)
           dispatch(setSoundOBJ(sound))
 
+          Audio.setAudioModeAsync({
+            staysActiveInBackground: true,
+         });
 
-
-          
-            //console.warn(status.durationMillis)
-
-          //await TrackPlayer.setupPlayer();
-    
-        // Add a track to the queue
 
       }
       
@@ -209,9 +202,6 @@ export default function MusicPlayer(props){
       
     }, [currentAudioID, repeat])
 
-
-
-    
 
     useEffect(() => {
       
@@ -369,6 +359,14 @@ export default function MusicPlayer(props){
         
     }
 
+    function addMusicToPlaylist(){
+      navigation.navigate('AddToMadePlaylist', {playListObject: {id: currentAudioID, data: {
+        audio: currentAudioURI,
+        thumbNail: currentThumbNail,
+        title: currentTitle
+      }}})
+    }
+
     function deleteMusicItem(){
       db.collection('audioDownloads')
       .doc(auth.currentUser.uid)
@@ -379,58 +377,10 @@ export default function MusicPlayer(props){
       navigation.goBack()
     }
 
-    function renderModal(){
-        
-      return (
-          <View style={styles.centeredView}>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalVisible}
-              onRequestClose={() => {
-                setModalVisible(!modalVisible);
-              }}>
-              <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                  <Text style={styles.modalText}>Options?</Text>
-                  <Pressable
-                    style={[styles.button1, styles.buttonClose]}
-                    onPress={() => navigation.navigate('AddToMadePlaylist', {playListObject: {id: currentAudioID, data: {
-                      audio: currentAudioURI,
-                      thumbNail: currentThumbNail,
-                      title: currentTitle
-                    }}})}>
-                    <Text style={styles.textStyle}>Add to playlist</Text>
-                  </Pressable>
-
-                  <Pressable
-                    style={[styles.button1, styles.buttonClose]}
-                    onPress={deleteMusicItem}>
-                    <Text style={styles.textStyle}>Delete song</Text>
-                  </Pressable>
-
-                  <Pressable
-                    style={[styles.button1, styles.buttonClose]}
-                    onPress={downloadSongToDevice}>
-                    <Text style={styles.textStyle}>Download song</Text>
-                  </Pressable>
-                
-                  <Pressable
-                    style={[styles.button3, styles.buttonClose]}
-                    onPress={() => setModalVisible(!modalVisible)}>
-                    <Text style={styles.textStyle}>Close</Text>
-                  </Pressable>
-                  
-                </View>
-              </View>
-            </Modal> 
-            
-          </View>
-        );
-  }
+    
 
   
-
+  
 
     return (
       
@@ -439,7 +389,14 @@ export default function MusicPlayer(props){
           <ModalHeader
             left={<Feather color={colors.greyLight} name="chevron-down" />}
             leftPress={() => {navigation.goBack(); dispatch(setAudioURI(null))}}
-            right={ <Feather onPress={() => setModalVisible(true)} color={colors.greyLight} name="more-horizontal" />}
+            right={ <Feather onPress={() => navigation.navigate('SavedMoreOptions', {albumTitle: currentTitle, 
+              albumCover: currentThumbNail, 
+              albumArtist: currentArtist, 
+              deleteMusicItem: deleteMusicItem, 
+              currentAudioURI: currentAudioURI,
+              addMusicToPlaylist: addMusicToPlaylist
+            
+            })} color={colors.greyLight} name="more-horizontal" />}
             text={playListName != undefined ? playListName + " Playlist" : "Downloads"}
           />
   
@@ -525,7 +482,7 @@ export default function MusicPlayer(props){
               />
             </View>
           </View>
-          {renderModal()}
+         
         
           </ImageBackground>
         </View>

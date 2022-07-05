@@ -62,9 +62,10 @@ export default function Search({navigation}) {
 
     docRef.get().then((doc) => {
       if (doc.exists) {
-
-          setRecordList(doc.data().recordList)
-          setCreateNewRecord(false)
+        
+        setRecordList(doc.data().recordList)
+        setCreateNewRecord(false)
+        
       } else {
          setRecordList([])
          setCreateNewRecord(true)
@@ -85,7 +86,7 @@ export default function Search({navigation}) {
                 playListRecordList:[...recordList, searchText] 
             })
         }
-        else {
+        else if (searchType != 'Video Link') {
           db.collection('searchRecord')
             .doc(auth.currentUser.uid)
             .update({

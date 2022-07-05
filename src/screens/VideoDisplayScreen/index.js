@@ -116,6 +116,10 @@ export default function VideoDisplay(props) {
           //setPlayingVideo(audioFormats[0].url);
          
           dispatch(setAudioURI(audioFormats[0].url))
+      
+          Audio.setAudioModeAsync({
+            staysActiveInBackground: true,
+         });
           await video.current.playAsync()
         }
 

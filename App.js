@@ -17,18 +17,13 @@ import TopicContent from './src/screens/TopicContent/TopicContent';
 import PlaylistOptions from './src/screens/CreatePlaylist/PlaylistOptions';
 import ChannelScreen from './src/screens/AlbumScreen/ChannelScreen';
 import MoreOptions from './src/screens/MoreOptions/MoreOptions';
+import SavedMoreOptions from './src/screens/MoreOptions/SavedMoreOptions';
 import { Provider } from 'react-redux';
 import {store} from './services/store'
 import { BG_IMAGE } from './src/services/backgroundImage';
-//import MusicControl from 'react-native-music-control'
-
 
 
 const Stack = createStackNavigator();
-
-
-
-
 
 const MyTheme = {
   ...DefaultTheme,
@@ -82,6 +77,7 @@ export default function App(){
           <Stack.Screen name='TopicContent' component={TopicContent}></Stack.Screen>
           <Stack.Screen name='PlayListOptions' component={PlaylistOptions}></Stack.Screen>
           <Stack.Screen name='MoreOptions' component={MoreOptions}></Stack.Screen>
+          <Stack.Screen name='SavedMoreOptions' component={SavedMoreOptions}></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
