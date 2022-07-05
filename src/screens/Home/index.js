@@ -82,7 +82,7 @@ export default function Home({navigation}) {
     }
     
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
-    Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText}Music&key=${API_KEY}`)
+    Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText + ' Music'}&key=${API_KEY}`)
       .then(res => {
         const madeForYou = res.data.items;
         //console.log(madeForYou)

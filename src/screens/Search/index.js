@@ -41,7 +41,7 @@ export default function Search({navigation}) {
   const [searchHit, setSearchHit] = useState(false)
   const audioURI = useSelector(selectAudioURI)
 
-  console.log(allYTData.length)
+  //console.log(allYTData.length)
 
   
   //useEffect(() => {
@@ -90,7 +90,7 @@ export default function Search({navigation}) {
           db.collection('searchRecord')
             .doc(auth.currentUser.uid)
             .update({
-                recordList:[...recordList, searchText] 
+                recordList:[...recordList, searchText + " Music"] 
             })
         }
         
@@ -105,7 +105,7 @@ export default function Search({navigation}) {
           db.collection('searchRecord')
             .doc(auth.currentUser.uid)
             .set({
-                recordList:[searchText] 
+                recordList:[searchText+" Music"] 
             })
         }
         
@@ -136,6 +136,11 @@ export default function Search({navigation}) {
     else if (searchType == 'Channel'){
       setPlaceholder("Search for Channel")
     }
+
+
+    if (searchOn == true){
+      searchForVideos()
+    } 
 
 
   }, [searchType])
@@ -214,7 +219,7 @@ export default function Search({navigation}) {
     setSearchHit(!searchHit)
     console.log(searchType)
     if (searchType == "Playlists"){
-      Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText+'music'}&type=playlist&key=${API_KEY}`)
+      Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText+' music'}&type=playlist&key=${API_KEY}`)
       .then(res => {
         const ytData = res.data.items;
         setYTData(ytData)
@@ -292,7 +297,7 @@ export default function Search({navigation}) {
       getPlayListData(item, playlistId)
     }
     else if (searchType == "Video Link"){
-      navigation.navigate('VideoScreen', {videoId: item.id,  videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: true, channelId: item.snippet.channelId })
+      navigation.navigate('VideoScreen', {videoId: item.id,  videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, downloadData: 'VideoLink',  Search: true, channelId: item.snippet.channelId })
         
     }
     else if (searchType ==  "Channel"){
@@ -328,6 +333,7 @@ export default function Search({navigation}) {
         <FlatList
           data={allYTData}
           keyExtractor={(item) => item.etag}
+   
           renderItem={({ item }) => (
                     <LineItemSong
                 //active={song === track.title}
@@ -372,7 +378,7 @@ export default function Search({navigation}) {
     <ImageBackground style={styles.image} source={ BG_IMAGE}>
      
     <Container playerOn={audioURI == null ? false : true}>
-      <Title  YOffSet={YOffSet} search>
+      <Title  search={true}>
         Search
       </Title>
 
@@ -380,14 +386,20 @@ export default function Search({navigation}) {
     style={{
     flexDirection: "row", 
     alignItems: 'center', 
-    //fontFamily: 'OpenSans-Italic' ,
+    
+    
+    fontSize: 15,
+    fontWeight: 'bold',
+    fontStyle: 'normal',
     justifyContent: 'space-evenly', 
-    backgroundColor: "#fff", 
+    backgroundColor: "#2a2a2b", 
+    color: "white",
     height: 45, 
     width: "94%", 
-    borderRadius: 10, 
+    borderRadius: 20, 
     marginLeft: "3%"}}
     placeholder={placeholder}
+    placeholderTextColor={"#adacb0"}
     onChangeText={(text) => setSearchText(text)}
     value={searchText}
     onSubmitEditing={searchForVideos}
@@ -416,19 +428,20 @@ export default function Search({navigation}) {
                                 marginLeft: index == 0 ? 14 : 12,
                                 marginRight: index == searchTypes.length - 1 ? 14 : 0,
                                 borderRadius: 60,
+                                height: 40,
                                 //height: "45%",
                                 
-                                backgroundColor: "#E5E5E5"
+                                backgroundColor: searchType == item.name ? '#177aeb' : "#1d1e1f"
                             }}
                             labelStyle={{
-                                color: "#7F7F7F",
+                                color:  "#e1e1e3",
                                 fontFamily: "Roboto-Bold", fontSize: 16, lineHeight: 22 
                             }}
                         />
                     )}
                 />
 
-        {renderSearches()}
+    {renderSearches()}
       </View>
     </Container>
     

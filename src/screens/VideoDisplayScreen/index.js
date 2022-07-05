@@ -69,9 +69,15 @@ export default function VideoDisplay(props) {
 
     const dispatch = useDispatch()
 
-    const index = downloadData.findIndex(object => {
-      return object.id === currentVideoID[0];
-    });
+    let index = 0;
+
+    if (downloadData != "VideoLink"){
+      index = downloadData.findIndex(object => {
+        return object.id === currentVideoID[0];
+      });
+    }
+
+    
 
 
 
