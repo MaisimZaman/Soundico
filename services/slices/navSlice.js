@@ -8,7 +8,6 @@ const initialState = {
     audioID: [null, null],
     author: "unknown",
     downloadData: null,
-    soundOBJ: null,
     soundStatus: 0,
     isAudioOnly: true,
 
@@ -34,9 +33,6 @@ export const navSlice = createSlice({
         setDownloadData: (state, action) => {
             state.downloadData = action.payload;
         },
-        setSoundOBJ: (state, action) => {
-            state.soundOBJ = action.payload;
-        },
         setSoundStatus: (state, action) => {
             state.soundStatus = action.payload;
         },
@@ -60,7 +56,6 @@ export const {
     setTitle, 
     setAudioID, 
     setDownloadData, 
-    setSoundOBJ, 
     setSoundStatus, 
     setIsAudioOnly, 
     setAuthor, 
@@ -78,7 +73,6 @@ export const selectAudioID = (state) => state.nav.audioID
 
 export const selectDownloadData = (state) => state.nav.downloadData
 
-export const selectSoundOBJ = (state) => state.nav.soundOBJ
 
 export const selectSoundStatus = (state) => state.nav.soundStatus
 

@@ -13,7 +13,6 @@ import Slider from '@react-native-community/slider';
 import { colors, device, func, gStyle } from '../MusicPlayer/constants/index';
 import TouchIcon from '../MusicPlayer/TouchIcon';
 import { msToTime,  skipBackwardTrack,  skipFowardTrack  } from './handlingfunctions';
-import RenderModal from './downloadModal';
 //import { styles } from './styles';
 import { styles } from './styles';
 
@@ -46,8 +45,14 @@ import { useDispatch, useSelector } from 'react-redux';
 
 export default function VideoDisplay(props) {
     const {width, height} = Dimensions.get("screen");
-    const [modalVisible, setModalVisible] = useState(false);
-    const {rId, videoId, videoThumbNail, videoTitle, Search, isPlaylist, isRecently,  artist, downloadData, plInfo, playlistVideos, channelId} = props.route.params;
+    const {
+      rId, videoId, videoThumbNail, 
+      videoTitle, Search, isPlaylist, isRecently,  
+      artist, downloadData, plInfo, 
+      playlistVideos, channelId,
+      isPlayer
+    
+    } = props.route.params;
     const currentVideoID = useSelector(selectAudioID)
     const currentThumbnail = useSelector(selectThumbNail)
     const currentTitle = useSelector(selectTitle)
@@ -73,16 +78,18 @@ export default function VideoDisplay(props) {
 
     if (downloadData != "VideoLink"){
       index = downloadData.findIndex(object => {
-        return object.id === currentVideoID[0];
+        if (isPlayer){
+          return object.id === currentVideoID[1][0];
+        } else {
+          return object.id === currentVideoID[0];
+        }
       });
     }
 
-    
 
 
 
-
-    
+    console.log(downloadData)
 
   useEffect(() => {
     dispatch(setAudioURI(null))
@@ -314,9 +321,9 @@ export default function VideoDisplay(props) {
         <View style={gStyle.container}>
         <ImageBackground source={BG_IMAGE}  style={styles.bgImage}>
         <ModalHeader
-          left={<Feather color={colors.greyLight} name="chevron-down" />}
+          left={<Feather size={2} color={"white"} name="chevron-down" />}
           leftPress={() => {props.navigation.goBack(); dispatch(setAudioURI(null))}}
-          right={ <Feather onPress={() => props.navigation.navigate('MoreOptions', {
+          right={ <Feather size={2}  onPress={() => props.navigation.navigate('MoreOptions', {
             albumTitle: currentTitle,
             albumCover: currentThumbnail,
             albumArtist: currentArtist,
@@ -328,8 +335,9 @@ export default function VideoDisplay(props) {
             currentVideoID: currentVideoID[1],
             saveVideoData: saveVideoData,
             savePlaylistData: savePlaylistData,
-            handleNavigteToChannel: handleNavigteToChannel
-          })} color={colors.greyLight} name="more-horizontal" />}
+            handleNavigteToChannel: handleNavigteToChannel,
+            currentAudioURI: playingVideo
+          })} color={"white"} name="more-horizontal" />}
           text={"Now Playing"}
           
         />
@@ -419,7 +427,6 @@ export default function VideoDisplay(props) {
           </View>
         </View>
         
-             <RenderModal setDownloadProcessing={setDownloadProcessing} downloadProcessing={downloadProcessing}  modalVisible={modalVisible}  setModalVisible={setModalVisible} isPlaylist={isPlaylist} saveAudioData={saveAudioData} saveAudioPodCastData={saveAudioPodCastData} currentVideoID={currentVideoID[1]} saveVideoData={saveVideoData} savePlaylistData={savePlaylistData} ></RenderModal>
              </ImageBackground>
       </View>
       

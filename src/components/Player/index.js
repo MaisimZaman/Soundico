@@ -25,7 +25,7 @@ import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectDown
 
 export default function Player({navigation}) {
   const [playMusic, setPlayMusic] = useState(true);
-  //const soundOBj = useSelector(selectSoundOBJ)
+
   
 
   const Title = useSelector(selectTitle)
@@ -86,7 +86,8 @@ export default function Player({navigation}) {
         videoId: audioID,
         Search: false,
         isPlaylist: false,
-        artist: Artist
+        artist: Artist,
+        isPlayer: true
         })
     }
   }

@@ -1,10 +1,10 @@
 [
-    {
-      "id": 1,
-      "icon": "heart-o",
-      "title": "Like",
-      "lib": "FontAwesome"
-    },
+  {
+    "id": 1,
+    "icon": "heart-o",
+    "title": "Like",
+    "lib": "FontAwesome"
+  },
     {
       "id": 2,
       "icon": "account-music",
@@ -13,8 +13,8 @@
     },
     {
       "id": 3,
-      "icon": "share-alternative",
-      "title": "Share",
+      "icon": "download",
+      "title": "Download onto device",
       "lib": "Entypo"
     },
     {
@@ -28,6 +28,7 @@
       "icon": "folder-video",
       "title": "Save Track as Video",
       "lib": "Entypo"
-    }
+    },
+    
     
 ]

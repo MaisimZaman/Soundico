@@ -16,6 +16,7 @@ import { device, gStyle, images, colors, fonts } from '../MusicPlayer/constants/
 import LineItemCategory from '../TopicContent/LineItemCatagorey'
 import moreOptions from './moreOptions.json'
 import { downloadAudioOrVideo } from '../VideoDisplayScreen/handlingfunctions';
+import { downloadAudioToDevice } from './DownloadToDevice';
 
 export default function MoreOptions(props) {
 
@@ -25,17 +26,24 @@ export default function MoreOptions(props) {
         downloadProcessing, isPlaylist, saveAudioData, 
         saveAudioPodCastData, currentVideoID,
         saveVideoData,savePlaylistData,
-        handleNavigteToChannel
+        handleNavigteToChannel, currentAudioURI
     
     } = props.route.params;
 
     const [showMusicBar, setShowMusicBar] = useState(false);
+
+    
+
 
 
     function handleIconClick(item){
         if (item.id == 2){
             handleNavigteToChannel()
         } 
+        else if (item.id == 3){
+          downloadAudioToDevice(currentAudioURI, albumTitle)
+          console.log(currentAudioURI)
+        }
         else if (item.id == 4) {
             downloadAudioOrVideo(false, false,  saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing)
             props.navigation.goBack()

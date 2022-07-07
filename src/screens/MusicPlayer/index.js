@@ -11,9 +11,9 @@ import { colors, device, func, gStyle } from './constants/index';
 import ModalHeader from './ModalHeader';
 import TouchIcon from './TouchIcon';
 import { useDispatch } from 'react-redux';
-import { setThumbNail,  setAudioURI, setTitle, setAudioID, setDownloadData, setSoundOBJ, setSoundStatus, setIsAudioOnly, setAuthor, selectAuthor} from '../../../services/slices/navSlice';
+import { setThumbNail,  setAudioURI, setTitle, setAudioID, setDownloadData,  setSoundStatus, setIsAudioOnly, setAuthor, selectAuthor} from '../../../services/slices/navSlice';
 import { useSelector } from 'react-redux';
-import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectSoundOBJ, selectSoundStatus} from '../../../services/slices/navSlice';
+import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID,  selectSoundStatus} from '../../../services/slices/navSlice';
 import { BG_IMAGE, SECONDARY_BG } from '../../services/backgroundImage';
 import ytdl from 'react-native-ytdl';
 
@@ -71,66 +71,12 @@ export default function MusicPlayer(props){
   }
   
 
-  async function downloadSongToDevice(){
-
-    function replaceIllegalChars(string){
-      return string.replace('#','')
-      .replace('|', '')
-      .replace('%', '')
-      .replace('$', '')
-    }
-
-    const uri = "http://techslides.com/demos/sample-videos/small.mp4"
-      let fileUri = FileSystem.documentDirectory + `${replaceIllegalChars(currentTitle)}.mp3`;
-      FileSystem.downloadAsync(currentAudioURI, fileUri)
-      .then(({ uri }) => {
-        
-          saveFile(uri);
-          console.log(uri)
-         
-        })
-        .catch(error => {
-          console.error(error);
-        })
-        //Alert.alert(`${currentTitle} downloaded onto device`)
-        //Alert(`${currentTitle} downloaded onto device`)
-
-    
-      
   
-    async function saveFile(fileUri){
-      console.warn(fileUri)
-      const checkAndroidPermission = async () => {
-        try {
-          const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
-          await PermissionsAndroid.request(permission);
-          console.warn("This ran")
-          Promise.resolve();
-        } catch (error) {
-          Promise.reject(error);
-        }
-      };
-      await checkAndroidPermission();
-      
-        const { status }  = await MediaLibrary.requestPermissionsAsync();
-
-        
-        
-        if (status === "granted") {
-          const asset = await MediaLibrary.createAssetAsync(fileUri)
-          await MediaLibrary.createAlbumAsync("SoundicoDownloads", asset, false)
-        }
-        
-    }
-    
-  
-    
-  } 
     const { navigation } = props;
     const [favorited, setFavourited] = useState(false)
     const [paused, setPaused] = useState(false)
-    const sound = useSelector(selectSoundOBJ)
-    //const [sound, setSound] = useState(null)
+    //const sound = useSelector(selectSoundOBJ)
+    const [sound, setSound] = useState(null)
     const [repeat, setRepeat] = useState(false)
     const [currentPosition, setCurrentPosition] = useState(0)
     
@@ -185,7 +131,7 @@ export default function MusicPlayer(props){
         
         const { sound } = await Audio.Sound.createAsync({uri: currentAudioURI}, { shouldPlay: true }, (status) => dispatch(setSoundStatus(status)));
             //setSound(sound)
-          dispatch(setSoundOBJ(sound))
+         setSound(sound)
 
           Audio.setAudioModeAsync({
             staysActiveInBackground: true,

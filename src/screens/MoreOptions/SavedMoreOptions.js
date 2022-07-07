@@ -8,7 +8,8 @@ import {
     ScrollView,
     StyleSheet,
     Image,
-    ImageBackground
+    ImageBackground,
+    PermissionsAndroid
   } from 'react-native';
 import { BG_IMAGE } from '../../services/backgroundImage'
 import PropTypes from 'prop-types'
@@ -19,6 +20,7 @@ import * as FileSystem from 'expo-file-system';
 
 //import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
+import { downloadAudioToDevice } from './DownloadToDevice';
 
 export default function SavedMoreOptions(props) {
 
@@ -35,7 +37,7 @@ export default function SavedMoreOptions(props) {
 
     function handleIconClick(item){
         if (item.id == 3){
-            addMusicToPlaylist()
+            downloadAudioToDevice(currentAudioURI, albumTitle)
         }
         if (item.id == 4){
             downloadSongToDevice()
@@ -56,7 +58,7 @@ export default function SavedMoreOptions(props) {
           .replace('$', '')
         }
     
-          let fileUri = FileSystem.documentDirectory + `${replaceIllegalChars(currentTitle)}.mp3`;
+          let fileUri = FileSystem.documentDirectory + `${replaceIllegalChars(albumTitle)}.mp3`;
           FileSystem.downloadAsync(currentAudioURI, fileUri)
           .then(({ uri }) => {
             

@@ -4,11 +4,11 @@ import { BottomTabBar } from '@react-navigation/bottom-tabs';
 
 import Player from '../../components/Player';
 import { useSelector } from 'react-redux';
-import { selectAudioURI, selectSoundOBJ } from '../../../services/slices/navSlice';
+import { selectAudioURI } from '../../../services/slices/navSlice';
 
 export default function CustomTabBar(props) {
   audioExists = useSelector(selectAudioURI)
-  const sound = useSelector(selectSoundOBJ)
+
   function renderPlayer(){
     if (audioExists != null){
       return (
