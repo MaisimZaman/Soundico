@@ -36,7 +36,8 @@ import {
   setDownloadData,
   selectAuthor,
   selectChannelId,
-  selectDownloadData
+  selectDownloadData,
+  setIsRecently
 } from '../../../services/slices/navSlice';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -50,7 +51,7 @@ export default function VideoDisplay(props) {
       videoTitle, Search, isPlaylist, isRecently,  
       artist, downloadData, plInfo, 
       playlistVideos, channelId,
-      isPlayer
+      
     
     } = props.route.params;
     const currentVideoID = useSelector(selectAudioID)
@@ -78,18 +79,14 @@ export default function VideoDisplay(props) {
 
     if (downloadData != "VideoLink"){
       index = downloadData.findIndex(object => {
-        if (isPlayer){
-          return object.id === currentVideoID[1][0];
-        } else {
           return object.id === currentVideoID[0];
-        }
+        
       });
     }
 
 
 
 
-    console.log(downloadData)
 
   useEffect(() => {
     dispatch(setAudioURI(null))
@@ -104,7 +101,7 @@ export default function VideoDisplay(props) {
     dispatch(setIsAudioOnly(false))
     dispatch(setDownloadData(downloadData))
     dispatch(setChannelId(channelId))
-    
+    dispatch(setIsRecently(isRecently))
   }, [])
 
 
@@ -321,9 +318,9 @@ export default function VideoDisplay(props) {
         <View style={gStyle.container}>
         <ImageBackground source={BG_IMAGE}  style={styles.bgImage}>
         <ModalHeader
-          left={<Feather size={2} color={"white"} name="chevron-down" />}
+          left={<Feather  color={"white"} name="chevron-down" />}
           leftPress={() => {props.navigation.goBack(); dispatch(setAudioURI(null))}}
-          right={ <Feather size={2}  onPress={() => props.navigation.navigate('MoreOptions', {
+          right={ <Feather   onPress={() => props.navigation.navigate('MoreOptions', {
             albumTitle: currentTitle,
             albumCover: currentThumbnail,
             albumArtist: currentArtist,

@@ -20,7 +20,7 @@ import {
   Controller,
 } from './styles';
 import { useSelector } from 'react-redux';
-import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectDownloadData, selectSoundStatus, selectAuthor, selectIsAudioOnly} from '../../../services/slices/navSlice';
+import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectDownloadData, selectSoundStatus, selectAuthor, selectIsAudioOnly, selectIsRecently} from '../../../services/slices/navSlice';
 
 
 export default function Player({navigation}) {
@@ -36,6 +36,7 @@ export default function Player({navigation}) {
   const status = useSelector(selectSoundStatus)
   const Artist = useSelector(selectAuthor)
   const isAudioOnly = useSelector(selectIsAudioOnly)
+  const isRecently =  useSelector(selectIsRecently)
 
   useEffect(() => {
     Audio.setAudioModeAsync({
@@ -68,6 +69,9 @@ export default function Player({navigation}) {
       //: undefined;
   //}, [soundOBj, audioID]);
 
+
+  console.log(audioID)
+
   function handleNavigation(){
     if (isAudioOnly){
       navigation.navigate('MusicScreen', {thumbNail: ThumbNail,
@@ -83,11 +87,12 @@ export default function Player({navigation}) {
         audioURI: audiouURI, 
         videoTitle: Title,
         downloadData: downloadData,
-        videoId: audioID,
+        videoId: audioID[1],
+        rId: audioID[0],
         Search: false,
         isPlaylist: false,
         artist: Artist,
-        isPlayer: true
+        isRecently: isRecently
         })
     }
   }

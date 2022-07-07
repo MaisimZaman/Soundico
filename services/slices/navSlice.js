@@ -10,6 +10,7 @@ const initialState = {
     downloadData: null,
     soundStatus: 0,
     isAudioOnly: true,
+    isRecently: false,
 
 
 }
@@ -45,6 +46,9 @@ export const navSlice = createSlice({
         setChannelId: (state, action) => {
             state.channelId = action.payload;
         },
+        setIsRecently: (state, action) => {
+            state.isRecently = action.payload;
+        },
         
     },
 
@@ -59,7 +63,8 @@ export const {
     setSoundStatus, 
     setIsAudioOnly, 
     setAuthor, 
-    setChannelId
+    setChannelId,
+    setIsRecently
 
 } = navSlice.actions;
 
@@ -81,6 +86,8 @@ export const selectIsAudioOnly = (state) => state.nav.isAudioOnly
 export const selectAuthor = (state) => state.nav.author
 
 export const selectChannelId = (state) => state.nav.channelId
+
+export const selectIsRecently = (state) => state.nav.isRecently
 
 const navReducer = navSlice.reducer
 
