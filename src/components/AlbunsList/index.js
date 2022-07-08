@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { View } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
 import { Container, Image, AlbumInformation, Title } from './styles';
@@ -13,10 +13,14 @@ export default function AlbunsList({
   return (
     <Container recentPlayed={recentPlayed}>
       <Image source={{ uri: photoAlbum }} />
+      
       <AlbumInformation>
         {!podcast && <FontAwesome name="random" size={15} color="#acacac" />}
+    
         <Title podcast={podcast}>{name}</Title>
+    
       </AlbumInformation>
+      
     </Container>
   );
 }

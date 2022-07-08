@@ -14,7 +14,7 @@ import { Container, Title } from './styles';
 import { BG_IMAGE } from '../../services/backgroundImage';
 
 import {useSelector} from 'react-redux'
-
+import { AlbumMessager } from '../Libary/Music/Local/styles';
 
 import { selectAudioURI } from '../../../services/slices/navSlice';
 import Artist from '../../components/Artist';
@@ -79,14 +79,8 @@ export default function Search({navigation}) {
 
       if (!createNewRecord){
 
-        if (searchType == 'Playlists'){
-          db.collection('searchRecord')
-            .doc(auth.currentUser.uid)
-            .update({
-                playListRecordList:[...recordList, searchText] 
-            })
-        }
-        else if (searchType != 'Video Link') {
+        
+         if (searchType != 'Video Link') {
           db.collection('searchRecord')
             .doc(auth.currentUser.uid)
             .update({
@@ -95,17 +89,11 @@ export default function Search({navigation}) {
         }
         
       } else {
-        if (searchType == 'Playlists'){
+          if (searchType != "Video Link") {
           db.collection('searchRecord')
             .doc(auth.currentUser.uid)
             .set({
-              playListRecordList:[searchText] 
-            })
-        } else if (searchType != "Video Link") {
-          db.collection('searchRecord')
-            .doc(auth.currentUser.uid)
-            .set({
-                recordList:[searchText+" Music"] 
+                recordList:[searchText+ " Music"] 
             })
         }
         
@@ -329,11 +317,18 @@ export default function Search({navigation}) {
         )
 
       }
+      if (allYTData.length == 0){
+        return (
+            <View>
+              <AlbumMessager>No results found</AlbumMessager>
+            </View>
+        )
+      }
       return (
         <FlatList
           data={allYTData}
           keyExtractor={(item) => item.etag}
-   
+          key={'_'}
           renderItem={({ item }) => (
                     <LineItemSong
                 //active={song === track.title}
@@ -359,6 +354,7 @@ export default function Search({navigation}) {
       <>
       <FlatList
           data={allGenres}
+          key={'#'}
           numColumns={2}
           ListHeaderComponent={<Title>Browse All</Title>}
           keyExtractor={(item) => `${item.id}`}
@@ -368,7 +364,8 @@ export default function Search({navigation}) {
            
           )}
         />
-  </>
+        </>
+  
     )
   }
 
@@ -378,7 +375,7 @@ export default function Search({navigation}) {
     <ImageBackground style={styles.image} source={ BG_IMAGE}>
      
     <Container playerOn={audioURI == null ? false : true}>
-      <Title  search={true}>
+      <Title   search={true}>
         Search
       </Title>
 
@@ -441,11 +438,15 @@ export default function Search({navigation}) {
                     )}
                 />
 
-    {renderSearches()}
+    
+      </View>
+      
+      <View>
+      {renderSearches()}
       </View>
     </Container>
-    
     </ImageBackground>
+    
   );
 }
 

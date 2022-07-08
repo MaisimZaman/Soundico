@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, ScrollView, ImageBackground, StyleSheet } from 'react-native';
+import { View, FlatList, ScrollView, ImageBackground, StyleSheet } from 'react-native';
 
 import { Entypo } from '@expo/vector-icons';
 
@@ -24,7 +24,6 @@ export default function Home({navigation}) {
   const [yourPlaylists, setYourPlaylists] = useState([]);
   const [recordList, setRecordList] = useState([])
   const [playListRecordList, setPlayListRecordList] = useState([])
-  //const [currentPlaylistData, setCurrentPlaylistData] = useState([])
 
 
   useEffect(() => {
@@ -38,14 +37,10 @@ export default function Home({navigation}) {
         if (doc.data().recordList!= undefined){
           setRecordList(doc.data().recordList)
         }
-        if (doc.data().playListRecordList != undefined){
-          setPlayListRecordList(doc.data().playListRecordList)
-        }
-          
+        
           
       } else {
          setRecordList([])
-         setPlayListRecordList([])
         
       }
   }).catch((error) => {
@@ -95,10 +90,10 @@ export default function Home({navigation}) {
 
   useEffect(() => {
     let searches;
-    if (playListRecordList.length == 0){
+    if (recordList.length == 0){
        searches = ["Car Music",   "Relaxing Music", "Adventure Music", "Study Music"]
     } else {
-      searches = playListRecordList
+      searches = recordList
     }
     
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
@@ -113,7 +108,7 @@ export default function Home({navigation}) {
         
     })
 
-  }, [navigation, playListRecordList])
+  }, [navigation, recordList])
 
   useEffect(() => {
     let unsubscribe = db.collection('playlists')
@@ -188,7 +183,7 @@ export default function Home({navigation}) {
   return (
     <ImageBackground style={styles.image} source={ BG_IMAGE}>
     <Container>
-      <ScrollView>
+    <ScrollView>
         <Entypo
           onPress={signOutUser}
           name="cog"
@@ -197,59 +192,74 @@ export default function Home({navigation}) {
           style={{ alignSelf: 'flex-end', marginTop: 20, marginRight: 10 }}
         />
         
-        <Title>Recently Played</Title>
-        <FlatList
-          data={recently}
-          keyExtractor={(item) => `${item.id}`}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', { rId: item.id, videoId: item.data.videoId, videoThumbNail:item.data.videoThumbNail, videoTitle: item.data.videoTitle, artist: item.data.videoArtist, Search: false, isRecently: true, downloadData: recently, channelId: item.data.channelId})}>
-              <AlbunsList
-                name={item.data.videoTitle}
-                photoAlbum={item.data.videoThumbNail}
-                recentPlayed
-              />
-            </TouchableOpacity>
-          )}
-        />
-        <Title>Trending</Title>
-        <FlatList
-          data={podcasts}
-          keyExtractor={(item) => `${item.id}`}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {rId: item.id,videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: false, downloadData: podcasts, isRecently: false, channelId: item.snippet.channelId })}>
-              <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} podcast={true} />
-            </TouchableOpacity>
-          )}
-        />
-        <Title>Made For you</Title>
-        <FlatList
-          data={madeForYou}
-          keyExtractor={(item) => `${item.id}`}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {rId: item.id, videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: false, downloadData: madeForYou, isRecently: false, channelId: item.snippet.channelId })}>
-            <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} />
-            </TouchableOpacity>
-          )}
-        />
-        <Title>Most Popular Playlists</Title>
-        <FlatList
-          data={popularPlaylists}
-          keyExtractor={(item) => item.id.playlistId}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => getPlayListData(item, item.id.playlistId)}>
+        
+        
+        <View>
+          <Title>Recently Played</Title>
+          <FlatList
+            data={recently}
+            keyExtractor={(item) => `${item.id}`}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', { rId: item.id, videoId: item.data.videoId, videoThumbNail:item.data.videoThumbNail, videoTitle: item.data.videoTitle, artist: item.data.videoArtist, Search: false, isRecently: true, downloadData: recently, channelId: item.data.channelId})}>
+                <AlbunsList
+                  name={item.data.videoTitle}
+                  photoAlbum={item.data.videoThumbNail}
+                  recentPlayed
+                />
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+
+        <View>
+          <Title>Trending</Title>
+          <FlatList
+            data={podcasts}
+            keyExtractor={(item) => `${item.id}`}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {rId: item.id,videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: false, downloadData: podcasts, isRecently: false, channelId: item.snippet.channelId })}>
+                <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} podcast={true} />
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+
+        <View>
+          <Title>Made For you</Title>
+          <FlatList
+            data={madeForYou}
+            keyExtractor={(item) => `${item.id}`}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {rId: item.id, videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: false, downloadData: madeForYou, isRecently: false, channelId: item.snippet.channelId })}>
               <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} />
               </TouchableOpacity>
-          )}
-        />
-        <Title>Your Playlists</Title>
+            )}
+          />
+        </View>
+
+        <View>
+          <Title>Most Popular Playlists</Title>
+          <FlatList
+            data={popularPlaylists}
+            keyExtractor={(item) => item.id.playlistId}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => getPlayListData(item, item.id.playlistId)}>
+                <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} />
+                </TouchableOpacity>
+            )}
+          />
+          <Title>Your Playlists</Title>
+        </View>
+
+        <View>
         <FlatList
           data={yourPlaylists}
           keyExtractor={(item) => `${item.id}`}
@@ -261,7 +271,8 @@ export default function Home({navigation}) {
             </TouchableOpacity>
           )}
         />
-      </ScrollView>
+        </View>
+    </ScrollView>
     </Container>
     </ImageBackground>
   );
