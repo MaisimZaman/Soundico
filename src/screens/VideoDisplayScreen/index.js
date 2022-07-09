@@ -85,9 +85,6 @@ export default function VideoDisplay(props) {
     }
 
 
-
-
-
   useEffect(() => {
     dispatch(setAudioURI(null))
     //setCurrentPosition(0)
@@ -169,6 +166,8 @@ export default function VideoDisplay(props) {
     }, [])
 
     
+
+    
     useEffect( () => {
         if (Search){
             db.collection('recentlyPlayed')
@@ -188,6 +187,7 @@ export default function VideoDisplay(props) {
         
     },[])
 
+    
 
     function renderVideoPlayer(){
       if (playingVideo == null){
@@ -291,6 +291,7 @@ export default function VideoDisplay(props) {
       dispatch(setAuthor(artist))
       
   }
+
 
 
 

@@ -2,9 +2,11 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { colors } from '../MusicPlayer/constants/index';
+import { View } from 'react-native';
 
-const SvgLinearGradient = ({ fill, height }) => (
-  <Svg height={height} width="100%">
+const SvgLinearGradient = ({ fill, height, rounded }) => (
+  
+  <Svg   height={height} width="100%">
     <Defs>
       <LinearGradient id="grad" x1="50%" y1="100%" x2="50%" y2="0%">
         <Stop offset="0%" stopColor={colors.blackBg} stopOpacity="1" />
@@ -14,6 +16,7 @@ const SvgLinearGradient = ({ fill, height }) => (
     </Defs>
     <Rect x="0" y="0" width="100%" height="100%" fill="url(#grad)" />
   </Svg>
+  
 );
 
 SvgLinearGradient.defaultProps = {

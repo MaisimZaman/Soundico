@@ -35,6 +35,9 @@ export default function VideoPlayer(props) {
             playThroughEarpieceAndroid: false
          });
     }, [])
+
+
+    
     
 
     function renderRecents(){
