@@ -15,6 +15,7 @@ export default function AddToPlaylist(props) {
     const [allMusic, setAllMusic] = useState([])
     const [selectedDownloads, setSelectedDownloads] = useState([])
     
+    console.log(allMusic.length)
 
     useEffect(() => {
         let unsubscribe = db.collection('audioDownloads')
@@ -120,8 +121,8 @@ export default function AddToPlaylist(props) {
     ></TextInput>
 
             <FlatList
-                data={allMusic}
-                initialNumToRender={allMusic.length -1}
+                data={allMusic.length > 7 ? allMusic.slice(0, allMusic.length-3) : allMusic}
+                initialNumToRender={ allMusic.length}
                 keyExtractor={(item, index) => String(index)}
                 renderItem={({ item }) => (
             <TouchableOpacity

@@ -57,6 +57,7 @@ function AlbumScreen(props){
                   audioURI: albums[randomTrack].data.audio,
                   title: albums[randomTrack].data.title,
                   audioID: albums[randomTrack].id,
+                  artist: albums[randomTrack].data.channelTitle ,
                   downloadData: albums,
                   playListName: title,
      })
@@ -94,6 +95,7 @@ function AlbumScreen(props){
       audioURI: item.data.audio,
       title: item.data.title,
       audioID: item.id,
+      artist: item.data.channelTitle,
       downloadData: albums,
       playListName: title,
       
@@ -169,7 +171,7 @@ function AlbumScreen(props){
 </View>
 <View style={styles.containerAlbum}>
   <Text style={styles.albumInfo}>
-    {`Album by ${"unknown"} · ${2009}`}
+    {`Album by ${"unknown"} · ${2022}`}
   </Text>
 </View>
 </View>

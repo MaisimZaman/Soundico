@@ -113,7 +113,10 @@ export default function MusicPlayer(props){
       if (status.durationMillis != undefined){
         if (status.durationMillis > 0){
           if (status.positionMillis == status.durationMillis){
-            skipFowardTrack()
+            
+              skipFowardTrack()
+            
+            
           }
         }
       }
@@ -231,7 +234,7 @@ export default function MusicPlayer(props){
 
     
 
-      if (index < downloadData.length){
+      if (index <= downloadData.length -1){
         if (isDdownload){
           const forwardThumbNail = defaultThumbnail
           const forwardAudioURI = downloadData[index + 1].uri
@@ -291,16 +294,18 @@ export default function MusicPlayer(props){
         const randomAudioURI = downloadData[randomTrack].uri
         const randomTitle = downloadData[randomTrack].filename.slice(0, -4)
         const randomID = downloadData[randomTrack].id
-        setNewSongData(randomThumbNail, randomAudioURI, randomTitle, randomID)
+        const randomArtist = "Unknown"
+        setNewSongData(randomThumbNail, randomAudioURI, randomTitle, randomID, randomArtist)
         setPaused(false)
 
       } else {
         const randomTrack = Math.floor(Math.random() * downloadData.length);
-        const  randomThumbNail = downloadData[randomTrack].data.thumbNail
+        const  randomThumbNail = downloadData[randomTrack].data.thumbNail                                                                                  
         const randomAudioURI = downloadData[randomTrack].data.audio
         const randomTitle = downloadData[randomTrack].data.title
         const randomID = downloadData[randomTrack].id
-        setNewSongData(randomThumbNail, randomAudioURI, randomTitle, randomID)
+        const randomArtist = downloadData[randomTrack].data.channelTitle
+        setNewSongData(randomThumbNail, randomAudioURI, randomTitle, randomID, randomArtist)
         setPaused(false)
       }
         

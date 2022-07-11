@@ -154,7 +154,7 @@ export default function TopicContent(props) {
         </View>
         <View style={styles.containerAlbum}>
           <Text style={styles.albumInfo}>
-            {`Album by ${"Elon musk"} · ${2009}`}
+            {`Album by ${"User"} · ${2022}`}
           </Text>
         </View>
       </View>

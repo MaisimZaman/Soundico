@@ -12,7 +12,7 @@ import Shows from '../../screens/Libary/Podcasts/Shows';
 
 const stylesSubTabs = StyleSheet.create({
   topbarIndicator: {
-    backgroundColor: '#1DB954',
+    backgroundColor: '#177aeb',
     borderRadius: 5,
     bottom: 0,
     height: 2,

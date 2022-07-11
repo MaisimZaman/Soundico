@@ -54,7 +54,7 @@ export default function Home({navigation}) {
 
   useEffect(() => {
 
-    const searches = ["Elon Musk",   "Car BASS Music",  'motivational videos']
+    const searches = ["Study Music",  "Car BASS Music",  'motivational videos']
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
     Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText}&key=${API_KEY}`)
       .then(res => {
@@ -112,7 +112,8 @@ export default function Home({navigation}) {
   useEffect(() => {
     let unsubscribe = db.collection('playlists')
                       .doc(auth.currentUser.uid)
-                      .collection('userPlaylists')
+                      .collection("userPlaylists")
+                      .orderBy("creation", "desc")
                       .onSnapshot((snapshot) => setYourPlaylists(snapshot.docs.map(doc => ({
                         id: doc.id,
                         data: doc.data()

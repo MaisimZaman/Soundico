@@ -16,6 +16,7 @@ export default function Playlists({navigation}) {
     let unsubscribe = db.collection('playlists')
                       .doc(auth.currentUser.uid)
                       .collection('userPlaylists')
+                      .orderBy("creation", "desc")
                       .onSnapshot((snapshot) => setPlaylists(snapshot.docs.map(doc => ({
                         id: doc.id,
                         data: doc.data()
@@ -47,7 +48,7 @@ export default function Playlists({navigation}) {
     
     <Container>
       <FlatList
-        data={playlists.slice(0, playlists.length -1)}
+        data={playlists}
         initialNumToRender={playlists.length}
         keyExtractor={(item) => `${item.id}`}
         renderItem={({ item }) => (

@@ -17,11 +17,12 @@ export default function NamePlaylist({navigation}) {
         onChangeText={(text) => setTitleText(text)}
         value={titleText}
         textAlign='center'
+        placeholderTextColor={"#3e4142"}
         placeholder="Enter your playlist title.."
         
       />
       <TouchableOpacity disabled={titleText == ''} onPress={() => navigation.navigate('AddToPlaylist', {playListTitle: titleText})}>
-        <Text style={{color: "white", fontSize: 22,  textAlign: 'center', marginTop: "10%",  marginBottom: "5%", color: "green"}}>Next</Text>
+        <Text style={{color: "white", fontSize: 22,  textAlign: 'center', marginTop: "10%",  marginBottom: "5%", color: "#177aeb"}}>Next</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Text style={{color: "white", fontSize: 22, textAlign: 'center', }}>Cancel</Text>
