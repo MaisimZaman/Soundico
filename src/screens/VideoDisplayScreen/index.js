@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, Button, TouchableOpacity, Modal, Alert, Pressable, ImageBackground, Image} from 'react-native'
+import { StyleSheet, Text, View, Dimensions, Button, TouchableOpacity, Modal, Alert, Pressable, ImageBackground, Image, ScrollView} from 'react-native'
 import React, {useState, useEffect, useRef} from 'react';
 import ytdl from "react-native-ytdl"
 import {db, auth} from '../../../services/firebase'
@@ -41,6 +41,7 @@ import {
 } from '../../../services/slices/navSlice';
 
 import { useDispatch, useSelector } from 'react-redux';
+
 
 
 
@@ -346,9 +347,11 @@ export default function VideoDisplay(props) {
             {renderVideoPlayer()}
           <View style={[gStyle.flexRowSpace, styles.containerDetails]}>
             <View style={styles.containerSong}>
+              <ScrollView horizontal={true}>
               <Text ellipsizeMode="tail" numberOfLines={1} style={styles.song}>
                 {currentTitle}
               </Text>
+              </ScrollView>
               <TouchableOpacity onPress={handleNavigteToChannel}>
                   <Text  style={styles.artist}>{currentArtist}</Text>
               </TouchableOpacity>

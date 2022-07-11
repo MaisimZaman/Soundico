@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Audio } from 'expo-av';
 
-import { Image, StyleSheet, Text, View, ImageBackground, Modal, Pressable, PermissionsAndroid, Platform, Alert } from 'react-native';
+import { Image, StyleSheet, Text, View, ImageBackground, ScrollView } from 'react-native';
 import { Feather, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
@@ -25,6 +25,7 @@ import * as FileSystem from 'expo-file-system';
 
 //import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
+
 
 
 //import TrackPlayer from 'react-native-track-player';
@@ -351,9 +352,11 @@ export default function MusicPlayer(props){
   
             <View style={[gStyle.flexRowSpace, styles.containerDetails]}>
               <View style={styles.containerSong}>
+                <ScrollView horizontal={true}>
                 <Text ellipsizeMode="tail" numberOfLines={1} style={styles.song}>
                   {currentTitle}
                 </Text>
+                </ScrollView>
                 <Text style={styles.artist}>{currentArtist}</Text>
               </View>
               <View style={styles.containerFavorite}>
@@ -424,7 +427,7 @@ export default function MusicPlayer(props){
                 icon={
                   <MaterialIcons color={colors.greyLight} name="playlist-play" />
                 }
-                onPress={() => null}
+                onPress={addMusicToPlaylist}
               />
             </View>
           </View>

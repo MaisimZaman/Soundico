@@ -37,7 +37,6 @@ export default function Home({navigation}) {
         if (doc.data().recordList!= undefined){
           setRecordList(doc.data().recordList)
         }
-        
           
       } else {
          setRecordList([])
@@ -184,13 +183,13 @@ export default function Home({navigation}) {
     <ImageBackground style={styles.image} source={ BG_IMAGE}>
     <Container>
     <ScrollView>
-        <Entypo
-          onPress={signOutUser}
-          name="cog"
-          size={25}
-          color="#acacac"
-          style={{ alignSelf: 'flex-end', marginTop: 20, marginRight: 10 }}
-        />
+      <Entypo
+            onPress={signOutUser}
+            name="cog"
+            size={25}
+            color="#acacac"
+            style={{ alignSelf: 'flex-end', marginTop: 20, marginRight: 10 }}
+          />
         
         
         
@@ -202,13 +201,17 @@ export default function Home({navigation}) {
             horizontal
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (
+              <View>
               <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', { rId: item.id, videoId: item.data.videoId, videoThumbNail:item.data.videoThumbNail, videoTitle: item.data.videoTitle, artist: item.data.videoArtist, Search: false, isRecently: true, downloadData: recently, channelId: item.data.channelId})}>
+                <View>
                 <AlbunsList
                   name={item.data.videoTitle}
                   photoAlbum={item.data.videoThumbNail}
                   recentPlayed
                 />
-              </TouchableOpacity>
+                </View>
+                </TouchableOpacity>
+                </View>
             )}
           />
         </View>
@@ -222,6 +225,7 @@ export default function Home({navigation}) {
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {rId: item.id,videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: false, downloadData: podcasts, isRecently: false, channelId: item.snippet.channelId })}>
+
                 <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} podcast={true} />
               </TouchableOpacity>
             )}
@@ -272,6 +276,8 @@ export default function Home({navigation}) {
           )}
         />
         </View>
+
+       
     </ScrollView>
     </Container>
     </ImageBackground>

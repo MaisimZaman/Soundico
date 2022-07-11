@@ -37,10 +37,10 @@ export default function SavedMoreOptions(props) {
 
     function handleIconClick(item){
         if (item.id == 3){
-            downloadAudioToDevice(currentAudioURI, albumTitle)
+            addMusicToPlaylist()
         }
         if (item.id == 4){
-            downloadSongToDevice()
+          downloadAudioToDevice(currentAudioURI, albumTitle)
         }
         else if (item.id == 5){
             deleteMusicItem()
@@ -49,56 +49,7 @@ export default function SavedMoreOptions(props) {
         
     }
 
-    async function downloadSongToDevice(){
-
-        function replaceIllegalChars(string){
-          return string.replace('#','')
-          .replace('|', '')
-          .replace('%', '')
-          .replace('$', '')
-        }
     
-          let fileUri = FileSystem.documentDirectory + `${replaceIllegalChars(albumTitle)}.mp3`;
-          FileSystem.downloadAsync(currentAudioURI, fileUri)
-          .then(({ uri }) => {
-            
-              saveFile(uri);
-              console.log(uri)
-             
-            })
-            .catch(error => {
-              console.error(error);
-            })
-            //Alert.alert(`${currentTitle} downloaded onto device`)
-            //Alert(`${currentTitle} downloaded onto device`)
-    
-        
-          
-      
-        async function saveFile(fileUri){
-          console.warn(fileUri)
-          const checkAndroidPermission = async () => {
-            try {
-              const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
-              await PermissionsAndroid.request(permission);
-              console.warn("This ran")
-              Promise.resolve();
-            } catch (error) {
-              Promise.reject(error);
-            }
-          };
-          await checkAndroidPermission();
-          
-            const { status }  = await MediaLibrary.requestPermissionsAsync();
-    
-            
-            
-            if (status === "granted") {
-              const asset = await MediaLibrary.createAssetAsync(fileUri)
-              await MediaLibrary.createAlbumAsync("SoundicoDownloads", asset, false)
-            }
-            
-        }}
 
     return (
         <ImageBackground style={styles.bgImage} resizeMode='cover' source={BG_IMAGE}>
