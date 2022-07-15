@@ -9,5 +9,14 @@
         "distribution": "internal"
       }
     }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "maisimman01@gmail.com",
+        "ascAppId": "1634836398",
+        "appleTeamId": "R4L964MN7Z"
+      }
+    }
   }
 }
