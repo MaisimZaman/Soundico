@@ -39,11 +39,19 @@
       "infoPlist": {
         "UIBackgroundModes": [
           "audio"
-        ]
-      }
+        ],
+        "NSPhotoLibraryUsageDescription": "Allow Soundico to access your photos.",
+        "NSPhotoLibraryAddUsageDescription": "Allow Soundico to save photos."
+      },
+      "bundleIdentifier": "com.maisimdevelops.musiccoapp"
     },
     "android": {
-      "package": "com.maisimdevelops.musiccoapp"
+      "package": "com.maisimdevelops.musiccoapp",
+      "permissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_MEDIA_LOCATION"
+      ]
     }
   }
 }

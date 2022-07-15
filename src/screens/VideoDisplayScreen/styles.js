@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
         alignSelf: 'center',
         height:300,
         width:'119%',
-        marginBottom: 20
+        marginBottom: 40
       },
       centeredView: {
         flex: 1,
@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
         width: device.width - 48
       },
       containerDetails: {
-        marginBottom: 16
+        marginBottom: 40
       },
       containerSong: {
         flex: 6

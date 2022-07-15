@@ -320,6 +320,7 @@ export default function VideoDisplay(props) {
         <View style={gStyle.container}>
         <ImageBackground source={BG_IMAGE}  style={styles.bgImage}>
         <ModalHeader
+        video={true}
           left={<Feather  color={"white"} name="chevron-down" />}
           leftPress={() => {props.navigation.goBack(); dispatch(setAudioURI(null))}}
           right={ <Feather   onPress={() => props.navigation.navigate('MoreOptions', {

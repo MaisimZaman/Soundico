@@ -6,7 +6,37 @@ import { colors, device, gStyle } from './constants';
 // components
 import TouchIcon from './TouchIcon';
 
-const ModalHeader = ({ left, leftPress, right, rightPress, style, text }) => {
+const ModalHeader = ({ left, leftPress, right, rightPress, style, text, video }) => {
+
+  const styles = StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingHorizontal: 24,
+      paddingTop: device.iPhoneNotch ? 48 : 24,
+      marginBottom: video ?  "25%" : "0%"
+    },
+    containerText: {
+      alignItems: 'center',
+      flex: 5,
+      justifyContent: 'center'
+    },
+    text: {
+      ...gStyle.textSpotifyBold16,
+      color: colors.white,
+      textAlign: 'center'
+    },
+    left: {
+      alignItems: 'flex-start',
+      flex: 1,
+      justifyContent: 'center'
+    },
+    right: {
+      alignItems: 'flex-end',
+      flex: 1,
+      justifyContent: 'center'
+    }
+  });
 
   
   return (
@@ -26,6 +56,8 @@ const ModalHeader = ({ left, leftPress, right, rightPress, style, text }) => {
     {!right && <View style={styles.right} />}
   </View>
   )
+
+  
 };
   
   
@@ -53,33 +85,6 @@ ModalHeader.propTypes = {
   text: PropTypes.string
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 24,
-    paddingTop: device.iPhoneNotch ? 48 : 24
-  },
-  containerText: {
-    alignItems: 'center',
-    flex: 5,
-    justifyContent: 'center'
-  },
-  text: {
-    ...gStyle.textSpotifyBold16,
-    color: colors.white,
-    textAlign: 'center'
-  },
-  left: {
-    alignItems: 'flex-start',
-    flex: 1,
-    justifyContent: 'center'
-  },
-  right: {
-    alignItems: 'flex-end',
-    flex: 1,
-    justifyContent: 'center'
-  }
-});
+
 
 export default ModalHeader;
