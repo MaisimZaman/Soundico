@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Audio } from 'expo-av';
-
 import { Image, StyleSheet, Text, View, ImageBackground, ScrollView } from 'react-native';
 import { Feather, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
@@ -44,7 +43,7 @@ export default function MusicPlayer(props){
 
   const [playListAudioURI, setPlayListAudioURI] = useState(audioURI)
   
-
+  
   
   const status = useSelector(selectSoundStatus)
   const currentThumbNail = useSelector(selectThumbNail)
@@ -55,7 +54,7 @@ export default function MusicPlayer(props){
 
   const [progress, setProgress] = useState(0);
 
-  
+  console.log(downloadData.length)
 
   async function setupPlayer(){
     await TrackPlayer.setupPlayer();
@@ -227,6 +226,25 @@ export default function MusicPlayer(props){
 
     }
 
+
+    function chceckDisabled(forward){
+      return false
+      const index = downloadData.findIndex(object => {
+        return object.id === currentAudioID;
+      });
+      if (forward){
+        if (index == downloadData.length-1){
+          return true
+        }
+      
+      } else {
+        if (index == 0){
+          return true
+        }
+      }
+      return false
+    }
+
     function skipFowardTrack(){
       const index = downloadData.findIndex(object => {
         return object.id === currentAudioID;
@@ -261,9 +279,20 @@ export default function MusicPlayer(props){
     }
 
     function skipBackwardTrack(){
-      const index = downloadData.findIndex(object => {
-        return object.id === currentAudioID;
-      });
+      let index;
+
+      if (downloadData[downloadData.length-1].id == currentAudioID){
+        index = downloadData.length-1
+      } else {
+        index = downloadData.findIndex(object => {
+          console.log(object.id)
+          return object.id === currentAudioID;
+        });
+      }
+
+      
+
+      
 
       if (index >= 0){
         if (isDdownload){
@@ -279,7 +308,7 @@ export default function MusicPlayer(props){
           const backwardAudioURI = downloadData[index - 1].data.audio
           const backwardTitle = downloadData[index - 1].data.title
           const backwardID = downloadData[index - 1].id
-          const backwardArtist = downloadData[index + 1].data.channelTitle
+          const backwardArtist = downloadData[index - 1].data.channelTitle
           setNewSongData(backwardThumbNail, backwardAudioURI, backwardTitle, backwardID, backwardArtist)
         }
         setPaused(false)
@@ -314,8 +343,10 @@ export default function MusicPlayer(props){
     function addMusicToPlaylist(){
       navigation.navigate('AddToMadePlaylist', {playListObject: {id: currentAudioID, data: {
         audio: currentAudioURI,
+        channelId: currentAudioID,
         thumbNail: currentThumbNail,
-        title: currentTitle
+        channelTitle: currentArtist ,
+        title: currentTitle,
       }}})
     }
 
@@ -401,6 +432,7 @@ export default function MusicPlayer(props){
                 <TouchIcon
                   icon={<FontAwesome color={colors.white} name="step-backward" />}
                   iconSize={40}
+                  disabled={chceckDisabled(false)}
                   onPress={skipBackwardTrack}
                 />
                 <View style={gStyle.pH3}>
@@ -413,6 +445,7 @@ export default function MusicPlayer(props){
                 <TouchIcon
                   icon={<FontAwesome color={colors.white} name="step-forward" />}
                   iconSize={40}
+                  disabled={chceckDisabled(true)}
                   onPress={skipFowardTrack}
                 />
                

@@ -21,10 +21,6 @@ import {auth, db} from '../../../services/firebase'
 import { BG_IMAGE } from '../../services/backgroundImage';
 
 
-
-
-
-
 function Login({ navigation }){
 
     const [username, setUsername] = useState("")
@@ -132,7 +128,6 @@ function Login({ navigation }){
                 >
                     or login with
                 </Text>
-
                 {/* Social Logins */}
                 <View
                     style={{
@@ -200,6 +195,7 @@ function Login({ navigation }){
                         onPress={() => navigation.navigate("Register")}
                     />
                 </View>
+
             </View>
         )
     }
@@ -248,6 +244,9 @@ function Login({ navigation }){
                 {/* Buttons */}
                 {renderButtons()}
                 </KeyboardAwareScrollView>
+
+                
+                
 
                 
 
