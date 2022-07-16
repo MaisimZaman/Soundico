@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native"
+import { StyleSheet, Platform } from "react-native"
 import { colors, device, func, gStyle } from '../MusicPlayer/constants/index';
 
 export const styles = StyleSheet.create({
@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
         alignSelf: 'center',
         height:300,
         width:'119%',
-        marginBottom: 40
+        marginBottom: Platform.OS == "ios" ? 40 : 15
       },
       centeredView: {
         flex: 1,
@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
         width: device.width - 48
       },
       containerDetails: {
-        marginBottom: 40
+        marginBottom: Platform.OS == "ios"  ? 40 : 30
       },
       containerSong: {
         flex: 6

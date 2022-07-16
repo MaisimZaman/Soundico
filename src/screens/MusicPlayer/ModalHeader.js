@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Platform } from 'react-native';
 import { colors, device, gStyle } from './constants';
 
 // components
@@ -8,13 +8,15 @@ import TouchIcon from './TouchIcon';
 
 const ModalHeader = ({ left, leftPress, right, rightPress, style, text, video }) => {
 
+  const platform = Platform.OS
+
   const styles = StyleSheet.create({
     container: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       paddingHorizontal: 24,
       paddingTop: device.iPhoneNotch ? 48 : 24,
-      marginBottom: video ?  "25%" : "0%"
+      marginBottom: video ? (platform =="ios" ?  "25%" : "2%") : "0%"
     },
     containerText: {
       alignItems: 'center',

@@ -367,7 +367,7 @@ export default function VideoDisplay(props) {
 
           <View >
             <Slider
-         
+            
               minimumValue={0}
               maximumValue={status.durationMillis}
               value={status.positionMillis}
