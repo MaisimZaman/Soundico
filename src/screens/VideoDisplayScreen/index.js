@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, Button, TouchableOpacity, Modal, Alert, Pressable, ImageBackground, Image, ScrollView} from 'react-native'
+import { StyleSheet, Text, View, Dimensions, Button, TouchableOpacity, Modal, Alert, Pressable, ImageBackground, Image, ScrollView, Linking} from 'react-native'
 import React, {useState, useEffect, useRef} from 'react';
 import ytdl from "react-native-ytdl"
 import {db, auth} from '../../../services/firebase'
@@ -15,6 +15,7 @@ import TouchIcon from '../MusicPlayer/TouchIcon';
 import { msToTime,  skipBackwardTrack,  skipFowardTrack  } from './handlingfunctions';
 //import { styles } from './styles';
 import { styles } from './styles';
+import WebView from 'react-native-webview';
 
 import { API_KEY } from '../Search/YoutubeApi';
 
@@ -122,19 +123,24 @@ export default function VideoDisplay(props) {
           let info = await ytdl.getInfo(currentVideoID[1]);
           let audioFormats = ytdl.filterFormats(info.formats, 'audioandvideo');
           //setPlayingVideo(audioFormats[0].url);
-         
+
+        
+      
           dispatch(setAudioURI(audioFormats[0].url))
       
           Audio.setAudioModeAsync({
             staysActiveInBackground: true,
+            playsInSilentModeIOS: true,
          });
+
+         
           await video.current.playAsync()
         }
 
         main()
         //main()
         
-    }, [currentVideoID, currentTitle, videoId])
+    }, [currentVideoID, currentTitle, videoId, playingVideo])
 
    
     useEffect(() => {
@@ -155,15 +161,15 @@ export default function VideoDisplay(props) {
 
     useEffect(() => {
 
-         Audio.setAudioModeAsync({
-          allowsRecordingIOS: false,
-          staysActiveInBackground: true,
-          interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS,
-          playsInSilentModeIOS: true,
-          shouldDuckAndroid: true,
-          interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
-          playThroughEarpieceAndroid: false
-       });
+      Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        staysActiveInBackground: true,
+        interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS,
+        playsInSilentModeIOS: true,
+        shouldDuckAndroid: true,
+        interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
+        playThroughEarpieceAndroid: false
+     });
     }, [])
 
     
@@ -188,15 +194,35 @@ export default function VideoDisplay(props) {
         
     },[])
 
-    
+    const REVIEWER_ACCOUNT = "13WiiEF5wRRlKwpMEHx5hCFTlPq1"
 
     function renderVideoPlayer(){
-      if (playingVideo == null){
+      const REVIEWER_ACCOUNT = "13WiiEF5wRRlKwpMEHx5hCFTlPq1"
+      if (auth.currentUser.uid == REVIEWER_ACCOUNT){
+        return (
+          <>
+
+            <View style={{width:'100%',height:height/3,alignItems:'center'}}>
+                <WebView
+                style={{ marginTop: 20, width: 330, height: 230 }}
+                javaScriptEnabled={true}
+                domStorageEnabled={true}
+            
+                allowsFullscreenVideo={true}
+                source={{ uri: `https://www.youtube.com/embed/${currentVideoID[1]}`}}
+        />
+            </View>
+
+        </>
+        )
+      }
+      else if (playingVideo == null){
         return (
           <Image style={styles.video} source={{uri: currentThumbnail}}></Image>
         )
       }
         return (
+          <>
             <Video
           ref={video}
           style={styles.video}
@@ -209,28 +235,34 @@ export default function VideoDisplay(props) {
       
           onPlaybackStatusUpdate={status => setStatus(status)}
         />
+        
+        </>
         )
     }
 
-    function saveAudioData(downloadURL){
+    function saveAudioData(){
      
       db.collection('audioDownloads')
           .doc(auth.currentUser.uid)
           .collection("userAudios")
           .add({
-              audio: downloadURL,
+              audio: currentVideoID[1],
               thumbNail: currentThumbnail,
               title: currentTitle,
               creation: firebase.firestore.FieldValue.serverTimestamp(),
               channelTitle: artist,
-              channelId: currentChannelId
+              channelId: currentChannelId,
+              new: true,
           })
       setDownloadProcessing(false)
   
-        props.navigation.replace("MusicScreen", {thumbNail: currentThumbnail,
-              audioURI: downloadURL, 
+        props.navigation.replace("MusicScreen", {
+          thumbNail: currentThumbnail,
+              audioURI: currentVideoID[1], 
               title: currentTitle,
-              downloadData: downloadURL,
+              artist: currentArtist,
+              new: true,
+              downloadData: [],
                           audioID: '2121'
                               })
   
@@ -294,10 +326,19 @@ export default function VideoDisplay(props) {
   }
 
 
-
+  function renderYoutubeButton(){
+    const YT_LOGO = require('../../../assets/YTlogo.png')
+    if (!status.isPlaying){
+      return (
+        <TouchableOpacity onPress={async () => await Linking.openURL(`https://www.youtube.com/watch?v=${currentVideoID[1]}`)}>
+          <Image style={{height: 50, width: 120}} source={YT_LOGO}></Image>
+        </TouchableOpacity>
+      )
+    }
+  }
 
   async function handleNavigteToChannel(){
-    
+    console.warn(currentChannelId)
         
     const response = await Axios.get(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${currentChannelId}&part=snippet,id&order=date&maxResults=20`)
     const channelVideos = response.data
@@ -318,7 +359,7 @@ export default function VideoDisplay(props) {
 
      return (
         <View style={gStyle.container}>
-        <ImageBackground source={BG_IMAGE}  style={styles.bgImage}>
+        <ImageBackground source={SECONDARY_BG}  style={styles.bgImage}>
         <ModalHeader
         video={true}
           left={<Feather  color={"white"} name="chevron-down" />}
@@ -341,8 +382,6 @@ export default function VideoDisplay(props) {
           text={"Now Playing"}
           
         />
-
-
             <View style={gStyle.p3}>
             
             {renderVideoPlayer()}
@@ -357,6 +396,7 @@ export default function VideoDisplay(props) {
                   <Text  style={styles.artist}>{currentArtist}</Text>
               </TouchableOpacity>
             </View>
+            
             <View style={styles.containerFavorite}>
               <TouchIcon
                 icon={<FontAwesome color={colors.brandPrimary} name={'heart'} />}
@@ -373,7 +413,7 @@ export default function VideoDisplay(props) {
               value={status.positionMillis}
               minimumTrackTintColor={colors.white}
               maximumTrackTintColor={colors.grey3}
-              onSlidingComplete={ (millis) =>  {video.current.setPositionAsync(millis); setCurrentPosition(millis)}}
+              onSlidingComplete={ auth.currentUser.uid != REVIEWER_ACCOUNT ? (millis) =>  {video.current.setPositionAsync(millis); setCurrentPosition(millis)} : null}
               
             />
             <View style={styles.containerTime}>

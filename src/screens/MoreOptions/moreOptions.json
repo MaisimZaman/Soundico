@@ -11,12 +11,7 @@
       "title": "View artist",
       "lib": "MaterialCommunityIcons"
     },
-    {
-      "id": 3,
-      "icon": "download",
-      "title": "Download onto device",
-      "lib": "Entypo"
-    },
+    
     {
       "id": 4,
       "icon": "cloud-download",
@@ -28,7 +23,7 @@
       "icon": "folder-video",
       "title": "Save Track as Video",
       "lib": "Entypo"
-    },
+    }
     
     
 ]

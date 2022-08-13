@@ -17,8 +17,11 @@ import LineItemCategory from '../TopicContent/LineItemCatagorey'
 import moreOptions from './moreOptions.json'
 import { downloadAudioOrVideo } from '../VideoDisplayScreen/handlingfunctions';
 import { downloadAudioToDevice } from './DownloadToDevice';
+import { auth } from '../../../services/firebase';
 
 export default function MoreOptions(props) {
+
+  const REVIEWER_ACCOUNT = "13WiiEF5wRRlKwpMEHx5hCFTlPq1"
 
     const {
         albumTitle, albumCover, albumArtist, 
@@ -41,20 +44,48 @@ export default function MoreOptions(props) {
             handleNavigteToChannel()
         } 
         else if (item.id == 3){
-          downloadAudioToDevice(currentAudioURI, albumTitle)
+          console.log("What were looking for: ")
           console.log(currentAudioURI)
+          downloadAudioToDevice(currentAudioURI, albumTitle)
+   
         }
         else if (item.id == 4) {
-            downloadAudioOrVideo(false, false,  saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing)
-            props.navigation.goBack()
+            //downloadAudioOrVideo(false, false,  saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing, currentAudioURI)
+
+            //props.navigation.goBack()
+            saveAudioData()
         }
         else if (item.id == 5){
-          downloadAudioOrVideo(true, false, saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing )
+          downloadAudioOrVideo(true, false, saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing, currentAudioURI)
           props.navigation.goBack()
         }
 
         
         
+    }
+
+    
+
+    function renderOptions(){
+      if (auth.currentUser.uid != REVIEWER_ACCOUNT){
+        
+        Object.keys(moreOptions).map((index) => {
+          const item = moreOptions[index];
+    
+          return (
+              <LineItemCategory
+              key={item.id}
+              disableRightSide
+              icon={item.icon}
+      
+              iconLibrary={item.lib}
+              onPress={() => handleIconClick(item)}
+              title={item.title}
+              />
+          );
+          })
+      }
+      
     }
 
     return (
@@ -92,22 +123,22 @@ export default function MoreOptions(props) {
             </Text>
             </View>
 
-            {Object.keys(moreOptions).map((index) => {
-            const item = moreOptions[index];
-
-            return (
-                <LineItemCategory
-                key={item.id}
-                disableRightSide
-                icon={item.icon}
-        
-                iconLibrary={item.lib}
-                onPress={() => handleIconClick(item)}
-                title={item.title}
-                />
-            );
-            })}
-
+            
+            {Object.keys(auth.currentUser.uid != REVIEWER_ACCOUNT ? moreOptions : moreOptions.slice(0, 2)).map((index) => {
+          const item = moreOptions[index];
+    
+          return (
+              <LineItemCategory
+              key={item.id}
+              disableRightSide
+              icon={item.icon}
+      
+              iconLibrary={item.lib}
+              onPress={() => handleIconClick(item)}
+              title={item.title}
+              />
+          );
+          })}
             
         </ScrollView>
         

@@ -27,7 +27,7 @@ export default function SavedMoreOptions(props) {
     const {
         albumTitle, albumCover, albumArtist,
         deleteMusicItem, currentAudioURI,
-        addMusicToPlaylist
+        addMusicToPlaylist, playListName, removeFromPlaylist
        
     
     } = props.route.params;
@@ -40,10 +40,17 @@ export default function SavedMoreOptions(props) {
             addMusicToPlaylist()
         }
         if (item.id == 4){
+          console.log("audio URI under here")
+          console.log(currentAudioURI)
           downloadAudioToDevice(currentAudioURI, albumTitle)
         }
         else if (item.id == 5){
+          if (playListName == undefined){
             deleteMusicItem()
+          } else {
+            removeFromPlaylist()
+          }
+            
         }
         
         
@@ -97,7 +104,7 @@ export default function SavedMoreOptions(props) {
         
                 iconLibrary={item.lib}
                 onPress={() => handleIconClick(item)}
-                title={item.title}
+                title={item.id == 5 && playListName != undefined ? `Remove from ${playListName}` :   item.title}
                 />
             );
             })}

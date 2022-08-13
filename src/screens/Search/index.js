@@ -333,6 +333,7 @@ export default function Search({navigation}) {
                     <LineItemSong
                 //active={song === track.title}
                 //downloaded={downloaded}
+                navigation={navigation}
                 imageUri={item.snippet.thumbnails.high.url}
                 key={item.id}
                 onPress={() => searchForType(item, item.id.playlistId)}

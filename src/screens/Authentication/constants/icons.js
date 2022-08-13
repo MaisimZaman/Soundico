@@ -31,6 +31,7 @@ const star_1 = require("../../../../assets/icons/star_1.png")
 const sun = require("../../../../assets/icons/sun.png")
 const time = require("../../../../assets/icons/time.png")
 const web_design = require("../../../../assets/icons/web_design.png")
+const apple = {uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1667px-Apple_logo_black.svg.png"}
 
 export default {
     animation,
@@ -64,5 +65,6 @@ export default {
     star_1,
     sun,
     time,
-    web_design
+    web_design,
+    apple
 }

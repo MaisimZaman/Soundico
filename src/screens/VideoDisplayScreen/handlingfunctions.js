@@ -85,10 +85,11 @@ export function skipBackwardTrack(downloadData, setNewSongData, currentID, isRec
     }
 }
 
-export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing){
+export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing, currentAudioURI){
    if (!downloadProcessing){
         let childPath;
         let theDownload;
+
         
         if (isVideo){
         let info = await ytdl.getInfo(currentVideoID);
@@ -98,11 +99,13 @@ export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, saveV
             childPath = `videoDownloads/${auth.currentUser.uid}/${Math.random().toString(36)}`;
         }
         else {
-            let info = await ytdl.getInfo(String(currentVideoID));
+            let info = await ytdl.getInfo(currentVideoID);
             let audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
-            theDownload = audioFormats[0].url
-            console.log(theDownload)
-            childPath = `audioDownloads/${auth.currentUser.uid}/${Math.random().toString(36)}`;
+            console.log("audio formats under here")
+            console.log(audioFormats[1])
+            theDownload = audioFormats[1].url
+            //console.log(theDownload)
+            childPath = `audio/${auth.currentUser.uid}/${Math.random().toString(36)}`;
         }
 
     
@@ -110,6 +113,8 @@ export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, saveV
         
         const response = await fetch(theDownload);
         const blob = await response.blob();
+
+        
 
         const task = firebase
             .storage()
@@ -127,7 +132,7 @@ export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, saveV
                     if (isVideo){
                         setDownloadProcessing(true)
                         saveVideoData(snapshot)
-                        setModalVisible(false)
+                
             
                     } else {
                         if (isPodCast){
@@ -137,7 +142,7 @@ export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, saveV
                         } else {
                             setDownloadProcessing(true)
                             saveAudioData(snapshot);
-                            setModalVisible(false)
+                            
                         }
                         
                     }  

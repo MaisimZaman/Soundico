@@ -21,7 +21,7 @@ import { BG_IMAGE } from '../../../../services/backgroundImage';
 export default function Downloads({navigation}) {
 
   const [downloadData, setDownloadData] = useState([]);
-  const [page, setPage] = useState(downloadData.length -1)
+  const [page, setPage] = useState(30)
   //const [modalVisible, setModalVisible] = useState(false);
 
  
@@ -65,11 +65,12 @@ export default function Downloads({navigation}) {
         var qDownloads = downloadData;
     }
     
-      return (       
+      return (    
+         
         <FlatList
           data={qDownloads}
           keyExtractor={(item, index) => item.id}
-          initialNumToRender={downloadData.length}
+          initialNumToRender={downloadData.length-1}
           renderItem={({ item }) => (
             <TouchableOpacity
 
@@ -83,6 +84,10 @@ export default function Downloads({navigation}) {
               <Playlist
                 name={item.data.title}
                 photoAlbum={item.data.thumbNail}
+
+                onEndReachedThreshold={0.5}           
+                //onScrollToTop={() => setPage(page - 5)}
+                onEndReached={() => setPage(page+7)}
             
                 //create={false}
         
@@ -90,6 +95,7 @@ export default function Downloads({navigation}) {
             </TouchableOpacity>
           )}
         />
+       
         
        
       )
@@ -117,6 +123,7 @@ export default function Downloads({navigation}) {
               backgroundColor: "#054c85"
           }}
           label="Create a playlist?"
+        
           onPress={() => navigation.navigate('NamePlaylist')}
         />
       {renderBody()}

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Audio } from 'expo-av';
-import { Image, StyleSheet, Text, View, ImageBackground, ScrollView } from 'react-native';
+import { Image, StyleSheet, Text, View, ImageBackground, ScrollView, Platform } from 'react-native';
 import { Feather, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
@@ -39,9 +39,12 @@ export default function MusicPlayer(props){
 
   const defaultThumbnail = 'https://t3.ftcdn.net/jpg/04/54/66/12/360_F_454661277_NtQYM8oJq2wOzY1X9Y81FlFa06DVipVD.jpg'
 
-  const {thumbNail, audioURI, title,audioID, downloadData, playListName, notCustom, artist, isDdownload} = props.route.params
+  const {thumbNail, audioURI, title,audioID, downloadData, playListName, notCustom, artist, isDdownload, playlistId} = props.route.params
 
   const [playListAudioURI, setPlayListAudioURI] = useState(audioURI)
+
+
+
   
   
   
@@ -51,24 +54,16 @@ export default function MusicPlayer(props){
   const currentTitle = useSelector(selectTitle)
   const currentAudioID = useSelector(selectAudioID)
   const currentArtist = useSelector(selectAuthor)
+  const [playingAudio, setPlayingAudio] = useState('')
+
+ 
 
   const [progress, setProgress] = useState(0);
 
-  console.log(downloadData.length)
+ 
 
-  async function setupPlayer(){
-    await TrackPlayer.setupPlayer();
 
-    await TrackPlayer.add({
-      id: 1,
-      url: {uri: currentAudioURI},
-      title: currentTitle,
-      artist: currentArtist,
-      artwork: {uri: currentThumbNail}
-  })
-
-    await TrackPlayer.play()
-  }
+  
   
 
   
@@ -103,10 +98,31 @@ export default function MusicPlayer(props){
 
     const timePast = msToTime(status != 0 ? status.positionMillis : 0);
     const timeLeft = msToTime(status != 0 ? status.durationMillis - status.positionMillis : 0);
-  
-  
+
+
+    console.log("Playing audio is under here ")
+    console.log(playingAudio)
+
+
+
     
-  
+    useEffect(() => {
+      async function getAudioURI(){
+        console.log("This is running properly")
+            //let info = await ytdl.getInfo(currentAudioURI);
+            //let audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
+            //const theDownload = audioFormats[1].url
+            let info =  await ytdl.getInfo(currentAudioURI);
+            
+            let audioFormats = ytdl.filterFormats(info.formats, 'audioandvideo');
+            const theDownload = audioFormats[0].url
+            console.warn(theDownload)
+        setPlayingAudio(theDownload)
+        //console.log(urls[0].url)
+      }
+      getAudioURI()
+    }, [currentAudioURI])
+    
   
     useEffect(() => {
       if (status.durationMillis != undefined){
@@ -122,22 +138,37 @@ export default function MusicPlayer(props){
       
     }, [status])
 
+    useEffect(() => {
 
-  
+      Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        staysActiveInBackground: true,
+        interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS,
+        playsInSilentModeIOS: true,
+        shouldDuckAndroid: true,
+        interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
+        playThroughEarpieceAndroid: false
+     });
+    }, [])
 
 
+    
 
     useEffect(() => {   
       async function run(){
+        setPlayingAudio('')
         setCurrentPosition(0)
         
         
-        const { sound } = await Audio.Sound.createAsync({uri: currentAudioURI}, { shouldPlay: true }, (status) => dispatch(setSoundStatus(status)));
+        const { sound } = await Audio.Sound.createAsync({uri: playingAudio}, { shouldPlay: true }, (status) => dispatch(setSoundStatus(status)));
             //setSound(sound)
          setSound(sound)
 
+         
+
           Audio.setAudioModeAsync({
             staysActiveInBackground: true,
+            playsInSilentModeIOS: true,
          });
 
 
@@ -149,7 +180,7 @@ export default function MusicPlayer(props){
     
 
       
-    }, [currentAudioID, repeat])
+    }, [currentAudioID, repeat, playingAudio])
 
 
     useEffect(() => {
@@ -169,7 +200,7 @@ export default function MusicPlayer(props){
     
      
      setNewSongData(thumbNail, audioURI, title,audioID, artist)
-      dispatch(setDownloadData(downloadData))
+    dispatch(setDownloadData(downloadData))
     
     }, [])
 
@@ -228,14 +259,22 @@ export default function MusicPlayer(props){
 
 
     function chceckDisabled(forward){
-      return false
-      const index = downloadData.findIndex(object => {
-        return object.id === currentAudioID;
-      });
+      let index;
+      if (downloadData == []){
+        index = 0
+      } else {
+        index = downloadData.findIndex(object => {
+          return object.id === currentAudioID;
+        });
+      }
+       
       if (forward){
-        if (index == downloadData.length-1){
-          return true
-        }
+         if (downloadData != []){
+          if (index == downloadData.length-1){
+            return true
+          }
+         }
+        
       
       } else {
         if (index == 0){
@@ -252,7 +291,7 @@ export default function MusicPlayer(props){
 
     
 
-      if (index <= downloadData.length -1){
+      if (index < downloadData.length -1){
         if (isDdownload){
           const forwardThumbNail = defaultThumbnail
           const forwardAudioURI = downloadData[index + 1].uri
@@ -294,7 +333,7 @@ export default function MusicPlayer(props){
 
       
 
-      if (index >= 0){
+      if (index > 0){
         if (isDdownload){
           const  backwardThumbNail = defaultThumbnail
           const backwardAudioURI = downloadData[index - 1].uri
@@ -342,12 +381,35 @@ export default function MusicPlayer(props){
 
     function addMusicToPlaylist(){
       navigation.navigate('AddToMadePlaylist', {playListObject: {id: currentAudioID, data: {
-        audio: currentAudioURI,
+        audio: playingAudio,
         channelId: currentAudioID,
         thumbNail: currentThumbNail,
         channelTitle: currentArtist ,
         title: currentTitle,
       }}})
+    }
+
+    function removeFromPlaylist(){
+      const index = downloadData.findIndex(object => {
+        return object.id === currentAudioID;
+      });
+
+      
+      var copyDownloadData = [...downloadData]
+
+      copyDownloadData.splice(index, 1)
+
+
+      db.collection('playlists')
+            .doc(auth.currentUser.uid)
+            .collection("userPlaylists")
+            .doc(playlistId)
+            .update({
+                playlistVideos: copyDownloadData
+
+            })
+
+      navigation.replace('Main')
     }
 
     function deleteMusicItem(){
@@ -368,7 +430,7 @@ export default function MusicPlayer(props){
     return (
       
         <View style={gStyle.container}>
-          <ImageBackground style={styles.bgImage} resizeMode='cover' source={BG_IMAGE}>
+          <ImageBackground style={styles.bgImage} resizeMode='cover' source={SECONDARY_BG}>
           <ModalHeader
             left={<Feather color={colors.greyLight} name="chevron-down" />}
             leftPress={() => {navigation.goBack(); dispatch(setAudioURI(null))}}
@@ -376,11 +438,13 @@ export default function MusicPlayer(props){
               albumCover: currentThumbNail, 
               albumArtist: currentArtist, 
               deleteMusicItem: deleteMusicItem, 
-              currentAudioURI: currentAudioURI,
-              addMusicToPlaylist: addMusicToPlaylist
+              currentAudioURI: playingAudio,
+              addMusicToPlaylist: addMusicToPlaylist,
+              playListName: playListName,
+              removeFromPlaylist: removeFromPlaylist
             
             })} color={colors.greyLight} name="more-horizontal" />}
-            text={playListName != undefined ? playListName + " Playlist" : "Downloads"}
+            text={playListName != undefined ? playListName  : "Saved"}
           />
   
           <View style={gStyle.p3}>
@@ -407,7 +471,7 @@ export default function MusicPlayer(props){
               <Slider
                 minimumValue={0}
         
-                maximumValue={status.durationMillis}
+                maximumValue={Platform.OS == 'ios' ?  (status.durationMillis) : status.durationMillis}
                 value={status.positionMillis}
                 minimumTrackTintColor={colors.white}
                 maximumTrackTintColor={colors.grey3}

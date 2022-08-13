@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
     video: {
         alignSelf: 'center',
         height:300,
-        width:'119%',
+        width:'120%',
         marginBottom: Platform.OS == "ios" ? 40 : 15
       },
       centeredView: {

@@ -5,7 +5,8 @@ import {
     Image,
     TouchableOpacity,
     StyleSheet,
-    ImageBackground
+    ImageBackground,
+    Platform
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
@@ -32,6 +33,10 @@ function Register({ navigation }){
 
     function googleRegister(){
          
+    }
+
+    function appleLogIn(){
+
     }
 
     
@@ -126,26 +131,11 @@ function Register({ navigation }){
     }
 
     function renderButtons() {
-        return (
-            <View
-                style={{
-                    flex: 1,
-                }}
-            >
-                {/* Login */}
-                <TextButton
-                    contentContainerStyle={{
-                        height: SIZES.height > 800 ? 60 : 50,
-                        marginTop: SIZES.height > 800 ? 30 : 20,
-                        borderRadius: 30,
-                        backgroundColor: "#177aeb"
-                    }}
-                    label="CREATE ACCOUNT"
-                onPress={register}
-                />
-
-                {/* Divider */}
-                <Text
+        function renderLoginOptions(){
+            if (Platform.OS == 'android'){
+                return (
+                   <>
+                    <Text
                     style={{
                         textAlign: 'center',
                         marginTop: SIZES.radius,
@@ -180,8 +170,9 @@ function Register({ navigation }){
                     />
 
                     <IconLabelButton
-                        icon={icons.facebook}
-                        label="Facebook"
+                        icon={icons.apple}
+                        label="Apple"
+                        onPress={appleLogIn}
                         containerStyle={{
                             flex: 1,
                             marginLeft: SIZES.padding,
@@ -194,6 +185,29 @@ function Register({ navigation }){
                         }}
                     />
                 </View>
+                </>
+                )
+            }
+        }
+        return (
+            <View
+                style={{
+                    flex: 1,
+                }}
+            >
+                {/* Login */}
+                <TextButton
+                    contentContainerStyle={{
+                        height: SIZES.height > 800 ? 60 : 50,
+                        marginTop: SIZES.height > 800 ? 30 : 20,
+                        borderRadius: 30,
+                        backgroundColor: "#177aeb"
+                    }}
+                    label="CREATE ACCOUNT"
+                onPress={register}
+                />
+
+                {renderLoginOptions()}
 
                 {/* Sign Up */}
                 <View
@@ -243,9 +257,21 @@ function Register({ navigation }){
            
 
             <Image 
-                style={{height: 100, width: 100, marginLeft: "30%", marginRight: "30%", marginBottom: "5%", marginTop: "15%"}} 
+                style={{height: 100, width: 100, marginLeft: "35%", marginRight: "30%", marginBottom: "5%", marginTop: "15%"}} 
                 source={require('../../../assets/transparent_soundico.png')}
             ></Image>
+
+<Text
+                style={{
+               
+                    marginBottom: 20,
+                    textAlign: 'center',
+                    ...FONTS.h1,
+                    color: "white"
+                }}
+            >
+                Sign up for free 
+            </Text>
 
 
             {/* Form */}

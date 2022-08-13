@@ -5,7 +5,8 @@ import {
     Image,
     ImageBackground,
     StyleSheet,
-    KeyboardAvoidingView 
+    KeyboardAvoidingView,
+    Platform 
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
@@ -19,6 +20,12 @@ import { COLORS, FONTS, SIZES, images, icons } from "./constants";
 import * as firebase from 'firebase';
 import {auth, db} from '../../../services/firebase'
 import { BG_IMAGE } from '../../services/backgroundImage';
+import * as GoogleAuthentication from 'expo-google-app-auth';
+import * as AppleAuthentication from 'expo-apple-authentication';
+import * as Crypto from 'expo-crypto';
+
+
+
 
 
 function Login({ navigation }){
@@ -26,10 +33,11 @@ function Login({ navigation }){
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [showPass, setShowPass] = useState(false)
+    const [accessToken, setAccessToken] = React.useState();
     
-
     
     useEffect(() => {
+
         const unsubscribe = auth.onAuthStateChanged((authUser) => {
             if (authUser){
                 navigation.replace("Main")
@@ -42,6 +50,9 @@ function Login({ navigation }){
         return unsubscribe;
         
     }, [])
+
+    
+
     
     
 
@@ -49,13 +60,66 @@ function Login({ navigation }){
        auth.signInWithEmailAndPassword(username, password)
         .catch(error => alert(error))
 
-        console.log("This is a corrrect sign in")
+     
         
     }
 
     function googleSignIn(){
-     
+        GoogleAuthentication.logInAsync({
+            androidStandaloneAppClientId: 'ANDROID_STANDALONE_APP_CLIENT_ID',
+            iosStandaloneAppClientId: 'IOS_STANDALONE_APP_CLIENT_ID',
+            scopes: ['profile', 'email']
+        })
+            .then((logInResult) => {
+                if (logInResult.type === 'success') {
+                    const { idToken, accessToken } = logInResult;
+                    const credential = firebase.auth.GoogleAuthProvider.credential(
+                        idToken,
+                        accessToken
+                    );
+                        
+                    console.log(credential)
+                    return firebase.auth().signInWithCredential(credential)
+                    // Successful sign in is handled by firebase.auth().onAuthStateChanged
+                }
+                return Promise.reject(); // Or handle user cancelation separatedly
+            })
+            .catch((error) => {
+                console.warn("This did not work")
+                console.log(error)
+            });
+  
     }
+
+    async function appleSignIn(){
+        const nonce = Math.random().toString(36).substring(2, 10);
+
+        return Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, nonce)
+            .then((hashedNonce) =>
+                AppleAuthentication.signInAsync({
+                    requestedScopes: [
+                        AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                        AppleAuthentication.AppleAuthenticationScope.EMAIL
+                    ],
+                    nonce: hashedNonce
+                })
+            )
+            .then((appleCredential) => {
+                const { identityToken } = appleCredential;                                                                                                                                
+                const provider = new firebase.auth.OAuthProvider('apple.com');
+                const credential = provider.credential({
+                    idToken: identityToken,
+                    rawNonce: nonce
+                });
+                return firebase.auth().signInWithCredential(credential);
+                // Successful sign in is handled by firebase.auth().onAuthStateChanged                                                  
+            })
+            .catch((error) => {
+                console.warn("This did not work")
+                console.log(error)
+            });
+
+    }                                    
 
     
     
@@ -103,33 +167,23 @@ function Login({ navigation }){
     }
 
     function renderButtons() {
-        return (
-            <View>
-                {/* Login */}
-                <TextButton
-                    contentContainerStyle={{
-                        height: 60,
-                        marginTop: 30,
-                        borderRadius: 30,
-                        backgroundColor: "#177aeb"
-                    }}
-                    label="LOGIN"
-                    onPress={signIn}
-                />
-
-                {/* Divider */}
+        function loginOptions(){
+            if (Platform.OS == 'android'){
+                return (
+                    <>
+                    {/* Divider */}
                 <Text
-                    style={{
-                        textAlign: 'center',
-                        marginTop: SIZES.radius,
-                        color: '#177aeb',
-                        ...FONTS.body3
-                    }}
-                >
-                    or login with
-                </Text>
-                {/* Social Logins */}
-                <View
+                style={{
+                    textAlign: 'center',
+                    marginTop: SIZES.radius,
+                    color: '#177aeb',
+                    ...FONTS.body3
+                }}
+            >
+                or login with
+            </Text>
+            {/* Social Logins */}
+                    <View
                     style={{
                         flexDirection: 'row',
                         height: 60,
@@ -152,8 +206,9 @@ function Login({ navigation }){
                     />
 
                     <IconLabelButton
-                        icon={icons.facebook}
-                        label="Facebook"
+                        icon={icons.apple}
+                        onPress={appleSignIn}
+                        label="Apple"
                         containerStyle={{
                             flex: 1,
                             marginLeft: SIZES.padding,
@@ -166,6 +221,26 @@ function Login({ navigation }){
                         }}
                     />
                 </View>
+                </>
+                )
+            }
+        }
+        return (
+            <View>
+                {/* Login */}
+                <TextButton
+                    contentContainerStyle={{
+                        height: 60,
+                        marginTop: 30,
+                        borderRadius: 30,
+                        backgroundColor: "#177aeb"
+                    }}
+                    label="LOGIN"
+                    onPress={signIn}
+                />
+
+                
+                {loginOptions()}
 
                 {/* Sign Up */}
                 <View
@@ -221,7 +296,7 @@ function Login({ navigation }){
             
                 
             <Image 
-                style={{height: 130, width: 130, marginLeft: "28%", marginRight: "30%", marginBottom: "5%"}} 
+                style={{height: 130, width: 130, marginLeft: "30%", marginRight: "30%", marginBottom: "5%"}} 
                 source={require('../../../assets/transparent_soundico.png')}
             ></Image>
 

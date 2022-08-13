@@ -6,7 +6,9 @@ import {
     TouchableOpacity,
     ScrollView,
     StyleSheet,
-    ImageBackground
+    ImageBackground,
+    Modal,
+    Pressable
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -17,6 +19,7 @@ import {
     ProfileRadioButton,
     LineDivider
 } from "./ProfileComponents";
+import { device, gStyle, colors } from '../MusicPlayer/constants';
 import { COLORS, FONTS, SIZES, icons, images } from '../Authentication/constants';
 import {auth, db} from '../../../services/firebase'
 import firebase from 'firebase'
@@ -28,6 +31,7 @@ function ProfileScreen(props){
 
     const [newCourseNotification, setNewCourseNotification] = useState(false)
     const [studyReminder, setStudyReminder] = useState(false)
+    const [modalVisible, setModalVisible] = useState(false)
 
     async function setProfilePicture(){
     
@@ -93,6 +97,49 @@ function ProfileScreen(props){
                 }); 
 
         }
+    }
+
+    function deleteMyAccount(){
+        const user = firebase.auth().currentUser;
+
+        user.delete().then(() => {
+            props.navigation.replace("Login")
+        }).catch((error) => {
+            console.log(error)
+        });
+    }
+
+    function RenderModal(){
+        
+        return (
+            <View style={styles.centeredView}>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setModalVisible(!modalVisible);
+                }}>
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <Text style={styles.modalText}>Are you sure you want to permanently delete your account? deleteting your account will also remove any associated data with your account.</Text>
+                    <Pressable
+                      style={[styles.button1, styles.buttonClose]}
+                      onPress={deleteMyAccount}>
+                      <Text style={styles.textStyle}>Delete Account</Text>
+                    </Pressable>
+                    <Pressable
+                      style={[styles.button3, {backgroundColor: "blue"}]}
+                      onPress={() => setModalVisible(!modalVisible)}>
+                      <Text style={styles.textStyle}>Don't Delete</Text>
+                    </Pressable>
+                    
+                  </View>
+                </View>
+              </Modal> 
+              
+            </View>
+          );
     }
 
     function renderHeader() {
@@ -210,7 +257,7 @@ function ProfileScreen(props){
                             ...FONTS.body4
                         }}
                     >
-                        Standard
+                        Account
                     </Text>
 
                     {/* Progress */}
@@ -221,39 +268,12 @@ function ProfileScreen(props){
                             flexDirection: 'row'
                         }}
                     >
-                        <Text
-                            style={{
-                                flex: 1,
-                                color: COLORS.white,
-                                ...FONTS.body4
-                            }}
-                        >
-                            Overall Progress
-                        </Text>
-                        <Text
-                            style={{
-                                color: COLORS.white,
-                                ...FONTS.body4
-                            }}
-                        >
-                            58%
-                        </Text>
+                        
+                       
                     </View>
 
                     {/* Member */}
-                    <TextButton
-                        label="+ Become Member"
-                        contentContainerStyle={{
-                            height: 35,
-                            marginTop: SIZES.padding,
-                            paddingHorizontal: SIZES.radius,
-                            borderRadius: 20,
-                            backgroundColor: COLORS.white
-                        }}
-                        labelStyle={{
-                            color: COLORS.primary
-                        }}
-                    />
+                    
                 </View>
             </View>
         )
@@ -262,13 +282,21 @@ function ProfileScreen(props){
     
 
     function renderProfileSection1() {
+        function signOutUser(){
+            if (auth.currentUser.uid != null &&  auth.currentUser.uid != undefined){
+              auth.signOut().then(() => {
+                  props.navigation.replace('Login')
+              })
+          }}
+          
         return (
             <View
                 style={styles.profileSectionContainer}
             >
                 <ProfileValue
+                    onPress={signOutUser}
                     icon={icons.profile}
-                    label="Name"
+                    label="Switch Account?"
                     value={auth.currentUser.displayName}
                 />
 
@@ -285,15 +313,17 @@ function ProfileScreen(props){
                 <ProfileValue
                     icon={icons.password}
                     label="Password"
-                    value="Updated 2 weeks ago"
+                    value="Update?"
                 />
 
                 <LineDivider />
 
                 <ProfileValue
-                    icon={icons.call}
-                    label="Contact Number"
-                    value="+60123456789"
+                    icon={icons.profile}
+                    label="Account"
+                    value={"Delete Account?"}
+                    onPress={() => setModalVisible(true)}
+                    
                 />
             </View>
         )
@@ -353,6 +383,8 @@ function ProfileScreen(props){
 
                 {renderProfileSection1()}
 
+                {RenderModal()}
+
             </ScrollView>
         </View>
         </ImageBackground>
@@ -371,6 +403,126 @@ const styles = StyleSheet.create({
     image: {
         flex: 1,
         justifyContent: "center"
+      },
+      centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor: '#1b1c1f',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 7,
+      },
+      containerDetails: {
+        marginBottom: Platform.OS == "ios"  ? 40 : 30
+      },
+      containerSong: {
+        flex: 6
+      },
+      song: {
+        ...gStyle.textSpotifyBold24,
+        color: colors.white
+      },
+      artist: {
+        ...gStyle.textSpotify18,
+        color: colors.greyInactive
+      },
+      containerFavorite: {
+        alignItems: 'flex-end',
+        flex: 1,
+        justifyContent: 'center'
+      },
+      containerTime: {
+        ...gStyle.flexRowSpace
+      },
+      time: {
+        ...gStyle.textSpotify10,
+        color: colors.greyInactive
+      },
+      containerControls: {
+        ...gStyle.flexRowSpace,
+        marginTop: device.iPhoneNotch ? 24 : 8
+      },
+      containerBottom: {
+        ...gStyle.flexRowSpace,
+        marginTop: device.iPhoneNotch ? 32 : 8
+      },
+      bgImage: {
+        flex: 1,
+        justifyContent: "center"
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor: '#1b1c1f',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 7,
+      },
+      button1: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+        marginBottom: 20
+      },
+      button2: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+        marginBottom: 20
+      },
+      button3: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+      },
+      button4: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+        marginBottom: 20
+      },
+      buttonOpen: {
+        backgroundColor: '#F194FF',
+      },
+      buttonClose: {
+        backgroundColor: 'red',
+      },
+      textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      },
+      modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+        color: "white",
+        fontSize: 15
+      },
+      centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
       },
 
 })

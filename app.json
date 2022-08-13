@@ -5,13 +5,14 @@
     "scheme": "soundico",
     "slug": "musiccoapp",
     "privacy": "public",
-    "version": "0.0.1",
+    "version": "0.0.4",
     "plugins": [
       [
         "expo-media-library",
+        
         {
-          "photosPermission": "Allow Soundico to access your photos.",
-          "savePhotosPermission": "Allow Soundico to save photos.",
+          "photosPermission": "Soundico would like to use your photo library to access and play your local audio files on the app",
+          "savePhotosPermission": "Soundico would like to use your photo library to access and play your local audio files on the app",
           "isAccessMediaLocationEnabled": true
         }
       ]
@@ -22,7 +23,7 @@
     ],
     "githubUrl": "https://github.com/MaisimZaman/Free-Music-Soundify-",
     "orientation": "portrait",
-    "icon": "./assets/SoundicoLogoMain.jpg",
+    "icon": "./assets/SoundicoLogo.png",
     "splash": {
       "image": "./assets/Splash.png",
       "resizeMode": "contain",
@@ -40,8 +41,9 @@
         "UIBackgroundModes": [
           "audio"
         ],
-        "NSPhotoLibraryUsageDescription": "Allow Soundico to access your photos.",
-        "NSPhotoLibraryAddUsageDescription": "Allow Soundico to save photos."
+        "NSPhotoLibraryUsageDescription": "Soundico would like to use your photo library to access and play your local audio files on the app",
+        "usesAppleSignIn": true
+        
       },
       "bundleIdentifier": "com.maisimdevelops.musiccoapp"
     },

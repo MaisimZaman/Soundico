@@ -4,7 +4,7 @@ import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { colors, gStyle } from '../MusicPlayer/constants/index';
 
-const LineItemSong = ({ active=false, downloaded=false, onPress, songData, imageUri }) => {
+const LineItemSong = ({ active=false, downloaded=false, onPress, songData, imageUri, navigation }) => {
   const activeColor = active ? colors.brandPrimary : colors.white;
 
   return (
@@ -31,7 +31,21 @@ const LineItemSong = ({ active=false, downloaded=false, onPress, songData, image
         </TouchableOpacity>
 
         <View style={styles.containerRight}>
-            <Feather color={colors.greyLight} name="more-horizontal" size={20} />
+            <Feather onPress={() => navigation.navigate('MoreOptions', {
+            albumTitle: songData.title,
+            albumCover: imageUri,
+            albumArtist: songData.artist,
+            //setDownloadProcessing: setDownloadProcessing,
+            //downloadProcessing: downloadProcessing,
+            //isPlaylist: isPlaylist,
+            //saveAudioData: saveAudioData,
+            //saveAudioPodCastData: saveAudioPodCastData,
+            //currentVideoID: currentVideoID[1],
+            //saveVideoData: saveVideoData,
+            //savePlaylistData: savePlaylistData,
+            //handleNavigteToChannel: handleNavigteToChannel,
+            //currentAudioURI: playingVideo
+          })} color={colors.greyLight} name="more-horizontal" size={20} />
         </View>
             
       

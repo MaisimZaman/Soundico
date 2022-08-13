@@ -21,6 +21,7 @@ import {
 } from './styles';
 import { useSelector } from 'react-redux';
 import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectDownloadData, selectSoundStatus, selectAuthor, selectIsAudioOnly, selectIsRecently} from '../../../services/slices/navSlice';
+import { Platform } from 'react-native';
 
 
 export default function Player({navigation}) {
@@ -102,7 +103,7 @@ export default function Player({navigation}) {
   
 
   return (
-    <TouchableOpacity style={{marginBottom: 50}} onPress={handleNavigation}>
+    <TouchableOpacity style={{marginBottom: Platform.OS == 'ios' ? 80 : 50}} onPress={handleNavigation}>
       <Container>
         <BarStatus>
           <Line progress={(status.durationMillis / status.positionMillis) * 100} />

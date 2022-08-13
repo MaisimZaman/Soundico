@@ -26,7 +26,7 @@
     {
       "id": 5,
       "icon": "delete",
-      "title": "Delete from account",
+      "title": "Delete song",
       "lib": "AntDesign"
     }
     

@@ -1,12 +1,14 @@
 
 
 
-import { PermissionsAndroid } from 'react-native';
+import { PermissionsAndroid, Platform } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 
 import * as MediaLibrary from 'expo-media-library';
 
 export async function downloadAudioToDevice(currentAudioURI, albumTitle){
+
+
 
     function replaceIllegalChars(string){
       return string.replace('#','')
@@ -15,9 +17,25 @@ export async function downloadAudioToDevice(currentAudioURI, albumTitle){
       .replace('$', '')
       .replace('?', '')
     }
-
+      
+    if (Platform.OS == 'ios'){
+      let fileUri = FileSystem.documentDirectory + `${'testx'}.mp3`;
+      FileSystem.downloadAsync('https://ia600204.us.archive.org/11/items/hamlet_0911_librivox/hamlet_act5_shakespeare.mp3', fileUri)
+      
+      .then(({ uri }) => {
+        
+          saveFile(uri);
+          console.log("This passed")
+          console.log(uri)
+         
+        })
+        .catch(error => {
+          console.error(error);
+        })
+    } else {
       let fileUri = FileSystem.documentDirectory + `${replaceIllegalChars(albumTitle)}.mp3`;
       FileSystem.downloadAsync(currentAudioURI, fileUri)
+      
       .then(({ uri }) => {
         
           saveFile(uri);
@@ -28,7 +46,7 @@ export async function downloadAudioToDevice(currentAudioURI, albumTitle){
           console.error(error);
         })
 
-
+      }
     async function saveFile(fileUri){
       console.warn(fileUri)
       const checkAndroidPermission = async () => {
@@ -41,15 +59,15 @@ export async function downloadAudioToDevice(currentAudioURI, albumTitle){
           Promise.reject(error);
         }
       };
-      await checkAndroidPermission();
+      //await checkAndroidPermission();
       
-        const { status }  = await MediaLibrary.requestPermissionsAsync();
+      const { status }  = await MediaLibrary.requestPermissionsAsync();
 
-        
-        
-        if (status === "granted") {
-          const asset = await MediaLibrary.createAssetAsync(fileUri)
-          await MediaLibrary.createAlbumAsync("SoundicoDownloads", asset, false)
-        }
+      
+      
+      if (status === "granted") {
+        const asset = await MediaLibrary.createAssetAsync(fileUri)
+        await MediaLibrary.createAlbumAsync("SoundicoDownloads", asset, false)
+      }
         
     }}

@@ -1,5 +1,5 @@
 import React,{useEffect} from 'react';
-import { StatusBar, ImageBackground, StyleSheet } from 'react-native';
+import { StatusBar, ImageBackground, StyleSheet, LogBox } from 'react-native';
 import Routes from './src/Routes';
 import 'react-native-gesture-handler';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
@@ -21,6 +21,11 @@ import SavedMoreOptions from './src/screens/MoreOptions/SavedMoreOptions';
 import { Provider } from 'react-redux';
 import {store} from './services/store'
 import { BG_IMAGE } from './src/services/backgroundImage';
+//import PictureInPicture from 'react-native-picture-in-picture';
+//import TrackPlayer from 'react-native-track-player';
+
+//LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
+
 
 
 const Stack = createStackNavigator();
@@ -57,12 +62,18 @@ function MainPage(){
 
 
 
+
+
+
 export default function App(){
+
+  
+    
   
   return (
     <Provider store={store}>
       <NavigationContainer theme={MyTheme}>
-        <Stack.Navigator screenOptions={{headerShown: false, animationEnabled: true, cardStyleInterpolator: CardStyleInterpolators.forRevealFromBottomAndroid}} initialRouteName='Login'>
+        <Stack.Navigator screenOptions={{headerShown: false, animationEnabled: true, cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}} initialRouteName='Login'>
           <Stack.Screen name='Login' component={Login}></Stack.Screen>
           <Stack.Screen name='Register' component={Register}></Stack.Screen>
           <Stack.Screen name='Main' component={MainPage}></Stack.Screen>
