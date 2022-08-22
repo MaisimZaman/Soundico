@@ -32,7 +32,7 @@ export default function Home({navigation}) {
   useEffect(() => {
     async function showAd(){
    
-      const AD_UNIT_ID = 'ca-app-pub-1719409113112551/8193009462'
+      //const AD_UNIT_ID = 'ca-app-pub-1719409113112551/7685850801'
       //await AdMobInterstitial.setAdUnitID(AD_UNIT_ID); // Test ID, Replace with your-admob-unit-id
       //await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: true});
       //await AdMobInterstitial.showAdAsync();
