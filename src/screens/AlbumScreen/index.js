@@ -28,7 +28,7 @@ function AlbumScreen(props){
   const scrollY = React.useRef(new Animated.Value(0)).current;
   const [showMusicBar, setShowMuiscBar] = useState(true)
 
-  //console.log(albums[0])
+  console.log(albums[0].snippet.thumbnails.default.url)
 
   const stickyArray = device.web ? [] : [0];
     const headingRange = device.web ? [140, 200] : [230, 280];
@@ -115,7 +115,8 @@ function AlbumScreen(props){
       Search: false, 
       isRecently: false, 
       downloadData: albums,
-      isPlaylist: isPlaylist
+      isPlaylist: isPlaylist,
+      channelId: item.snippet.channelId ,
     })
      
 
@@ -217,18 +218,21 @@ style={styles.containerScroll}
 
 
 
+
+
   {albums &&
     albums.map((item) => (
+    
       <LineItemSong
         //active={song === track.title}
         //downloaded={downloaded}
-        imageUri={isCustom ? item.data.thumbNail :  item.snippet.thumbnails.high.url}
+        imageUri={isCustom ? item.data.thumbNail : ( item.snippet.thumbnails.default.url != undefined ?  item.snippet.thumbnails.default.url : '')}
         key={item.id}
         onPress={() => navigateToMusicPlayer(item)}
         songData={{
           album: title,
           artist: isCustom ? item.data.channelTitle:  item.snippet.channelTitle,
-          image: isCustom ? item.data.thumbNail :  item.snippet.thumbnails.high.url,
+          image: isCustom ? item.data.thumbNail :  ( item.snippet.thumbnails.default.url != undefined ?  item.snippet.thumbnails.default.url : ''),
           length: 32919,
           title: isCustom ? item.data.title : item.snippet.title
         }}

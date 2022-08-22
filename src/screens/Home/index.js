@@ -13,6 +13,10 @@ import { Container, Title } from './styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { auth, db } from '../../../services/firebase';
 import { BG_IMAGE, SECONDARY_BG } from '../../services/backgroundImage';
+import {
+  AdMobInterstitial,
+ 
+} from 'expo-ads-admob';
 
 
 export default function Home({navigation}) {
@@ -24,6 +28,18 @@ export default function Home({navigation}) {
   const [yourPlaylists, setYourPlaylists] = useState([]);
   const [recordList, setRecordList] = useState([])
   const [playListRecordList, setPlayListRecordList] = useState([])
+
+  useEffect(() => {
+    async function showAd(){
+   
+      const AD_UNIT_ID = 'ca-app-pub-1719409113112551/8193009462'
+      //await AdMobInterstitial.setAdUnitID(AD_UNIT_ID); // Test ID, Replace with your-admob-unit-id
+      //await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: true});
+      //await AdMobInterstitial.showAdAsync();
+    }
+
+    showAd()
+  }, [])
 
 
   useEffect(() => {

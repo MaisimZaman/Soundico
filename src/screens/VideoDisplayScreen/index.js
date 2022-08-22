@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, Button, TouchableOpacity, Modal, Alert, Pressable, ImageBackground, Image, ScrollView, Linking} from 'react-native'
+import { StyleSheet, Text, View, Dimensions, Button, TouchableOpacity, Modal, Alert, Pressable, ImageBackground, Image, ScrollView, Linking, Platform} from 'react-native'
 import React, {useState, useEffect, useRef} from 'react';
 import ytdl from "react-native-ytdl"
 import {db, auth} from '../../../services/firebase'
@@ -42,11 +42,20 @@ import {
 } from '../../../services/slices/navSlice';
 
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  AdMobBanner,
+  AdMobInterstitial,
+  PublisherBanner,
+  AdMobRewarded,
+  setTestDeviceIDAsync,
+} from 'expo-ads-admob';
+import { AD_UNIT_ID } from './AddUnitKey';
 
 
 
 
 export default function VideoDisplay(props) {
+  
     const {width, height} = Dimensions.get("screen");
     const {
       rId, videoId, videoThumbNail, 
@@ -79,15 +88,47 @@ export default function VideoDisplay(props) {
 
     let index = 0;
 
+    
+  
     if (downloadData != "VideoLink"){
       index = downloadData.findIndex(object => {
           return object.id === currentVideoID[0];
         
       });
     }
+    
+    
 
 
   useEffect(() => {
+    async function showAd(){
+   
+      
+      await AdMobInterstitial.setAdUnitID(AD_UNIT_ID); // Test ID, Replace with your-admob-unit-id
+      await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: true});
+      await AdMobInterstitial.showAdAsync();
+    }
+
+    showAd()
+  }, [])
+
+  useEffect(() => {
+    if (status.durationMillis != undefined){
+      if (status.durationMillis > 0){
+        if (status.positionMillis == status.durationMillis){
+          
+            skipFowardTrack(currentDownloadData, setNewSongData, currentVideoID, isRecently, isPlaylist)
+          
+          
+        }
+      }
+    }
+    
+  }, [status])
+
+
+  useEffect(() => {
+   
     dispatch(setAudioURI(null))
     //setCurrentPosition(0)
     //,setStatus(0)
@@ -189,10 +230,12 @@ export default function VideoDisplay(props) {
                 channelId: currentChannelId
             })
 
-        }
+        } 
         
         
     },[])
+
+
 
     const REVIEWER_ACCOUNT = "13WiiEF5wRRlKwpMEHx5hCFTlPq1"
 

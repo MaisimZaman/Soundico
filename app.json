@@ -45,7 +45,11 @@
         "usesAppleSignIn": true
         
       },
-      "bundleIdentifier": "com.maisimdevelops.musiccoapp"
+      "bundleIdentifier": "com.maisimdevelops.musiccoapp",
+      "config": {
+
+        "googleMobileAdsAppId": "ca-app-pub-1719409113112551~6399112888" 
+      }
     },
     "android": {
       "package": "com.maisimdevelops.musiccoapp",
@@ -53,7 +57,11 @@
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.ACCESS_MEDIA_LOCATION"
-      ]
+      ],
+      "config": {
+       
+        "googleMobileAdsAppId": "ca-app-pub-1719409113112551~9951345082"
+      }
     }
   }
 }

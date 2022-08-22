@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     Text,
     View,
@@ -18,10 +18,20 @@ import moreOptions from './moreOptions.json'
 import { downloadAudioOrVideo } from '../VideoDisplayScreen/handlingfunctions';
 import { downloadAudioToDevice } from './DownloadToDevice';
 import { auth } from '../../../services/firebase';
+import { AD_UNIT_ID } from '../VideoDisplayScreen/AddUnitKey';
+import {
+  AdMobBanner,
+  AdMobInterstitial,
+  PublisherBanner,
+  AdMobRewarded,
+  setTestDeviceIDAsync,
+} from 'expo-ads-admob';
 
 export default function MoreOptions(props) {
 
   const REVIEWER_ACCOUNT = "13WiiEF5wRRlKwpMEHx5hCFTlPq1"
+
+   const SAVED_AD_UNIT_ID = Platform.OS == 'android' ?  'ca-app-pub-1719409113112551/1535251716' : 'ca-app-pub-1719409113112551/3969843367'
 
     const {
         albumTitle, albumCover, albumArtist, 
@@ -34,6 +44,18 @@ export default function MoreOptions(props) {
     } = props.route.params;
 
     const [showMusicBar, setShowMusicBar] = useState(false);
+
+    useEffect(() => {
+      async function showAd(){
+     
+        
+        await AdMobInterstitial.setAdUnitID(SAVED_AD_UNIT_ID); // Test ID, Replace with your-admob-unit-id
+        await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: true});
+        await AdMobInterstitial.showAdAsync();
+      }
+  
+      showAd()
+    }, [])
 
     
 
