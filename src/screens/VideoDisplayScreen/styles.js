@@ -35,7 +35,8 @@ export const styles = StyleSheet.create({
         width: device.width - 48
       },
       containerDetails: {
-        marginBottom: Platform.OS == "ios"  ? 40 : 30
+        marginBottom: Platform.OS == "ios"  ? "5%" : 30,
+        marginTop: Platform.OS == "ios"  ? "-10%" : 0,
       },
       containerSong: {
         flex: 6

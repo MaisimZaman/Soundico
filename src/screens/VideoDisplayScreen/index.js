@@ -473,20 +473,20 @@ export default function VideoDisplay(props) {
             <View style={gStyle.flexRowCenterAlign}>
               <TouchIcon
                 icon={<FontAwesome color={colors.white} name="step-backward" />}
-                iconSize={45}
+                iconSize={40}
                 disabled={index == 0}
                 onPress={() => skipBackwardTrack(downloadData, setNewSongData, currentVideoID, isRecently, isPlaylist)}
               />
               <View style={gStyle.pH3}>
                 <TouchIcon
                   icon={<FontAwesome color={colors.white} name={iconPlay} />}
-                  iconSize={85}
+                  iconSize={80}
                   onPress={togglePlayVideo}
                 />
               </View>
               <TouchIcon
                 icon={<FontAwesome color={colors.white} name="step-forward" />}
-                iconSize={45}
+                iconSize={40}
                 disabled={index == downloadData.length-1}
                 onPress={() => skipFowardTrack(downloadData,setNewSongData, currentVideoID, isRecently, isPlaylist)}
               />

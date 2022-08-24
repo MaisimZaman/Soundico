@@ -110,9 +110,23 @@ export default function AddToPlaylist(props) {
 
     return (
         <ImageBackground style={styles.image} source={ BG_IMAGE}>
+            <View style={{marginTop: 120, marginBottom: 100}}>
             <Text style={{color: "white", fontSize: 24, marginBottom: 15, marginTop: 15}}>Add songs to {playListTitle}</Text>
             <TextInput 
-                style={{flexDirection: "row", alignItems: 'center', justifyContent: 'space-evenly', backgroundColor: "#fff", height: 45, width: "94%", borderRadius: 10, marginBottom: 20}}
+                style={{flexDirection: "row", 
+                alignItems: 'center', 
+                
+                
+                fontSize: 15,
+                fontWeight: 'bold',
+                fontStyle: 'normal',
+                justifyContent: 'space-evenly', 
+                backgroundColor: "#2a2a2b", 
+                color: "white",
+                height: 45, 
+                width: "94%", 
+                borderRadius: 20, 
+                marginLeft: "3%"}}
                 placeholder={'Search for Music to add'}
                 onChangeText={(text) => setSearchText(text)}
                 value={searchText}
@@ -148,6 +162,7 @@ export default function AddToPlaylist(props) {
                     disabled={selectedDownloads.length == 0}
                     
                 />
+                </View>
         </ImageBackground>
     )
 }
