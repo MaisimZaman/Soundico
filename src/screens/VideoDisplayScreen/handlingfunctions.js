@@ -3,19 +3,21 @@ import {db, auth} from '../../../services/firebase'
 import firebase from 'firebase'
 
 
-export function msToTime(s) {
-    var ms = s % 1000;
-    s = (s - ms) / 1000;
-    var secs = s % 60;
-    s = (s - secs) / 60;
-    var mins = s % 60;
+export function msToTime(duration) {
+    var hrs = ~~(duration / 3600);
+      var mins = ~~((duration % 3600) / 60);
+      var secs = ~~duration % 60;
 
-   
-  
-    if (secs < 10){
-      return  mins + ':' + "0" + secs;
-    }
-    return  mins + ':' + secs;
+      // Output like "1:01" or "4:03:59" or "123:03:59"
+      var ret = "";
+
+      if (hrs > 0) {
+          ret += "" + hrs + ":" + (mins < 10 ? "0" : "");
+      }
+
+      ret += "" + mins + ":" + (secs < 10 ? "0" : "");
+      ret += "" + secs;
+      return ret;
 }
 
 
@@ -88,29 +90,30 @@ export function skipBackwardTrack(downloadData, setNewSongData, currentID, isRec
 export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing, currentAudioURI){
    if (!downloadProcessing){
         let childPath;
-        let theDownload;
+        let theDownload = currentAudioURI;
 
         
         if (isVideo){
-        let info = await ytdl.getInfo(currentVideoID);
-        let audioFormats = ytdl.filterFormats(info.formats, 'audioandvideo');
-            theDownload = audioFormats[0].url
+        //let info = await ytdl.getInfo(currentVideoID);
+        //let audioFormats = ytdl.filterFormats(info.formats, 'audioandvideo');
+            //theDownload = audioFormats[0].url
             console.log(theDownload)
             childPath = `videoDownloads/${auth.currentUser.uid}/${Math.random().toString(36)}`;
         }
         else {
-            let info = await ytdl.getInfo(currentVideoID);
-            let audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
-            console.log("audio formats under here")
-            console.log(audioFormats[1])
-            theDownload = audioFormats[1].url
-            //console.log(theDownload)
+            //let info = await ytdl.getInfo(currentVideoID);
+            //let audioFormats = ytdl.filterFormats(info.formats, 'audioandvideo');
+            
+            //theDownload = audioFormats[0].url
+            console.log(theDownload)
             childPath = `audio/${auth.currentUser.uid}/${Math.random().toString(36)}`;
         }
 
+        saveAudioData(theDownload);
+
     
         
-        
+        /*
         const response = await fetch(theDownload);
         const blob = await response.blob();
 
@@ -154,6 +157,7 @@ export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, saveV
         }
 
         task.on("state_changed", taskProgress, taskError, taskCompleted);
+        */
    }
         
 }

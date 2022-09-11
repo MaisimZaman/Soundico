@@ -49,9 +49,9 @@ export default function MoreOptions(props) {
       async function showAd(){
      
         
-        await AdMobInterstitial.setAdUnitID(SAVED_AD_UNIT_ID); // Test ID, Replace with your-admob-unit-id
-        await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: true});
-        await AdMobInterstitial.showAdAsync();
+        //await AdMobInterstitial.setAdUnitID(SAVED_AD_UNIT_ID); // Test ID, Replace with your-admob-unit-id
+        //await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: true});
+        //await AdMobInterstitial.showAdAsync();
       }
   
       showAd()
@@ -72,10 +72,10 @@ export default function MoreOptions(props) {
    
         }
         else if (item.id == 4) {
-            //downloadAudioOrVideo(false, false,  saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing, currentAudioURI)
+            downloadAudioOrVideo(false, false,  saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing, currentAudioURI)
 
             //props.navigation.goBack()
-            saveAudioData()
+            //saveAudioData()
         }
         else if (item.id == 5){
           downloadAudioOrVideo(true, false, saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing, currentAudioURI)
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
       },
       title: {
         color: colors.white,
-        fontFamily: fonts.spotifyBold,
+        //fontFamily: fonts.spotifyBold,
         fontSize: 20,
         marginBottom: 8,
         paddingHorizontal: 24,
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
       },
       albumInfo: {
         color: colors.greyInactive,
-        fontFamily: fonts.spotifyRegular,
+        //fontFamily: fonts.spotifyRegular,
         fontSize: 12,
         marginBottom: 48
       }

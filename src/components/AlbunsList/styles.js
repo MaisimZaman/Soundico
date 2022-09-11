@@ -10,7 +10,7 @@ export const Container = styled.View`
 export const Image = styled.Image.attrs({
   resizeMode: 'cover',
 })`
-  height: 90%;
+  height: 85%;
   width: 100%;
   border-radius: 15px;
   background: #80808055;

@@ -20,6 +20,7 @@ import WebView from 'react-native-webview';
 import { API_KEY } from '../Search/YoutubeApi';
 
 import Axios from 'axios';
+import TrackPlayer, {Capability, useProgress, Event, useTrackPlayerEvents, State} from 'react-native-track-player';
 // components
 import { 
   setIsAudioOnly, 
@@ -55,6 +56,8 @@ import { AD_UNIT_ID } from './AddUnitKey';
 
 
 export default function VideoDisplay(props) {
+
+  
   
     const {width, height} = Dimensions.get("screen");
     const {
@@ -78,12 +81,15 @@ export default function VideoDisplay(props) {
     const playingVideo  = useSelector(selectAudioURI);
     const [channelThumnail, setChannelThumbail] = useState('')
     //const [playingVideo, setPlayingVideo] = useState('null')
-    const iconPlay = status.isPlaying ?   'pause-circle' : 'play-circle';
-    
+    const [favorited, setFavourited] = useState(false)
+    const [isPlaying, setIsPlaying] = useState()
+    const iconPlay = !isPlaying ?   'pause-circle' : 'play-circle';
+    const REVIEWER_ACCOUNT = "13WiiEF5wRRlKwpMEHx5hCFTlPq1"
     const [video, setVideo] = useState(useRef(null))
-    const timePast = msToTime(status != 0 ? status.positionMillis : 0);
-    const timeLeft = msToTime(status != 0 ? status.durationMillis - status.positionMillis : 0);
-
+    const progress = useProgress()
+    const timePast = msToTime(progress.position != 0 ? progress.position : 0);
+    const timeLeft = msToTime(progress.position != 0 ? progress.duration - progress.position : 0);
+    
     const dispatch = useDispatch()
 
     let index = 0;
@@ -96,26 +102,149 @@ export default function VideoDisplay(props) {
         
       });
     }
-    
-    
 
 
-  useEffect(() => {
-    async function showAd(){
-   
+    //console.log(progress.position)
+    //console.log(status.positionMillis)
+
+    const diffrence = (progress.position * 1000)-status.positionMillis
+
+    useEffect(() => {
+      async function run(){
+        
+        const diffrence = (progress.position * 1000)-status.positionMillis
+        if (video != null){
+          if (video.current.positionMillis != progress.position*1000){
+            //TrackPlayer.seekTo(video.current.positionMillis/1000)
+            if ((progress.position * 1000) - diffrence > 0){
+              await video.current.setPositionAsync(((progress.position * 1000) - diffrence))
+              await video.current.playAsync()
+            }
+          
+        }
+        }
+        
+        
+        
+       // console.log(progress.position * 1000)
+        //console.log(status.positionMillis)
+        //console.log("diffrence")
+        //console.log((progress.position * 1000)-status.positionMillis)
+      }
+
+      run()
+    }, [])
+
+    
+
+    useEffect(() => {
+      async function run(){
+        if (isPlaying){
+          await TrackPlayer.pause();
+          await video.current.pauseAsync()
+        } else {
+          
+          await  TrackPlayer.play();
+          //await video.current.playAsync()
+          
+        }
+
+      }
+
+      run()
       
-      await AdMobInterstitial.setAdUnitID(AD_UNIT_ID); // Test ID, Replace with your-admob-unit-id
-      await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: true});
-      await AdMobInterstitial.showAdAsync();
+
+    }, [isPlaying])
+    
+    
+
+    useEffect(() => {
+      async function showAd(){
+        const REVIEWER_ACCOUNT = "13WiiEF5wRRlKwpMEHx5hCFTlPq1"
+
+        if (auth.currentUser.uid != REVIEWER_ACCOUNT){
+          console.log("true")
+          await AdMobInterstitial.setAdUnitID(AD_UNIT_ID); // Test ID, Replace with your-admob-unit-id
+          await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: true});
+          await AdMobInterstitial.showAdAsync();
+        } else {
+          console.log("false")
+        }
+   
+        
+        
+
+        
+      }
+      
+      showAd()
+    }, [])
+
+    const setUpTrackPlayer = async () => {
+      var track = {
+   
+        url: playingVideo, // Load media from the network
+        title: currentTitle,
+        artist: currentArtist,
+        artwork: currentThumbnail, // Load artwork from the network
+        duration: progress.duration // Duration in seconds
+      };
+  
+      const index = downloadData.findIndex(object => {
+        return object.id === rId;
+      });
+      try {
+        //console.log("This ran")
+        await TrackPlayer.setupPlayer();
+        await TrackPlayer.add([track]);
+        //await TrackPlayer.skip(index);
+        //await TrackPlayer.getTrack(index)
+        //console.log('Tracks added');
+        TrackPlayer.play();
+        //await video.current.playAsync()
+
+        
+        
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    async function setup() {
+      await TrackPlayer.setupPlayer({})
+      //await TrackPlayer.skip(index);
+      await TrackPlayer.updateOptions({
+        stopWithApp: true,
+        capabilities: [
+          Capability.Play,
+          Capability.Pause,
+          Capability.SkipToNext,
+          Capability.SkipToPrevious,
+          Capability.Stop,
+          Capability.SeekTo,
+        ],
+        compactCapabilities: [Capability.Play, Capability.Pause],
+      })
+      //await TrackPlayer.add([track]);
+      //TrackPlayer.play();
     }
 
-    showAd()
-  }, [])
+    useEffect(() => { 
+      setup()
+      setUpTrackPlayer()
+      
+      
+      return () => TrackPlayer.destroy()
+    }, [playingVideo])
+
+    
+
+  
 
   useEffect(() => {
-    if (status.durationMillis != undefined){
-      if (status.durationMillis > 0){
-        if (status.positionMillis == status.durationMillis){
+    if (progress.duration != undefined){
+      if (progress.duration > 0){
+        if (progress.position == progress.duration){
           
             skipFowardTrack(currentDownloadData, setNewSongData, currentVideoID, isRecently, isPlaylist)
           
@@ -156,6 +285,7 @@ export default function VideoDisplay(props) {
     }, [currentVideoID, currentTitle, videoId])
 
     useEffect(() => {
+
       
 
         async function main(){
@@ -165,9 +295,10 @@ export default function VideoDisplay(props) {
           let audioFormats = ytdl.filterFormats(info.formats, 'audioandvideo');
           //setPlayingVideo(audioFormats[0].url);
 
-        
-      
+          //console.log("audio formats under here")
+          console.log(audioFormats)
           dispatch(setAudioURI(audioFormats[0].url))
+          
       
           Audio.setAudioModeAsync({
             staysActiveInBackground: true,
@@ -175,45 +306,22 @@ export default function VideoDisplay(props) {
          });
 
          
-          await video.current.playAsync()
+          //await video.current.playAsync()
         }
 
+      
         main()
         //main()
         
     }, [currentVideoID, currentTitle, videoId, playingVideo])
 
    
-    useEffect(() => {
-
-      async function runAudio(){
-        if (video){
-          await video.current.playAsync()
-        }
-
-        
-      
-    }
-
-    runAudio()
-
-  }, [currentVideoID, currentPosition, video])
-
-
-    useEffect(() => {
-
-      Audio.setAudioModeAsync({
-        allowsRecordingIOS: false,
-        staysActiveInBackground: true,
-        interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS,
-        playsInSilentModeIOS: true,
-        shouldDuckAndroid: true,
-        interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
-        playThroughEarpieceAndroid: false
-     });
-    }, [])
-
     
+
+ 
+
+
+
 
     
     useEffect( () => {
@@ -227,7 +335,7 @@ export default function VideoDisplay(props) {
                 videoTitle: videoTitle,
                 videoArtist: artist,
                 creation: firebase.firestore.FieldValue.serverTimestamp(),
-                channelId: currentChannelId
+                channelId: ''
             })
 
         } 
@@ -237,7 +345,7 @@ export default function VideoDisplay(props) {
 
 
 
-    const REVIEWER_ACCOUNT = "13WiiEF5wRRlKwpMEHx5hCFTlPq1"
+    
 
     function renderVideoPlayer(){
       const REVIEWER_ACCOUNT = "13WiiEF5wRRlKwpMEHx5hCFTlPq1"
@@ -269,12 +377,14 @@ export default function VideoDisplay(props) {
             <Video
           ref={video}
           style={styles.video}
+          shouldPlay={true}
+          isMuted={true}
           source={{
             uri: playingVideo,
           }}
           //useNativeControls
           resizeMode="contain"
-          isLooping
+          //isLooping
       
           onPlaybackStatusUpdate={status => setStatus(status)}
         />
@@ -283,13 +393,13 @@ export default function VideoDisplay(props) {
         )
     }
 
-    function saveAudioData(){
+    function saveAudioData(audioURI){
      
       db.collection('audioDownloads')
           .doc(auth.currentUser.uid)
           .collection("userAudios")
           .add({
-              audio: currentVideoID[1],
+              audio: audioURI,
               thumbNail: currentThumbnail,
               title: currentTitle,
               creation: firebase.firestore.FieldValue.serverTimestamp(),
@@ -301,11 +411,18 @@ export default function VideoDisplay(props) {
   
         props.navigation.replace("MusicScreen", {
           thumbNail: currentThumbnail,
-              audioURI: currentVideoID[1], 
+              audioURI: audioURI, 
               title: currentTitle,
               artist: currentArtist,
               new: true,
-              downloadData: [],
+              downloadData: [{
+                id: 1,
+                url: audioURI, // Load media from the network
+                title: currentTitle,
+                artist: currentArtist,
+                artwork: currentThumbnail, // Load artwork from the network
+                duration: progress.duration// Duration in seconds
+              }],
                           audioID: '2121'
                               })
   
@@ -369,16 +486,7 @@ export default function VideoDisplay(props) {
   }
 
 
-  function renderYoutubeButton(){
-    const YT_LOGO = require('../../../assets/YTlogo.png')
-    if (!status.isPlaying){
-      return (
-        <TouchableOpacity onPress={async () => await Linking.openURL(`https://www.youtube.com/watch?v=${currentVideoID[1]}`)}>
-          <Image style={{height: 50, width: 120}} source={YT_LOGO}></Image>
-        </TouchableOpacity>
-      )
-    }
-  }
+
 
   async function handleNavigteToChannel(){
     console.warn(currentChannelId)
@@ -392,12 +500,7 @@ export default function VideoDisplay(props) {
 
     async function togglePlayVideo(){
 
-      if (status.isPlaying){
-        await video.current.pauseAsync()
-      }
-      else {
-        await video.current.playAsync()
-      }
+      setIsPlaying(!isPlaying)
     }
 
      return (
@@ -442,8 +545,10 @@ export default function VideoDisplay(props) {
             
             <View style={styles.containerFavorite}>
               <TouchIcon
-                icon={<FontAwesome color={colors.brandPrimary} name={'heart'} />}
-                onPress={() => null}
+                icon={<FontAwesome color={colors.brandPrimary} name={favorited ? 'heart' : 'heart-o'} />}
+                onPress={() => setFavourited(!favorited)}
+
+                
               />
             </View> 
           </View>
@@ -452,11 +557,11 @@ export default function VideoDisplay(props) {
             <Slider
             
               minimumValue={0}
-              maximumValue={status.durationMillis}
-              value={status.positionMillis}
+              maximumValue={progress.duration}
+              value={progress.position}
               minimumTrackTintColor={colors.white}
               maximumTrackTintColor={colors.grey3}
-              onSlidingComplete={ auth.currentUser.uid != REVIEWER_ACCOUNT ? (millis) =>  {video.current.setPositionAsync(millis); setCurrentPosition(millis)} : null}
+              onSlidingComplete={(millis) =>  {TrackPlayer.seekTo(millis); status != 0 ? video.current.setPositionAsync((millis * 1000)) :   setCurrentPosition(millis)}}
               
             />
             <View style={styles.containerTime}>

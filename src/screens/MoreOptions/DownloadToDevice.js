@@ -18,9 +18,10 @@ export async function downloadAudioToDevice(currentAudioURI, albumTitle){
       .replace('?', '')
     }
       
+ 
     if (Platform.OS == 'ios'){
-      let fileUri = FileSystem.documentDirectory + `${'testx'}.mp3`;
-      FileSystem.downloadAsync('https://ia600204.us.archive.org/11/items/hamlet_0911_librivox/hamlet_act5_shakespeare.mp3', fileUri)
+      let fileUri = FileSystem.documentDirectory + `${'testy'}.mp4`;
+      FileSystem.downloadAsync('', fileUri)
       
       .then(({ uri }) => {
         

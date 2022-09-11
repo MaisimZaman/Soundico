@@ -84,7 +84,7 @@ export default function Search({navigation}) {
           db.collection('searchRecord')
             .doc(auth.currentUser.uid)
             .update({
-                recordList:[...recordList, searchText + " Music"] 
+                recordList:[...recordList, searchText] 
             })
         }
         
@@ -93,7 +93,7 @@ export default function Search({navigation}) {
           db.collection('searchRecord')
             .doc(auth.currentUser.uid)
             .set({
-                recordList:[searchText+ " Music"] 
+                recordList:[searchText] 
             })
         }
         
@@ -207,7 +207,7 @@ export default function Search({navigation}) {
     setSearchHit(!searchHit)
     console.log(searchType)
     if (searchType == "Playlists"){
-      Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText+' music'}&type=playlist&key=${API_KEY}`)
+      Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText}&type=playlist&key=${API_KEY}`)
       .then(res => {
         const ytData = res.data.items;
         setYTData(ytData)
@@ -433,7 +433,7 @@ export default function Search({navigation}) {
                             }}
                             labelStyle={{
                                 color:  "#e1e1e3",
-                                fontFamily: "Roboto-Bold", fontSize: 16, lineHeight: 22 
+                                fontSize: 16, lineHeight: 22 
                             }}
                         />
                     )}

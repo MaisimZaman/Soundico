@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
       },
       title: {
         color: colors.white,
-        fontFamily: fonts.spotifyBold,
+       // fontFamily: fonts.spotifyBold,
         fontSize: 20,
         marginBottom: 8,
         paddingHorizontal: 24,
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
       },
       albumInfo: {
         color: colors.greyInactive,
-        fontFamily: fonts.spotifyRegular,
+        //fontFamily: fonts.spotifyRegular,
         fontSize: 12,
         marginBottom: 48
       }

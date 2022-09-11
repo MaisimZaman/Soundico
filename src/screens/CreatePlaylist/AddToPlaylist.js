@@ -24,7 +24,12 @@ export default function AddToPlaylist(props) {
                           .orderBy('creation','desc')
                           .onSnapshot((snapshot) => setAllMusic(snapshot.docs.map(doc => ({
                             id: doc.id,
-                            data: doc.data()
+                            data: doc.data(),
+                            url: doc.data().audio, // Load media from the network
+                            title: doc.data().title,
+                            artist: doc.data().channelTitle,
+                            artwork: doc.data().thumbNail, // Load artwork from the network
+                            duration: 10000// Duration in seconds
                         }))))
     
         return unsubscribe;
@@ -79,7 +84,15 @@ export default function AddToPlaylist(props) {
                 let sMusic = snapshot.docs.map(doc => {
                     const data = doc.data();
                     const id = doc.id;
-                    return { id: id, data: data }
+                    return {
+                        id: id,
+                        data: data,
+                        url: data.audio, // Load media from the network
+                        title: data.title,
+                        artist: data.channelTitle,
+                        artwork: data.thumbNail, // Load artwork from the network
+                        duration: 10000// Duration in seconds
+                      }
                 });
                 setAllMusic(sMusic);
             })

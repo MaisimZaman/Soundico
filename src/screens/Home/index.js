@@ -13,6 +13,7 @@ import { Container, Title } from './styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { auth, db } from '../../../services/firebase';
 import { BG_IMAGE, SECONDARY_BG } from '../../services/backgroundImage';
+import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 import {
   AdMobInterstitial,
  
@@ -30,16 +31,18 @@ export default function Home({navigation}) {
   const [playListRecordList, setPlayListRecordList] = useState([])
 
   useEffect(() => {
-    async function showAd(){
-   
-      //const AD_UNIT_ID = 'ca-app-pub-1719409113112551/7685850801'
-      //await AdMobInterstitial.setAdUnitID(AD_UNIT_ID); // Test ID, Replace with your-admob-unit-id
-      //await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: true});
-      //await AdMobInterstitial.showAdAsync();
+    async function run(){
+      const { status } = await requestTrackingPermissionsAsync();
+      if (status === 'granted') {
+        console.log('Tracking permission successful');
+      }
     }
 
-    showAd()
-  }, [])
+    run()
+    
+  }, []);
+
+  
 
 
   useEffect(() => {
@@ -70,7 +73,7 @@ export default function Home({navigation}) {
 
   useEffect(() => {
 
-    const searches = ["Study Music",  "Car BASS Music",  'motivational videos']
+    const searches = ["music  ",  "Car BASS Music",  'motivational videos']
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
     Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText}&key=${API_KEY}`)
       .then(res => {

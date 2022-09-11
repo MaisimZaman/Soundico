@@ -8,7 +8,8 @@ export default {
   activeOpacity: 0.7,
   container: {
     backgroundColor: "#1c1c26",
-    flex: 1
+    flex: 1,
+    
   },
   containerAbsolute: {
     position: 'absolute',
@@ -56,17 +57,17 @@ export default {
 
   // text
   // ///////////////////////////////////////////////////////////////////////////
-  textSpotify10: { fontFamily: fonts.spotifyRegular, fontSize: 10 },
-  textSpotify12: { fontFamily: fonts.spotifyRegular, fontSize: 12 },
-  textSpotify14: { fontFamily: fonts.spotifyRegular, fontSize: 14 },
-  textSpotify16: { fontFamily: fonts.spotifyRegular, fontSize: 16 },
-  textSpotify18: { fontFamily: fonts.spotifyRegular, fontSize: 18 },
-  textSpotifyBold12: { fontFamily: fonts.spotifyBold, fontSize: 12 },
-  textSpotifyBold16: { fontFamily: fonts.spotifyBold, fontSize: 16 },
-  textSpotifyBold18: { fontFamily: fonts.spotifyBold, fontSize: 18 },
-  textSpotifyBold20: { fontFamily: fonts.spotifyBold, fontSize: 20 },
-  textSpotifyBold22: { fontFamily: fonts.spotifyBold, fontSize: 22 },
-  textSpotifyBold24: { fontFamily: fonts.spotifyBold, fontSize: 26 },
+  textSpotify10: {  fontSize: 10 },
+  textSpotify12: {  fontSize: 12 },
+  textSpotify14: {  fontSize: 14 },
+  textSpotify16: {  fontSize: 16 },
+  textSpotify18: {  fontSize: 18 },
+  textSpotifyBold12: {   fontSize: 12 },
+  textSpotifyBold16: {   fontSize: 16 },
+  textSpotifyBold18: {   fontSize: 18 },
+  textSpotifyBold20: {  fontSize: 20 },
+  textSpotifyBold22: {   fontSize: 22 },
+  textSpotifyBold24: {   fontSize: 26 },
 
   // spacers
   // ///////////////////////////////////////////////////////////////////////////

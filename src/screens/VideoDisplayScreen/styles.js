@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
         alignSelf: 'center',
         height:300,
         width:'120%',
-        marginBottom: Platform.OS == "ios" ? 40 : 15
+        marginBottom: Platform.OS == "ios" ? "30%" : 15
       },
       centeredView: {
         flex: 1,
@@ -35,8 +35,8 @@ export const styles = StyleSheet.create({
         width: device.width - 48
       },
       containerDetails: {
-        marginBottom: Platform.OS == "ios"  ? "5%" : 30,
-        marginTop: Platform.OS == "ios"  ? "-10%" : 0,
+        marginBottom: Platform.OS == "ios"  ? "0%" : 30,
+        marginTop: Platform.OS == "ios"  ? "-30%" : 0,
       },
       containerSong: {
         flex: 6
@@ -47,7 +47,8 @@ export const styles = StyleSheet.create({
       },
       artist: {
         ...gStyle.textSpotify18,
-        color: colors.greyInactive
+        color: colors.greyInactive,
+        marginBottom: "5%"
       },
       containerFavorite: {
         alignItems: 'flex-end',

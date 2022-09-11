@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState} from 'react';
 import { Audio } from 'expo-av';
 import { Image, StyleSheet, Text, View, ImageBackground, ScrollView, Platform } from 'react-native';
 import { Feather, FontAwesome, MaterialIcons } from '@expo/vector-icons';
@@ -27,8 +27,9 @@ import * as MediaLibrary from 'expo-media-library';
 
 
 
-//import TrackPlayer from 'react-native-track-player';
+import TrackPlayer, {Capability, useProgress, Event, useTrackPlayerEvents, State} from 'react-native-track-player';
 //import MusicControl from 'react-native-music-control';
+
 
 
 
@@ -40,13 +41,6 @@ export default function MusicPlayer(props){
   const defaultThumbnail = 'https://t3.ftcdn.net/jpg/04/54/66/12/360_F_454661277_NtQYM8oJq2wOzY1X9Y81FlFa06DVipVD.jpg'
 
   const {thumbNail, audioURI, title,audioID, downloadData, playListName, notCustom, artist, isDdownload, playlistId} = props.route.params
-
-  const [playListAudioURI, setPlayListAudioURI] = useState(audioURI)
-
-
-
-  
-  
   
   const status = useSelector(selectSoundStatus)
   const currentThumbNail = useSelector(selectThumbNail)
@@ -54,19 +48,9 @@ export default function MusicPlayer(props){
   const currentTitle = useSelector(selectTitle)
   const currentAudioID = useSelector(selectAudioID)
   const currentArtist = useSelector(selectAuthor)
-  const [playingAudio, setPlayingAudio] = useState('')
-
- 
-
-  const [progress, setProgress] = useState(0);
-
- 
+  const progress = useProgress()
 
 
-  
-  
-
-  
     const { navigation } = props;
     const [favorited, setFavourited] = useState(false)
     const [paused, setPaused] = useState(false)
@@ -76,111 +60,135 @@ export default function MusicPlayer(props){
     const [currentPosition, setCurrentPosition] = useState(0)
     
     
+    
 
     const favoriteColor = favorited ? colors.brandPrimary : colors.white;
     const favoriteIcon = favorited ? 'heart' : 'heart-o';
-    const iconPlay = paused ? 'play-circle' : 'pause-circle';
+    const iconPlay = paused? 'play-circle' : 'pause-circle';
 
-    function msToTime(s) {
-      var ms = s % 1000;
-      s = (s - ms) / 1000;
-      var secs = s % 60;
-      s = (s - secs) / 60;
-      var mins = s % 60;
 
-     
     
-      if (secs < 10){
-        return  mins + ':' + "0" + secs;
+
+    function msToTime(duration) {
+      var hrs = ~~(duration / 3600);
+      var mins = ~~((duration % 3600) / 60);
+      var secs = ~~duration % 60;
+
+      // Output like "1:01" or "4:03:59" or "123:03:59"
+      var ret = "";
+
+      if (hrs > 0) {
+          ret += "" + hrs + ":" + (mins < 10 ? "0" : "");
       }
-      return  mins + ':' + secs;
+
+      ret += "" + mins + ":" + (secs < 10 ? "0" : "");
+      ret += "" + secs;
+      return ret;
     }
 
-    const timePast = msToTime(status != 0 ? status.positionMillis : 0);
-    const timeLeft = msToTime(status != 0 ? status.durationMillis - status.positionMillis : 0);
+    const timePast = msToTime(progress.position != 0 ? progress.position : 0);
+    const timeLeft = msToTime(progress.position != 0 ? progress.duration - progress.position : 0);
+
+  
+
+   
+
+    
 
 
-    console.log("Playing audio is under here ")
-    console.log(playingAudio)
+    const setUpTrackPlayer = async () => {
+      const index = downloadData.findIndex(object => {
+        return object.id === audioID;
+      });
+      
+      try {
+        console.log("This ran")
+        await TrackPlayer.setupPlayer();
+        await TrackPlayer.add(downloadData);
+        await TrackPlayer.skip(index);
+        //await TrackPlayer.getTrack(index)
+        //console.log('Tracks added');
+        TrackPlayer.play();
 
+        
+        
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    async function setup() {
+      await TrackPlayer.setupPlayer({})
+      //await TrackPlayer.skip(index);
+      await TrackPlayer.updateOptions({
+        stopWithApp: true,
+        capabilities: [
+          Capability.Play,
+          Capability.Pause,
+          Capability.SkipToNext,
+          Capability.SkipToPrevious,
+          Capability.Stop,
+          Capability.SeekTo,
+        ],
+        compactCapabilities: [Capability.Play, Capability.Pause],
+      })
+      //await TrackPlayer.add([track]);
+      TrackPlayer.play();
+    }
+
+    useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
+      if (event.type === Event.PlaybackTrackChanged && event.nextTrack != null) {
+          const track = await TrackPlayer.getTrack(event.nextTrack);
+          const {title, artist, artwork, id} = track || {};
+          dispatch(setTitle(title))
+          dispatch(setAuthor(artist))
+          dispatch(setThumbNail(artwork))
+          dispatch(setAudioID(id))
+          
+      }
+
+      
+  });
 
 
     
-    useEffect(() => {
-      async function getAudioURI(){
-        console.log("This is running properly")
-            //let info = await ytdl.getInfo(currentAudioURI);
-            //let audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
-            //const theDownload = audioFormats[1].url
-            let info =  await ytdl.getInfo(currentAudioURI);
-            
-            let audioFormats = ytdl.filterFormats(info.formats, 'audioandvideo');
-            const theDownload = audioFormats[0].url
-            console.warn(theDownload)
-        setPlayingAudio(theDownload)
-        //console.log(urls[0].url)
-      }
-      getAudioURI()
-    }, [currentAudioURI])
+ 
+
+    useEffect(() => { 
+      setup()
+      setUpTrackPlayer()
+      setUpTrackPlayer()
+      return () => TrackPlayer.destroy()
+    }, [])
+  
+  
+
+
+   
+    
+    
     
   
     useEffect(() => {
-      if (status.durationMillis != undefined){
-        if (status.durationMillis > 0){
-          if (status.positionMillis == status.durationMillis){
+      async function run(){
+      if (progress.duration != undefined){
+        if (progress.duration > 0){
+          if (progress.position == progress.duration){
             
-              skipFowardTrack()
+            await TrackPlayer.skipToNext();
             
             
           }
         }
       }
+    }
+
+    run()
       
-    }, [status])
+    }, [progress])
 
-    useEffect(() => {
+   
 
-      Audio.setAudioModeAsync({
-        allowsRecordingIOS: false,
-        staysActiveInBackground: true,
-        interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS,
-        playsInSilentModeIOS: true,
-        shouldDuckAndroid: true,
-        interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
-        playThroughEarpieceAndroid: false
-     });
-    }, [])
-
-
-    
-
-    useEffect(() => {   
-      async function run(){
-        setPlayingAudio('')
-        setCurrentPosition(0)
-        
-        
-        const { sound } = await Audio.Sound.createAsync({uri: playingAudio}, { shouldPlay: true }, (status) => dispatch(setSoundStatus(status)));
-            //setSound(sound)
-         setSound(sound)
-
-         
-
-          Audio.setAudioModeAsync({
-            staysActiveInBackground: true,
-            playsInSilentModeIOS: true,
-         });
-
-
-      }
-      
-  
-      run()
-
-    
-
-      
-    }, [currentAudioID, repeat, playingAudio])
 
 
     useEffect(() => {
@@ -208,6 +216,7 @@ export default function MusicPlayer(props){
 
     useEffect(() => {
       async function main(){
+        
         if (paused == false){
           
   
@@ -215,10 +224,11 @@ export default function MusicPlayer(props){
            //await sound.playAsync();
            
           
-          await sound.playFromPositionAsync(currentPosition)
+          //await TrackPlayer.seekTo(progress.position); 
+          await  TrackPlayer.play();
         }
-        else if (sound != null && paused == true){
-         await sound.pauseAsync()
+        else if (paused == true){
+         await TrackPlayer.pause();
       
         }
 
@@ -229,13 +239,6 @@ export default function MusicPlayer(props){
 
     }, [paused, currentAudioID, sound, currentPosition])
 
-    useEffect(() => {
-      return sound
-        ? () => {
-            console.log('Unloading Sound');
-            sound.unloadAsync(); }
-        : undefined;
-    }, [sound, currentAudioID]);
 
     function setNewSongData(thumbNail, audioURI, title,audioID, artist){
           dispatch(setThumbNail(thumbNail))
@@ -258,103 +261,11 @@ export default function MusicPlayer(props){
     }
 
 
-    function chceckDisabled(forward){
-      let index;
-      if (downloadData == []){
-        index = 0
-      } else {
-        index = downloadData.findIndex(object => {
-          return object.id === currentAudioID;
-        });
-      }
-       
-      if (forward){
-         if (downloadData != []){
-          if (index == downloadData.length-1){
-            return true
-          }
-         }
-        
-      
-      } else {
-        if (index == 0){
-          return true
-        }
-      }
-      return false
-    }
-
-    function skipFowardTrack(){
-      const index = downloadData.findIndex(object => {
-        return object.id === currentAudioID;
-      });
-
     
 
-      if (index < downloadData.length -1){
-        if (isDdownload){
-          const forwardThumbNail = defaultThumbnail
-          const forwardAudioURI = downloadData[index + 1].uri
-          const forwardTitle = downloadData[index + 1].filename.slice(0, -4)
-          const forwardID = downloadData[index + 1].id
-          setNewSongData(forwardThumbNail, forwardAudioURI, forwardTitle, forwardID)
-          setPaused(false)
+  
 
-        }
-        else {
-          const forwardThumbNail = downloadData[index + 1].data.thumbNail
-          const forwardAudioURI = downloadData[index + 1].data.audio
-          const forwardTitle = downloadData[index + 1].data.title
-          const forwardID = downloadData[index + 1].id
-          const forwardArtist = downloadData[index + 1].data.channelTitle
-          setNewSongData(forwardThumbNail, forwardAudioURI, forwardTitle, forwardID, forwardArtist)
-          setPaused(false)
-
-        }
-        
-        
-
-      }
-    }
-
-    function skipBackwardTrack(){
-      let index;
-
-      if (downloadData[downloadData.length-1].id == currentAudioID){
-        index = downloadData.length-1
-      } else {
-        index = downloadData.findIndex(object => {
-          console.log(object.id)
-          return object.id === currentAudioID;
-        });
-      }
-
-      
-
-      
-
-      if (index > 0){
-        if (isDdownload){
-          const  backwardThumbNail = defaultThumbnail
-          const backwardAudioURI = downloadData[index - 1].uri
-          const backwardTitle = downloadData[index - 1].filename.slice(0, -4)
-          const backwardID = downloadData[index - 1].id
-          const backwardArtist = 'unknown'
-        setNewSongData(backwardThumbNail, backwardAudioURI, backwardTitle, backwardID, backwardArtist)
-
-        } else {
-          const  backwardThumbNail = downloadData[index - 1].data.thumbNail
-          const backwardAudioURI = downloadData[index - 1].data.audio
-          const backwardTitle = downloadData[index - 1].data.title
-          const backwardID = downloadData[index - 1].id
-          const backwardArtist = downloadData[index - 1].data.channelTitle
-          setNewSongData(backwardThumbNail, backwardAudioURI, backwardTitle, backwardID, backwardArtist)
-        }
-        setPaused(false)
-
-      }
-    }
-
+    
     function shuffleTrack(){
       if (isDdownload){
         const randomTrack = Math.floor(Math.random() * downloadData.length);
@@ -381,12 +292,20 @@ export default function MusicPlayer(props){
 
     function addMusicToPlaylist(){
       navigation.navigate('AddToMadePlaylist', {playListObject: {id: currentAudioID, data: {
-        audio: playingAudio,
+        audio: currentAudioURI,
         channelId: currentAudioID,
         thumbNail: currentThumbNail,
         channelTitle: currentArtist ,
         title: currentTitle,
-      }}})
+      },
+  
+        url:currentAudioURI, // Load media from the network
+        title: currentTitle,
+        artist: currentArtist,
+        artwork: currentThumbNail, // Load artwork from the network
+        duration: 10000// Duration in seconds 
+    
+    }})
     }
 
     function removeFromPlaylist(){
@@ -438,7 +357,7 @@ export default function MusicPlayer(props){
               albumCover: currentThumbNail, 
               albumArtist: currentArtist, 
               deleteMusicItem: deleteMusicItem, 
-              currentAudioURI: playingAudio,
+              currentAudioURI: currentAudioURI,
               addMusicToPlaylist: addMusicToPlaylist,
               playListName: playListName,
               removeFromPlaylist: removeFromPlaylist
@@ -471,11 +390,11 @@ export default function MusicPlayer(props){
               <Slider
                 minimumValue={0}
         
-                maximumValue={Platform.OS == 'ios' ?  (status.durationMillis) : status.durationMillis}
-                value={status.positionMillis}
+                maximumValue={progress.duration}
+                value={progress.position}
                 minimumTrackTintColor={colors.white}
                 maximumTrackTintColor={colors.grey3}
-                onSlidingComplete={(millis) => setCurrentPosition(millis)}
+                onSlidingComplete={(millis) => TrackPlayer.seekTo(millis)}
                 
                 
                 
@@ -496,8 +415,8 @@ export default function MusicPlayer(props){
                 <TouchIcon
                   icon={<FontAwesome color={colors.white} name="step-backward" />}
                   iconSize={40}
-                  disabled={chceckDisabled(false)}
-                  onPress={skipBackwardTrack}
+                  //disabled={chceckDisabled(false)}
+                  onPress={async () => await TrackPlayer.skipToPrevious()}
                 />
                 <View style={gStyle.pH3}>
                   <TouchIcon
@@ -509,8 +428,8 @@ export default function MusicPlayer(props){
                 <TouchIcon
                   icon={<FontAwesome color={colors.white} name="step-forward" />}
                   iconSize={40}
-                  disabled={chceckDisabled(true)}
-                  onPress={skipFowardTrack}
+                  //disabled={chceckDisabled(true)}
+                  onPress={async ()  => await TrackPlayer.skipToNext()}
                 />
                
               </View>

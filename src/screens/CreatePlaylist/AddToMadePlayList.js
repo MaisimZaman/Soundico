@@ -28,7 +28,16 @@ export default function AddToMadePlaylist(props){
                               let sPlaylists = snapshot.docs.map(doc => {
                                   const data = doc.data();
                                   const id = doc.id;
-                                  return { id: id, data: data }
+                                 
+                                  return {
+                                    id: id,
+                                    data: data,
+                                    url: data.audio, // Load media from the network
+                                    title: data.title,
+                                    artist: data.channelTitle,
+                                    artwork: data.thumbNail, // Load artwork from the network
+                                    duration: 10000// Duration in seconds
+                                  }
                               });
                               setAllPlaylists(sPlaylists)
                           })
@@ -73,7 +82,15 @@ export default function AddToMadePlaylist(props){
                 let sPlaylists = snapshot.docs.map(doc => {
                     const data = doc.data();
                     const id = doc.id;
-                    return { id: id, data: data }
+                    return {
+                        id: id,
+                        data: data,
+                        url: data.audio, // Load media from the network
+                        title: data.title,
+                        artist: data.channelTitle,
+                        artwork: data.thumbNail, // Load artwork from the network
+                        duration: 10000// Duration in seconds
+                      }
                 });
                 setAllPlaylists(sPlaylists);
             })
@@ -95,9 +112,20 @@ export default function AddToMadePlaylist(props){
 
     return (
         <ImageBackground style={styles.image} source={ BG_IMAGE}>
-            <Text style={{color: "white", fontSize: 24, marginBottom: 15, marginTop: 15}}>Chosse playlists to add to</Text>
+            <Text style={{color: "white", fontSize: 24, marginBottom: 15, marginTop: "15%"}}>Chosse playlists to add to</Text>
             <TextInput 
-                style={{flexDirection: "row", alignItems: 'center', justifyContent: 'space-evenly', backgroundColor: "#fff", height: 45, width: "94%", borderRadius: 10, marginBottom: 20}}
+                style={{flexDirection: "row", 
+                alignItems: 'center', 
+                fontSize: 15,
+                fontWeight: 'bold',
+                fontStyle: 'normal',
+                justifyContent: 'space-evenly', 
+                backgroundColor: "#2a2a2b", 
+                color: "white",
+                height: 45, 
+                width: "94%", 
+                borderRadius: 20, 
+                marginLeft: "3%"}}
                 placeholder={'Search your playlists'}
                 onChangeText={(text) => setSearchText(text)}
                 value={searchText}

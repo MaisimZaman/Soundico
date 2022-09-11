@@ -5,15 +5,21 @@
     "scheme": "soundico",
     "slug": "musiccoapp",
     "privacy": "public",
-    "version": "0.0.4",
+    "entryPoint": "./index.js",
+    "version": "0.1.0",
     "plugins": [
       [
         "expo-media-library",
-        
         {
           "photosPermission": "Soundico would like to use your photo library to access and play your local audio files on the app",
           "savePhotosPermission": "Soundico would like to use your photo library to access and play your local audio files on the app",
           "isAccessMediaLocationEnabled": true
+        }
+      ],
+      [
+        "expo-tracking-transparency",
+        {
+          "userTrackingPermission": "Soundico would like permission to track your usage across other platforms to deliver personalized ads to you"
         }
       ]
     ],
@@ -30,7 +36,8 @@
       "backgroundColor": "#141414"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/4e6eeb4f-a438-44ef-813b-d245230d1d2d"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -42,13 +49,13 @@
           "audio"
         ],
         "NSPhotoLibraryUsageDescription": "Soundico would like to use your photo library to access and play your local audio files on the app",
-        "usesAppleSignIn": true
-        
+        "NSUserTrackingUsageDescription": "Soundico would like permission to track your usage across other platforms to deliver personalized ads to you",
+        "usesAppleSignIn": true,
+        "NSPhotoLibraryAddUsageDescription": "Soundico would like to use your photo library to access and play your local audio files on the app"
       },
       "bundleIdentifier": "com.maisimdevelops.musiccoapp",
       "config": {
-
-        "googleMobileAdsAppId": "ca-app-pub-1719409113112551~6399112888" 
+        "googleMobileAdsAppId": "ca-app-pub-8818938701145919~2637763596"
       }
     },
     "android": {
@@ -59,9 +66,12 @@
         "android.permission.ACCESS_MEDIA_LOCATION"
       ],
       "config": {
-       
-        "googleMobileAdsAppId": "ca-app-pub-1719409113112551~9951345082"
-      }
+        "googleMobileAdsAppId": "ca-app-pub-8818938701145919~9770982307"
+      },
+      "versionCode": 2
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
   }
 }

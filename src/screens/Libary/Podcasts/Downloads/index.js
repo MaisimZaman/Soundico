@@ -15,6 +15,7 @@ import {  AlbumMessager } from '../../Music/Local/styles';
 import { TextButton } from '../../../ProfileScreen/ProfileComponents';
 import { auth, db } from '../../../../../services/firebase';
 import { BG_IMAGE } from '../../../../services/backgroundImage';
+import { selectAudioURI } from '../../../../../services/slices/navSlice';
 
 
 
@@ -23,9 +24,12 @@ export default function Downloads({navigation}) {
   const [downloadData, setDownloadData] = useState([]);
   const [page, setPage] = useState(30)
   //const [modalVisible, setModalVisible] = useState(false);
+  const [AudioURI, setAudioURI] = useState('')
 
  
   //console.warn(downloadData.length)
+
+  
 
   
 
@@ -37,7 +41,12 @@ export default function Downloads({navigation}) {
                       .orderBy('creation','desc')
                       .onSnapshot((snapshot) => setDownloadData(snapshot.docs.map(doc => ({
                         id: doc.id,
-                        data: doc.data()
+                        data: doc.data(),
+                        url: doc.data().audio, // Load media from the network
+                        title: doc.data().title,
+                        artist: doc.data().channelTitle,
+                        artwork: doc.data().thumbNail, // Load artwork from the network
+                        duration: 10000// Duration in seconds
                     }))))
 
     }

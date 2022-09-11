@@ -22,7 +22,7 @@ import { Provider } from 'react-redux';
 import {store} from './services/store'
 import { BG_IMAGE } from './src/services/backgroundImage';
 //import PictureInPicture from 'react-native-picture-in-picture';
-//import TrackPlayer from 'react-native-track-player';
+import TrackPlayer, { Capability } from 'react-native-track-player';
 
 //LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
 
@@ -62,10 +62,39 @@ function MainPage(){
 
 
 
+async function setup() {
+  await TrackPlayer.updateOptions({
+    stopWithApp: true,
+    capabilities: [
+      Capability.Play,
+      Capability.Pause,
+      Capability.SkipToNext,
+      Capability.SkipToPrevious,
+      Capability.Stop,
+      Capability.SeekTo,
+    ],
+    compactCapabilities: [Capability.Play, Capability.Pause],
+  })
+}
 
-
+var track = {
+  url: 'http://example.com/avaritia.mp3', // Load media from the network
+  title: 'Avaritia',
+  artist: 'deadmau5',
+  album: 'while(1<2)',
+  genre: 'Progressive House, Electro House',
+  date: '2014-05-20T07:00:00+00:00', // RFC 3339
+  artwork: 'http://example.com/cover.png', // Load artwork from the network
+  duration: 402 // Duration in seconds
+};
 
 export default function App(){
+  
+
+  useEffect(() => {
+    setup()
+    return () => TrackPlayer.destroy()
+  }, [])
 
   
     
@@ -95,6 +124,9 @@ export default function App(){
   );
   
 }
+
+ 
+TrackPlayer.registerPlaybackService(() => require('./service'));
 
 const styles = StyleSheet.create({
  
