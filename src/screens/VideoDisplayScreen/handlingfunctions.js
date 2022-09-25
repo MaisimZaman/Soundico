@@ -109,11 +109,10 @@ export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, saveV
             childPath = `audio/${auth.currentUser.uid}/${Math.random().toString(36)}`;
         }
 
-        saveAudioData(theDownload);
+        //saveAudioData(theDownload);
 
     
-        
-        /*
+      
         const response = await fetch(theDownload);
         const blob = await response.blob();
 
@@ -157,7 +156,7 @@ export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, saveV
         }
 
         task.on("state_changed", taskProgress, taskError, taskCompleted);
-        */
+       
    }
         
 }

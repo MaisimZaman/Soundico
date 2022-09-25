@@ -98,7 +98,7 @@ export default function VideoDisplay(props) {
   
     if (downloadData != "VideoLink"){
       index = downloadData.findIndex(object => {
-          return object.id === currentVideoID[0];
+          //return object.id === currentVideoID[0];
         
       });
     }
@@ -145,7 +145,7 @@ export default function VideoDisplay(props) {
         } else {
           
           await  TrackPlayer.play();
-          //await video.current.playAsync()
+          await video.current.playAsync()
           
         }
 
@@ -155,56 +155,63 @@ export default function VideoDisplay(props) {
       
 
     }, [isPlaying])
-    
-    
 
     useEffect(() => {
-      async function showAd(){
-        const REVIEWER_ACCOUNT = "13WiiEF5wRRlKwpMEHx5hCFTlPq1"
+      async function fetchFunc(){
+        var track = {
 
-        if (auth.currentUser.uid != REVIEWER_ACCOUNT){
-          console.log("true")
-          await AdMobInterstitial.setAdUnitID(AD_UNIT_ID); // Test ID, Replace with your-admob-unit-id
-          await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: true});
-          await AdMobInterstitial.showAdAsync();
-        } else {
-          console.log("false")
-        }
-   
-        
-        
-
-        
-      }
+          url: playingVideo, // Load media from the network
+          title: currentTitle,
+          artist: currentArtist,
+          artwork: currentThumbnail, // Load artwork from the network
+          duration: progress.duration // Duration in seconds
+        };
       
-      showAd()
-    }, [])
+
+        const trackOBJ = await TrackPlayer.getQueue()
+        if (trackOBJ!= null){
+          if (trackOBJ[0].artwork != downloadData[0].artwork){
+            TrackPlayer.reset()
+            TrackPlayer.add(track)
+          }
+        }
+        
+               
+       }
+  
+       //fetchFunc()
+    },[downloadData])
+
+
+    
+    
+    
+
+   
 
     const setUpTrackPlayer = async () => {
       var track = {
-   
+
         url: playingVideo, // Load media from the network
         title: currentTitle,
         artist: currentArtist,
         artwork: currentThumbnail, // Load artwork from the network
         duration: progress.duration // Duration in seconds
       };
-  
-      const index = downloadData.findIndex(object => {
-        return object.id === rId;
-      });
-      try {
-        //console.log("This ran")
-        await TrackPlayer.setupPlayer();
-        await TrackPlayer.add([track]);
-        //await TrackPlayer.skip(index);
-        //await TrackPlayer.getTrack(index)
-        //console.log('Tracks added');
-        TrackPlayer.play();
-        //await video.current.playAsync()
 
-        
-        
+      
+  
+   
+      //}
+      try {
+          await TrackPlayer.setupPlayer();
+          await TrackPlayer.add([track]);
+            //await TrackPlayer.skip(index);
+            //await TrackPlayer.getTrack(index)
+            //console.log('Tracks added');
+          TrackPlayer.play();        
+        //await video.current.playAsync()
+ 
       } catch (e) {
         console.log(e);
       }
@@ -252,8 +259,10 @@ export default function VideoDisplay(props) {
         }
       }
     }
+
     
-  }, [status])
+    
+  }, [progress])
 
 
   useEffect(() => {
@@ -519,7 +528,7 @@ export default function VideoDisplay(props) {
             isPlaylist: isPlaylist,
             saveAudioData: saveAudioData,
             saveAudioPodCastData: saveAudioPodCastData,
-            currentVideoID: currentVideoID[1],
+            currentVideoID: currentVideoID,
             saveVideoData: saveVideoData,
             savePlaylistData: savePlaylistData,
             handleNavigteToChannel: handleNavigteToChannel,

@@ -22,12 +22,15 @@ import {
 import { useSelector } from 'react-redux';
 import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectDownloadData, selectSoundStatus, selectAuthor, selectIsAudioOnly, selectIsRecently} from '../../../services/slices/navSlice';
 import { Platform } from 'react-native';
+import { setTitle,  setAuthor, setThumbNail, setAudioID} from '../../../services/slices/navSlice';
+import TrackPlayer, {Capability, useProgress, Event, useTrackPlayerEvents, State} from 'react-native-track-player';
+import { useDispatch } from 'react-redux';
 
 
 export default function Player({navigation}) {
   const [playMusic, setPlayMusic] = useState(true);
 
-  
+  const dispatch = useDispatch()
 
   const Title = useSelector(selectTitle)
   const ThumbNail = useSelector(selectThumbNail)
@@ -38,6 +41,8 @@ export default function Player({navigation}) {
   const Artist = useSelector(selectAuthor)
   const isAudioOnly = useSelector(selectIsAudioOnly)
   const isRecently =  useSelector(selectIsRecently)
+
+  const progress = useProgress()
 
   useEffect(() => {
     Audio.setAudioModeAsync({
@@ -54,24 +59,25 @@ export default function Player({navigation}) {
    
   }, [])
 
-
-
-
- 
  
 
+
+  useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
+    if (event.type === Event.PlaybackTrackChanged && event.nextTrack != null) {
+        const track = await TrackPlayer.getTrack(event.nextTrack);
+        const {title, artist, artwork, id} = track || {};
+        dispatch(setTitle(title))
+        dispatch(setAuthor(artist))
+        dispatch(setThumbNail(artwork))
+        dispatch(setAudioID(id))
+        
+    }
+
+    
+});
  
 
-  //useEffect (() => {
-    //return soundOBj
-     // ? () => {
-       // 
-         // soundOBj.unloadAsync(); }
-      //: undefined;
-  //}, [soundOBj, audioID]);
-
-
-  console.log(audioID)
+ 
 
   function handleNavigation(){
     if (isAudioOnly){
@@ -88,8 +94,8 @@ export default function Player({navigation}) {
         audioURI: audiouURI, 
         videoTitle: Title,
         downloadData: downloadData,
-        videoId: audioID[1],
-        rId: audioID[0],
+        videoId: audioID,
+        rId: audioID,
         Search: false,
         isPlaylist: false,
         artist: Artist,
@@ -106,7 +112,7 @@ export default function Player({navigation}) {
     <TouchableOpacity style={{marginBottom: Platform.OS == 'ios' ? 80 : 50}} onPress={handleNavigation}>
       <Container>
         <BarStatus>
-          <Line progress={(status.durationMillis / status.positionMillis) * 100} />
+          <Line progress={(progress.position / progress.duration) * 100} />
         </BarStatus>
         <PhotoAlbum
           source={{
@@ -129,6 +135,7 @@ export default function Player({navigation}) {
               <DescriptionDevices>Available Devices</DescriptionDevices>
             </InformationController>
           </Information>
+          
           <Controller onPress={() => setPlayMusic(!playMusic)}>
             {playMusic && (
               <MaterialCommunityIcons name="pause" size={30} color="#FFF" />
@@ -139,6 +146,6 @@ export default function Player({navigation}) {
           </Controller>
         </Music>
       </Container>
-    </TouchableOpacity>
+      </TouchableOpacity>
   );
 }

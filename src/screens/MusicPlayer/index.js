@@ -12,7 +12,7 @@ import TouchIcon from './TouchIcon';
 import { useDispatch } from 'react-redux';
 import { setThumbNail,  setAudioURI, setTitle, setAudioID, setDownloadData,  setSoundStatus, setIsAudioOnly, setAuthor, selectAuthor} from '../../../services/slices/navSlice';
 import { useSelector } from 'react-redux';
-import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID,  selectSoundStatus} from '../../../services/slices/navSlice';
+import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID,  selectSoundStatus, selectDownloadData} from '../../../services/slices/navSlice';
 import { BG_IMAGE, SECONDARY_BG } from '../../services/backgroundImage';
 import ytdl from 'react-native-ytdl';
 
@@ -35,7 +35,7 @@ import TrackPlayer, {Capability, useProgress, Event, useTrackPlayerEvents, State
 
 
 export default function MusicPlayer(props){
-
+  
   const dispatch = useDispatch();
 
   const defaultThumbnail = 'https://t3.ftcdn.net/jpg/04/54/66/12/360_F_454661277_NtQYM8oJq2wOzY1X9Y81FlFa06DVipVD.jpg'
@@ -48,6 +48,7 @@ export default function MusicPlayer(props){
   const currentTitle = useSelector(selectTitle)
   const currentAudioID = useSelector(selectAudioID)
   const currentArtist = useSelector(selectAuthor)
+  const currentDownloadData = useSelector(selectDownloadData)
   const progress = useProgress()
 
 
@@ -58,6 +59,7 @@ export default function MusicPlayer(props){
     const [sound, setSound] = useState(null)
     const [repeat, setRepeat] = useState(false)
     const [currentPosition, setCurrentPosition] = useState(0)
+    const [trackObject, setTrackObject] = useState([])
     
     
     
@@ -67,6 +69,7 @@ export default function MusicPlayer(props){
     const iconPlay = paused? 'play-circle' : 'pause-circle';
 
 
+   
     
 
     function msToTime(duration) {
@@ -92,7 +95,39 @@ export default function MusicPlayer(props){
   
 
    
+   
 
+
+
+    useEffect(() => {
+      async function fetchFunc(){
+      
+
+        const trackOBJ = await TrackPlayer.getQueue()
+        //console.log(trackOBJ)
+        //setTrackObject(trackOBJ)
+  
+  
+        if (trackOBJ[0].artwork != downloadData[0].artwork){
+          TrackPlayer.reset()
+          TrackPlayer.add(downloadData)
+        }
+       
+           
+       }
+  
+       fetchFunc()
+    },[downloadData])
+    
+
+  
+
+
+   
+
+
+   
+   
     
 
 
@@ -157,9 +192,9 @@ export default function MusicPlayer(props){
     useEffect(() => { 
       setup()
       setUpTrackPlayer()
-      setUpTrackPlayer()
-      return () => TrackPlayer.destroy()
-    }, [])
+      //setUpTrackPlayer()
+      //return () => TrackPlayer.destroy()
+    }, [currentDownloadData])
   
   
 
@@ -167,7 +202,7 @@ export default function MusicPlayer(props){
    
     
     
-    
+
   
     useEffect(() => {
       async function run(){

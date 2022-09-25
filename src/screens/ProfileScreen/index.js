@@ -25,6 +25,7 @@ import {auth, db} from '../../../services/firebase'
 import firebase from 'firebase'
 import { BG_IMAGE } from '../../services/backgroundImage';
 import * as ImagePicker from 'expo-image-picker';
+import TrackPlayer from 'react-native-track-player';
 
 
 function ProfileScreen(props){
@@ -285,7 +286,8 @@ function ProfileScreen(props){
         function signOutUser(){
             if (auth.currentUser.uid != null &&  auth.currentUser.uid != undefined){
               auth.signOut().then(() => {
-                  props.navigation.replace('Login')
+                TrackPlayer.destroy()
+                props.navigation.replace('Login')
               })
           }}
           

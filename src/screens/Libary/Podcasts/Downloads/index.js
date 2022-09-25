@@ -22,7 +22,7 @@ import { selectAudioURI } from '../../../../../services/slices/navSlice';
 export default function Downloads({navigation}) {
 
   const [downloadData, setDownloadData] = useState([]);
-  const [page, setPage] = useState(30)
+  const [page, setPage] = useState(downloadData.length +10)
   //const [modalVisible, setModalVisible] = useState(false);
   const [AudioURI, setAudioURI] = useState('')
 
@@ -66,7 +66,7 @@ export default function Downloads({navigation}) {
 
     
   
-   if (downloadData.length > 7) {
+   if (downloadData.length > 1) {
 
       var qDownloads = downloadData.slice(0, page)
     }

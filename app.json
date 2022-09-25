@@ -6,7 +6,7 @@
     "slug": "musiccoapp",
     "privacy": "public",
     "entryPoint": "./index.js",
-    "version": "0.1.0",
+    "version": "0.1.4",
     "plugins": [
       [
         "expo-media-library",
@@ -55,7 +55,7 @@
       },
       "bundleIdentifier": "com.maisimdevelops.musiccoapp",
       "config": {
-        "googleMobileAdsAppId": "ca-app-pub-8818938701145919~2637763596"
+        "googleMobileAdsAppId": "ca-app-pub-6993408177072390~9059489682"
       }
     },
     "android": {

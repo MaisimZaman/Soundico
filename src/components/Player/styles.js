@@ -26,6 +26,7 @@ export const PhotoAlbum = styled.Image.attrs({
   resizeMode: 'contain',
 })`
   width: 20%;
+  
 `;
 
 export const Music = styled.View`

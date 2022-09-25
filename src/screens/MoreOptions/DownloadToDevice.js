@@ -18,10 +18,11 @@ export async function downloadAudioToDevice(currentAudioURI, albumTitle){
       .replace('?', '')
     }
       
+    //console.warn(currentAudioURI)
  
     if (Platform.OS == 'ios'){
-      let fileUri = FileSystem.documentDirectory + `${'testy'}.mp4`;
-      FileSystem.downloadAsync('', fileUri)
+      let fileUri = FileSystem.documentDirectory + `testy.mp4`;
+      FileSystem.downloadAsync(currentAudioURI, fileUri)
       
       .then(({ uri }) => {
         
@@ -68,7 +69,17 @@ export async function downloadAudioToDevice(currentAudioURI, albumTitle){
       
       if (status === "granted") {
         const asset = await MediaLibrary.createAssetAsync(fileUri)
-        await MediaLibrary.createAlbumAsync("SoundicoDownloads", asset, false)
+        const albumData = await MediaLibrary.getAlbumAsync("SoundicoDownloads")
+        if (albumData.assetCount!= undefined){
+          await MediaLibrary.addAssetsToAlbumAsync(asset, "SoundicoDownloads", false)
+        } else {
+          await MediaLibrary.createAlbumAsync(albumData.id, asset, false)
+        }
+        
+        
+
+ 
+        
       }
         
     }}

@@ -18,6 +18,7 @@ import {
   AdMobInterstitial,
  
 } from 'expo-ads-admob';
+import { AD_UNIT_ID } from '../VideoDisplayScreen/AddUnitKey';
 
 
 export default function Home({navigation}) {
@@ -41,6 +42,28 @@ export default function Home({navigation}) {
     run()
     
   }, []);
+
+  useEffect(() => {
+    async function showAd(){
+      const REVIEWER_ACCOUNT = "13WiiEF5wRRlKwpMEHx5hCFTlPq1"
+
+      if (auth.currentUser.uid != REVIEWER_ACCOUNT){
+        console.log("true")
+        await AdMobInterstitial.setAdUnitID(AD_UNIT_ID); // Test ID, Replace with your-admob-unit-id
+        await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: true});
+        await AdMobInterstitial.showAdAsync();
+      } else {
+        console.log("false")
+      }
+ 
+      
+      
+
+      
+    }
+    
+    showAd()
+  }, [])
 
   
 

@@ -20,11 +20,7 @@ import { downloadAudioToDevice } from './DownloadToDevice';
 import { auth } from '../../../services/firebase';
 import { AD_UNIT_ID } from '../VideoDisplayScreen/AddUnitKey';
 import {
-  AdMobBanner,
-  AdMobInterstitial,
-  PublisherBanner,
-  AdMobRewarded,
-  setTestDeviceIDAsync,
+  AdMobRewarded
 } from 'expo-ads-admob';
 
 export default function MoreOptions(props) {
@@ -45,17 +41,13 @@ export default function MoreOptions(props) {
 
     const [showMusicBar, setShowMusicBar] = useState(false);
 
-    useEffect(() => {
-      async function showAd(){
-     
-        
-        //await AdMobInterstitial.setAdUnitID(SAVED_AD_UNIT_ID); // Test ID, Replace with your-admob-unit-id
-        //await AdMobInterstitial.requestAdAsync({ servePersonalizedAds: true});
-        //await AdMobInterstitial.showAdAsync();
-      }
-  
-      showAd()
-    }, [])
+    async function loadAd(){
+      const REWARD_AD_ID = "ca-app-pub-6993408177072390/9754312611"
+      await AdMobRewarded.setAdUnitID(REWARD_AD_ID)
+      await AdMobRewarded.requestAdAsync()
+    }
+
+    loadAd()
 
     
 
@@ -72,6 +64,8 @@ export default function MoreOptions(props) {
    
         }
         else if (item.id == 4) {
+
+            AdMobRewarded.showAdAsync()
             downloadAudioOrVideo(false, false,  saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing, currentAudioURI)
 
             //props.navigation.goBack()

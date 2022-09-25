@@ -4,10 +4,12 @@ import Playlist from '../../../../components/Playlist';
 
 import { Container, AlbumMessager } from './styles';
 import * as MediaLibrary from 'expo-media-library';
+import TrackPlayer, {Capability, useProgress, Event, useTrackPlayerEvents, State} from 'react-native-track-player';
 
 export default function Albums({navigation}) {
 
   const [audioFiles, setAudioFiles] = useState([]);
+  const [trackFiles, setTrackFiles] = useState([])
   
   const defaultThumbnail = 'https://t3.ftcdn.net/jpg/04/54/66/12/360_F_454661277_NtQYM8oJq2wOzY1X9Y81FlFa06DVipVD.jpg'
 
@@ -24,30 +26,51 @@ export default function Albums({navigation}) {
     runMain()
   }, [])
 
+  useEffect(() => {
+    setTrackFiles(audioFiles.map(doc => ({
+      id: doc.id,
+      data: trackFiles,
+      url: audioFiles[0].uri, // Load media from the network
+      title: doc.filename,
+      artist: "unknown",
+      artwork: audioFiles[0].uri, // Load artwork from the network
+      duration: doc.duration
+  })))
+  }, [])
+
+  
+
   
 
   async function getAudioFiles(){
     const albumData = await MediaLibrary.getAlbumAsync("SoundicoDownloads")
+
+  
+
+
     
 
     const media = await MediaLibrary.getAssetsAsync({
-      mediaType: 'audio',
+      mediaType: 'video',
       album: albumData,
       sortBy: 'creationTime',
-      first: 30
+      first: 30,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 
     })
+                                              
 
     
 
     setAudioFiles(media.assets)
+    
   }
-
+                                
   console.log(audioFiles)
 
+  
 
 
-  console.warn(audioFiles.length)
+
   if (audioFiles.length == 0){
     return (
         <Container>
@@ -71,10 +94,10 @@ else {
           renderItem={({ item }) => (
             <TouchableOpacity
                     
-                    onPress={() => navigation.navigate('MusicScreen', {thumbNail: defaultThumbnail,
+                    onPress={() => navigation.navigate('MusicScreen', {thumbNail: item.uri,
                                                                       audioURI: item.uri, 
                                                                       title: item.filename.slice(0, -4),
-                                                                      downloadData: audioFiles,
+                                                                      downloadData: trackFiles,
                                                                                   audioID: item.id,
                                                                                   artist: 'unknown',
                                                                                   isDdownload: true
@@ -82,7 +105,7 @@ else {
                                                                                    
               <Playlist
                 name={item.filename.slice(0, -4)}
-                photoAlbum={defaultThumbnail}
+                photoAlbum={item.uri}
             
                 //create={false}
         
