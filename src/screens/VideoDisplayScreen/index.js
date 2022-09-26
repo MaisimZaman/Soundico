@@ -68,7 +68,8 @@ export default function VideoDisplay(props) {
       
     
     } = props.route.params;
-    const currentVideoID = useSelector(selectAudioID)
+    //const currentVideoID = useSelector(selectAudioID)
+    const [currentVideoID, setCurrentVideoID] = useState([])
     const currentThumbnail = useSelector(selectThumbNail)
     const currentTitle = useSelector(selectTitle)
     const currentArtist = useSelector(selectAuthor)
@@ -81,6 +82,7 @@ export default function VideoDisplay(props) {
     const playingVideo  = useSelector(selectAudioURI);
     const [channelThumnail, setChannelThumbail] = useState('')
     //const [playingVideo, setPlayingVideo] = useState('null')
+    
     const [favorited, setFavourited] = useState(false)
     const [isPlaying, setIsPlaying] = useState()
     const iconPlay = !isPlaying ?   'pause-circle' : 'play-circle';
@@ -102,6 +104,10 @@ export default function VideoDisplay(props) {
         
       });
     }
+
+    console.log(rId)
+    console.log(currentVideoID)
+    
 
 
     //console.log(progress.position)
@@ -237,6 +243,7 @@ export default function VideoDisplay(props) {
     }
 
     useEffect(() => { 
+     
       setup()
       setUpTrackPlayer()
       
@@ -271,7 +278,8 @@ export default function VideoDisplay(props) {
     //setCurrentPosition(0)
     //,setStatus(0)
     dispatch(setIsAudioOnly(false))
-    dispatch(setAudioID([rId, videoId]))
+    //dispatch(setAudioID([rId, videoId]))
+    setCurrentVideoID([rId, videoId])
     dispatch(setThumbNail(videoThumbNail))
     dispatch(setAuthor(artist))
     dispatch(setTitle(videoTitle))
@@ -488,6 +496,7 @@ export default function VideoDisplay(props) {
       dispatch(setThumbNail(thumbNail))
       dispatch(setAudioURI(audioURI))
       dispatch(setAudioID(audioID))
+      setCurrentVideoID(audioID)
       dispatch(setTitle(title))
       dispatch(setIsAudioOnly(false))
       dispatch(setAuthor(artist))
