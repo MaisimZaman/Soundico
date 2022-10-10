@@ -11,6 +11,7 @@ const initialState = {
     soundStatus: 0,
     isAudioOnly: true,
     isRecently: false,
+    paused: false,
 
 
 }
@@ -49,6 +50,9 @@ export const navSlice = createSlice({
         setIsRecently: (state, action) => {
             state.isRecently = action.payload;
         },
+        setPaused: (state, action) => {
+            state.paused = action.payload;
+        },
         
     },
 
@@ -64,7 +68,8 @@ export const {
     setIsAudioOnly, 
     setAuthor, 
     setChannelId,
-    setIsRecently
+    setIsRecently,
+    setPaused
 
 } = navSlice.actions;
 
@@ -88,6 +93,8 @@ export const selectAuthor = (state) => state.nav.author
 export const selectChannelId = (state) => state.nav.channelId
 
 export const selectIsRecently = (state) => state.nav.isRecently
+
+export const selectPaused = (state) => state.nav.paused
 
 const navReducer = navSlice.reducer
 

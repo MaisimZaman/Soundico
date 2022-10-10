@@ -10,7 +10,7 @@ import { colors, device, func, gStyle } from './constants/index';
 import ModalHeader from './ModalHeader';
 import TouchIcon from './TouchIcon';
 import { useDispatch } from 'react-redux';
-import { setThumbNail,  setAudioURI, setTitle, setAudioID, setDownloadData,  setSoundStatus, setIsAudioOnly, setAuthor, selectAuthor} from '../../../services/slices/navSlice';
+import { setThumbNail,  setAudioURI, setTitle, setAudioID, setDownloadData,  setSoundStatus, setIsAudioOnly, setAuthor, selectAuthor, selectPaused, setPaused} from '../../../services/slices/navSlice';
 import { useSelector } from 'react-redux';
 import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID,  selectSoundStatus, selectDownloadData} from '../../../services/slices/navSlice';
 import { BG_IMAGE, SECONDARY_BG } from '../../services/backgroundImage';
@@ -42,7 +42,6 @@ export default function MusicPlayer(props){
 
   const {thumbNail, audioURI, title,audioID, downloadData, playListName, notCustom, artist, isDdownload, playlistId} = props.route.params
   
-  const status = useSelector(selectSoundStatus)
   const currentThumbNail = useSelector(selectThumbNail)
   const currentAudioURI = useSelector(selectAudioURI)
   const currentTitle = useSelector(selectTitle)
@@ -54,12 +53,12 @@ export default function MusicPlayer(props){
 
     const { navigation } = props;
     const [favorited, setFavourited] = useState(false)
-    const [paused, setPaused] = useState(false)
+    const paused = useSelector(selectPaused)
     //const sound = useSelector(selectSoundOBJ)
     const [sound, setSound] = useState(null)
     const [repeat, setRepeat] = useState(false)
     const [currentPosition, setCurrentPosition] = useState(0)
-    const [trackObject, setTrackObject] = useState([])
+    const [state, setState] = useState(null)
     
     
     
@@ -69,15 +68,14 @@ export default function MusicPlayer(props){
     const iconPlay = paused? 'play-circle' : 'pause-circle';
 
 
-   
-    
 
+  
     function msToTime(duration) {
       var hrs = ~~(duration / 3600);
       var mins = ~~((duration % 3600) / 60);
       var secs = ~~duration % 60;
 
-      // Output like "1:01" or "4:03:59" or "123:03:59"
+     
       var ret = "";
 
       if (hrs > 0) {
@@ -96,12 +94,13 @@ export default function MusicPlayer(props){
 
    
    
-
+    
 
 
     useEffect(() => {
       async function fetchFunc(){
       
+
 
         const trackOBJ = await TrackPlayer.getQueue()
         //console.log(trackOBJ)
@@ -122,13 +121,35 @@ export default function MusicPlayer(props){
 
   
 
+    useEffect(() => {
+      async function checkIsPlaying(){
+        const state = await TrackPlayer.getState();
+        
 
+       
+        setState(state)
+      }
+
+      checkIsPlaying()
+    })
+      
+
+      console.log(paused)
+
+      useEffect(() => {
+        if (state != null){
+          if (state == State.Playing && paused == true){
+           
+            dispatch(setPaused(false))
+          } else if (state == State.Paused && paused == false){
+            dispatch(setPaused(true))
+          }
+        }
+        
+      }, [state])
+   
    
 
-
-   
-   
-    
 
 
     const setUpTrackPlayer = async () => {
@@ -143,7 +164,10 @@ export default function MusicPlayer(props){
         await TrackPlayer.skip(index);
         //await TrackPlayer.getTrack(index)
         //console.log('Tracks added');
-        TrackPlayer.play();
+        if (paused != true){
+          TrackPlayer.play();
+        }
+        
 
         
         
@@ -168,7 +192,7 @@ export default function MusicPlayer(props){
         compactCapabilities: [Capability.Play, Capability.Pause],
       })
       //await TrackPlayer.add([track]);
-      TrackPlayer.play();
+      
     }
 
     useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
@@ -291,7 +315,7 @@ export default function MusicPlayer(props){
     }
 
     function togglePlay() {
-        setPaused(!paused)
+        dispatch(setPaused(!paused))
 
     }
 
@@ -310,7 +334,7 @@ export default function MusicPlayer(props){
         const randomID = downloadData[randomTrack].id
         const randomArtist = "Unknown"
         setNewSongData(randomThumbNail, randomAudioURI, randomTitle, randomID, randomArtist)
-        setPaused(false)
+        dispatch(setPaused(false))
 
       } else {
         const randomTrack = Math.floor(Math.random() * downloadData.length);
@@ -320,7 +344,7 @@ export default function MusicPlayer(props){
         const randomID = downloadData[randomTrack].id
         const randomArtist = downloadData[randomTrack].data.channelTitle
         setNewSongData(randomThumbNail, randomAudioURI, randomTitle, randomID, randomArtist)
-        setPaused(false)
+        dispatch(setPaused(false))
       }
         
     }

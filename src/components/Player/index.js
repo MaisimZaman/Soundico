@@ -20,15 +20,17 @@ import {
   Controller,
 } from './styles';
 import { useSelector } from 'react-redux';
-import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectDownloadData, selectSoundStatus, selectAuthor, selectIsAudioOnly, selectIsRecently} from '../../../services/slices/navSlice';
-import { Platform } from 'react-native';
+import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectDownloadData, selectSoundStatus, selectAuthor, selectIsAudioOnly, selectIsRecently, selectPaused, setPaused} from '../../../services/slices/navSlice';
+import { Platform, View } from 'react-native';
 import { setTitle,  setAuthor, setThumbNail, setAudioID} from '../../../services/slices/navSlice';
 import TrackPlayer, {Capability, useProgress, Event, useTrackPlayerEvents, State} from 'react-native-track-player';
 import { useDispatch } from 'react-redux';
 
 
 export default function Player({navigation}) {
-  const [playMusic, setPlayMusic] = useState(true);
+ 
+  const paused = useSelector(selectPaused);
+  const [state, setState] = useState(null)
 
   const dispatch = useDispatch()
 
@@ -58,6 +60,37 @@ export default function Player({navigation}) {
 
    
   }, [])
+
+  async function checkIsPlaying(){
+    const state = await TrackPlayer.getState();
+
+    
+    setState(state)
+  }
+
+  checkIsPlaying()
+
+  useEffect(() => {
+    async function run(){
+      if (!paused){
+        TrackPlayer.play()
+      } else {
+        TrackPlayer.pause()
+      }
+    }
+
+    run()
+
+  }, [paused])
+
+  useEffect(() => {
+    if (state == State.Playing){
+    
+      dispatch(setPaused(false))
+    } else if (state == State.Paused){
+      dispatch(setPaused(true))
+    }
+  }, [state])
 
  
 
@@ -106,6 +139,7 @@ export default function Player({navigation}) {
 
 
   
+
   
 
   return (
@@ -120,27 +154,29 @@ export default function Player({navigation}) {
           }}
         />
         <Music>
-          <Information>
-            <InformationAlbum>
-              <TitleMusic>{Title}</TitleMusic>
-              <Separator> • </Separator>
-              <AuthorName>{Artist}</AuthorName>
-            </InformationAlbum>
-            <InformationController>
-              <MaterialCommunityIcons
-                name="speaker-wireless"
-                size={14}
-                color="#FFF"
-              />
-              <DescriptionDevices>Available Devices</DescriptionDevices>
-            </InformationController>
-          </Information>
+         
+            <Information>
+              <InformationAlbum>
+                <TitleMusic >{Title}</TitleMusic>
+                <Separator> • </Separator>
+                <AuthorName>{Artist}</AuthorName>
+              </InformationAlbum>
+              <InformationController>
+                <MaterialCommunityIcons
+                  name="speaker-wireless"
+                  size={14}
+                  color="#FFF"
+                />
+                <DescriptionDevices>Available Devices</DescriptionDevices>
+              </InformationController>
+            </Information>
+        
           
-          <Controller onPress={() => setPlayMusic(!playMusic)}>
-            {playMusic && (
+          <Controller onPress={() => dispatch(setPaused(!paused))}>
+            {!paused && (
               <MaterialCommunityIcons name="pause" size={30} color="#FFF" />
             )}
-            {!playMusic && (
+            {paused && (
               <MaterialCommunityIcons name="play" size={30} color="#FFF" />
             )}
           </Controller>

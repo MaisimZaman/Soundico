@@ -39,7 +39,9 @@ import {
   selectAuthor,
   selectChannelId,
   selectDownloadData,
-  setIsRecently
+  setIsRecently,
+  setPaused,
+  selectPaused
 } from '../../../services/slices/navSlice';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -77,14 +79,14 @@ export default function VideoDisplay(props) {
     const currentDownloadData = useSelector(selectDownloadData)
     const [currentPosition, setCurrentPosition] = useState(0)
     const [status, setStatus] = useState(0);
-    const [recentlyPlayed, setRecentlyPlayed] = useState([])
+    const [state, setState] = useState(null);
     const [downloadProcessing, setDownloadProcessing] = useState(false)
     const playingVideo  = useSelector(selectAudioURI);
     const [channelThumnail, setChannelThumbail] = useState('')
     //const [playingVideo, setPlayingVideo] = useState('null')
     
     const [favorited, setFavourited] = useState(false)
-    const [isPlaying, setIsPlaying] = useState()
+    const isPlaying = useSelector(selectPaused)
     const iconPlay = !isPlaying ?   'pause-circle' : 'play-circle';
     const REVIEWER_ACCOUNT = "13WiiEF5wRRlKwpMEHx5hCFTlPq1"
     const [video, setVideo] = useState(useRef(null))
@@ -141,6 +143,33 @@ export default function VideoDisplay(props) {
       run()
     }, [])
 
+    useEffect(() => {
+      async function checkIsPlaying(){
+        const state = await TrackPlayer.getState();
+        
+
+       
+        setState(state)
+      }
+
+      checkIsPlaying()
+    })
+      
+
+    
+
+      useEffect(() => {
+        if (state != null){
+          if (state == State.Playing && !isPlaying == true){
+          
+            //dispatch(setPaused(false))
+          } else if (state == State.Paused && isPlaying == false){
+            //dispatch(setPaused(true))
+          }
+        }
+        
+      }, [state])
+
     
 
     useEffect(() => {
@@ -162,6 +191,8 @@ export default function VideoDisplay(props) {
 
     }, [isPlaying])
 
+    //console.log(downloadData)
+
     useEffect(() => {
       async function fetchFunc(){
         var track = {
@@ -176,7 +207,7 @@ export default function VideoDisplay(props) {
 
         const trackOBJ = await TrackPlayer.getQueue()
         if (trackOBJ!= null){
-          if (trackOBJ[0].artwork != downloadData[0].artwork){
+          if (trackOBJ[0].artwork != downloadData[0].data.videoThumbNail){
             TrackPlayer.reset()
             TrackPlayer.add(track)
           }
@@ -215,6 +246,7 @@ export default function VideoDisplay(props) {
             //await TrackPlayer.skip(index);
             //await TrackPlayer.getTrack(index)
             //console.log('Tracks added');
+          
           TrackPlayer.play();        
         //await video.current.playAsync()
  
@@ -517,8 +549,8 @@ export default function VideoDisplay(props) {
 
 
     async function togglePlayVideo(){
-
-      setIsPlaying(!isPlaying)
+      dispatch(setPaused(!isPlaying))
+    
     }
 
      return (
