@@ -1,0 +1,33 @@
+[
+    {
+      "id": 1,
+      "icon": "heart-o",
+      "title": "Like",
+      "lib": "FontAwesome"
+    },
+    {
+      "id": 2,
+      "icon": "account-music",
+      "title": "View artist",
+      "lib": "MaterialCommunityIcons"
+    },
+    {
+      "id": 3,
+      "icon": "playlist-add",
+      "title": "Add to a playlist",
+      "lib": "MaterialIcons"
+    },
+    {
+      "id": 4,
+      "icon": "download",
+      "title": "Download onto device",
+      "lib": "Entypo"
+    },
+    {
+      "id": 5,
+      "icon": "delete",
+      "title": "Delete song",
+      "lib": "AntDesign"
+    }
+    
+]

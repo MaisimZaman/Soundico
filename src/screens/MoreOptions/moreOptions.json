@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "icon": "heart-o",
+    "title": "Like",
+    "lib": "FontAwesome"
+  },
+    {
+      "id": 2,
+      "icon": "account-music",
+      "title": "View artist",
+      "lib": "MaterialCommunityIcons"
+    },
+    
+    {
+      "id": 4,
+      "icon": "cloud-download",
+      "title": "Save Track Audio",
+      "lib": "FontAwesome"
+    },
+    {
+      "id": 5,
+      "icon": "folder-video",
+      "title": "Save Track as Video",
+      "lib": "Entypo"
+    }
+    
+    
+]
