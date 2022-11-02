@@ -6,7 +6,8 @@ import {
     ImageBackground,
     StyleSheet,
     KeyboardAvoidingView,
-    Platform 
+    Platform,
+    
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
@@ -19,8 +20,9 @@ import {
 import { COLORS, FONTS, SIZES, images, icons } from "./constants";
 import * as firebase from 'firebase';
 import {auth, db} from '../../../services/firebase'
-import { BG_IMAGE } from '../../services/backgroundImage';
-import * as GoogleAuthentication from 'expo-google-app-auth';
+import { BG_IMAGE, SECONDARY_BG } from '../../services/backgroundImage';
+//import * as Google from 'expo-auth-session/providers/google';
+
 import * as AppleAuthentication from 'expo-apple-authentication';
 import * as Crypto from 'expo-crypto';
 
@@ -28,12 +30,17 @@ import * as Crypto from 'expo-crypto';
 
 
 
+
+
+
+
 function Login({ navigation }){
 
+    
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [showPass, setShowPass] = useState(false)
-    const [accessToken, setAccessToken] = React.useState();
+    const [userInfo, setUserInfo] = useState(null)
     
     
     useEffect(() => {
@@ -54,6 +61,8 @@ function Login({ navigation }){
     
 
     
+
+    
     
 
     function signIn(){
@@ -64,32 +73,12 @@ function Login({ navigation }){
         
     }
 
-    function googleSignIn(){
-        GoogleAuthentication.logInAsync({
-            androidStandaloneAppClientId: 'ANDROID_STANDALONE_APP_CLIENT_ID',
-            iosStandaloneAppClientId: 'IOS_STANDALONE_APP_CLIENT_ID',
-            scopes: ['profile', 'email']
-        })
-            .then((logInResult) => {
-                if (logInResult.type === 'success') {
-                    const { idToken, accessToken } = logInResult;
-                    const credential = firebase.auth.GoogleAuthProvider.credential(
-                        idToken,
-                        accessToken
-                    );
-                        
-                    console.log(credential)
-                    return firebase.auth().signInWithCredential(credential)
-                    // Successful sign in is handled by firebase.auth().onAuthStateChanged
-                }
-                return Promise.reject(); // Or handle user cancelation separatedly
-            })
-            .catch((error) => {
-                console.warn("This did not work")
-                console.log(error)
-            });
+    async function googleSignIn(){
+        
   
     }
+
+    console.log(userInfo)
 
     async function appleSignIn(){
         const nonce = Math.random().toString(36).substring(2, 10);
@@ -168,7 +157,7 @@ function Login({ navigation }){
 
     function renderButtons() {
         function loginOptions(){
-            if (Platform.OS == 'android'){
+            if (Platform.OS == 'ios'){
                 return (
                     <>
                     {/* Divider */}
@@ -190,27 +179,15 @@ function Login({ navigation }){
                         marginTop: SIZES.radius
                     }}
                 >
-                    <IconLabelButton
-                        icon={icons.google}
-                        label="Google"
-                        onPress={googleSignIn}
-                        containerStyle={{
-                            flex: 1,
-                            borderRadius: 30,
-                            backgroundColor: COLORS.additionalColor9
-                        }}
-                        iconStyle={{
-                            width: 30,
-                            height: 30,
-                        }}
-                    />
+                    
 
                     <IconLabelButton
                         icon={icons.apple}
                         onPress={appleSignIn}
-                        label="Apple"
+                        label="Sign in with Apple"
                         containerStyle={{
                             flex: 1,
+                            marginRight: SIZES.padding,
                             marginLeft: SIZES.padding,
                             borderRadius: 30,
                             backgroundColor: COLORS.additionalColor9
@@ -276,7 +253,7 @@ function Login({ navigation }){
     }
 
     return (
-        <ImageBackground style={styles.image} source={ BG_IMAGE}>
+        <ImageBackground style={styles.image} source={ SECONDARY_BG}>
             
             {/* Background */}
             <KeyboardAwareScrollView

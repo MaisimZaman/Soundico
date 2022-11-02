@@ -20,7 +20,10 @@ import { COLORS, FONTS, SIZES, constants, icons } from "./constants";
 
 
 import {auth, db} from '../../../services/firebase'
-import { BG_IMAGE } from '../../services/backgroundImage';
+import { BG_IMAGE, SECONDARY_BG } from '../../services/backgroundImage';
+import * as AppleAuthentication from 'expo-apple-authentication';
+import * as Crypto from 'expo-crypto';
+
 
 
 function Register({ navigation }){
@@ -32,10 +35,51 @@ function Register({ navigation }){
     const [showPass, setShowPass] = useState(false)
 
     function googleRegister(){
-         
+         return (
+            <IconLabelButton
+                        icon={icons.google}
+                        label="Google"
+                        containerStyle={{
+                            flex: 1,
+                            borderRadius: 30,
+                            backgroundColor: COLORS.additionalColor9
+                        }}
+                        iconStyle={{
+                            width: 30,
+                            height: 30,
+                        }}
+                        onPress={googleRegister}
+                    />
+         )
     }
 
-    function appleLogIn(){
+    async function appleLogIn(){
+        const nonce = Math.random().toString(36).substring(2, 10);
+
+        return Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, nonce)
+            .then((hashedNonce) =>
+                AppleAuthentication.signInAsync({
+                    requestedScopes: [
+                        AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                        AppleAuthentication.AppleAuthenticationScope.EMAIL
+                    ],
+                    nonce: hashedNonce
+                })
+            )
+            .then((appleCredential) => {
+                const { identityToken } = appleCredential;                                                                                                                                
+                const provider = new firebase.auth.OAuthProvider('apple.com');
+                const credential = provider.credential({
+                    idToken: identityToken,
+                    rawNonce: nonce
+                });
+                return firebase.auth().signInWithCredential(credential);
+                // Successful sign in is handled by firebase.auth().onAuthStateChanged                                                  
+            })
+            .catch((error) => {
+                console.warn("This did not work")
+                console.log(error)
+            });
 
     }
 
@@ -132,7 +176,7 @@ function Register({ navigation }){
 
     function renderButtons() {
         function renderLoginOptions(){
-            if (Platform.OS == 'android'){
+            if (Platform.OS == 'ios'){
                 return (
                    <>
                     <Text
@@ -154,27 +198,15 @@ function Register({ navigation }){
                         marginTop: SIZES.radius
                     }}
                 >
-                    <IconLabelButton
-                        icon={icons.google}
-                        label="Google"
-                        containerStyle={{
-                            flex: 1,
-                            borderRadius: 30,
-                            backgroundColor: COLORS.additionalColor9
-                        }}
-                        iconStyle={{
-                            width: 30,
-                            height: 30,
-                        }}
-                        onPress={googleRegister}
-                    />
+                    
 
                     <IconLabelButton
                         icon={icons.apple}
-                        label="Apple"
+                        label="Sign in with Apple"
                         onPress={appleLogIn}
                         containerStyle={{
                             flex: 1,
+                            marginRight: SIZES.padding,
                             marginLeft: SIZES.padding,
                             borderRadius: 30,
                             backgroundColor: COLORS.additionalColor9
@@ -242,7 +274,7 @@ function Register({ navigation }){
     }
 
     return (
-        <ImageBackground style={styles.image} source={ BG_IMAGE}>
+        <ImageBackground style={styles.image} source={ SECONDARY_BG}>
             {/* Title */}
             <KeyboardAwareScrollView
                 enableOnAndroid={true}

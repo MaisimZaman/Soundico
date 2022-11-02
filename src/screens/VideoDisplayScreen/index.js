@@ -107,8 +107,7 @@ export default function VideoDisplay(props) {
       });
     }
 
-    console.log(rId)
-    console.log(currentVideoID)
+   
     
 
 
@@ -353,6 +352,8 @@ export default function VideoDisplay(props) {
             staysActiveInBackground: true,
             playsInSilentModeIOS: true,
          });
+
+         
 
          
           //await video.current.playAsync()
