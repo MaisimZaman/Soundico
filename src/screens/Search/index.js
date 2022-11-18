@@ -237,7 +237,7 @@ export default function Search({navigation}) {
       
     }
     else if (searchType == 'Music') {
-      Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText + 'music'}&type=video&key=${API_KEY}`)
+      Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q=${searchText + 'lyrics'}&type=video&key=${API_KEY}`)
       .then(res => {
         const ytData = res.data.items;
         setYTData(ytData)
@@ -399,8 +399,10 @@ export default function Search({navigation}) {
     color: "white",
     height: 45, 
     width: "94%", 
-    borderRadius: 20, 
-    marginLeft: "3%"}}
+    borderRadius: 15, 
+    marginLeft: "3%",
+    paddingLeft: 15,
+  }}
     placeholder={placeholder}
     placeholderTextColor={"#adacb0"}
     onChangeText={(text) => setSearchText(text)}

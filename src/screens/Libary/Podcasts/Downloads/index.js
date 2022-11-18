@@ -22,7 +22,7 @@ import { selectAudioURI } from '../../../../../services/slices/navSlice';
 export default function Downloads({navigation}) {
 
   const [downloadData, setDownloadData] = useState([]);
-  const [page, setPage] = useState(downloadData.length +20)
+  const [page, setPage] = useState(downloadData.length+20)
   //const [modalVisible, setModalVisible] = useState(false);
 
  

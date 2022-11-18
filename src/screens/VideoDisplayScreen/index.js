@@ -5,6 +5,7 @@ import {db, auth} from '../../../services/firebase'
 import firebase from 'firebase'
 
 import { Audio, Video } from 'expo-av';
+
 import { BG_IMAGE, SECONDARY_BG } from '../../services/backgroundImage';
 
 import ModalHeader from '../MusicPlayer/ModalHeader';
@@ -245,9 +246,11 @@ export default function VideoDisplay(props) {
             //await TrackPlayer.skip(index);
             //await TrackPlayer.getTrack(index)
             //console.log('Tracks added');
+            await TrackPlayer.pause();
+            await video.current.pauseAsync()
           
-          TrackPlayer.play();        
-        //await video.current.playAsync()
+              await TrackPlayer.play();        
+              await video.current.playAsync()
  
       } catch (e) {
         console.log(e);
@@ -356,7 +359,7 @@ export default function VideoDisplay(props) {
          
 
          
-          //await video.current.playAsync()
+          
         }
 
       
@@ -422,6 +425,9 @@ export default function VideoDisplay(props) {
           <Image style={styles.video} source={{uri: currentThumbnail}}></Image>
         )
       }
+
+      
+      
         return (
           <>
             <Video
@@ -429,9 +435,7 @@ export default function VideoDisplay(props) {
           style={styles.video}
           shouldPlay={true}
           isMuted={true}
-          source={{
-            uri: playingVideo,
-          }}
+          source={{uri: playingVideo}}
           //useNativeControls
           resizeMode="contain"
           //isLooping
@@ -441,6 +445,7 @@ export default function VideoDisplay(props) {
         
         </>
         )
+        
     }
 
     function saveAudioData(audioURI){
@@ -454,7 +459,7 @@ export default function VideoDisplay(props) {
               title: currentTitle,
               creation: firebase.firestore.FieldValue.serverTimestamp(),
               channelTitle: artist,
-              channelId: currentChannelId,
+              channelId: currentChannelId != null ? currentChannelId : '' ,
               new: true,
           })
       setDownloadProcessing(false)

@@ -21,7 +21,7 @@ import {
  
 } from 'expo-ads-admob';
 import { AD_UNIT_ID } from '../VideoDisplayScreen/AddUnitKey';
-
+import TrackPlayer, {Capability, useProgress, Event, useTrackPlayerEvents, State} from 'react-native-track-player';
 
 
 export default function Home({navigation}) {
@@ -46,9 +46,37 @@ export default function Home({navigation}) {
     
   }, []);
 
+
+  useEffect(() => {
+    async function setup() {
+      await TrackPlayer.setupPlayer({})
+      //await TrackPlayer.skip(index);
+      await TrackPlayer.updateOptions({
+        stopWithApp: true,
+        capabilities: [
+          Capability.Play,
+          Capability.Pause,
+          Capability.SkipToNext,
+          Capability.SkipToPrevious,
+          Capability.Stop,
+          Capability.SeekTo,
+        ],
+        compactCapabilities: [Capability.Play, Capability.Pause],
+      })
+      await TrackPlayer.setupPlayer();
+      await TrackPlayer.add([]);
+      //TrackPlayer.play();
+    }
+
+    setup()
+  }, [])
+
   useEffect(() => {
     async function showAd(){
       const REVIEWER_ACCOUNT = "13WiiEF5wRRlKwpMEHx5hCFTlPq1"
+
+
+      
 
       if (auth.currentUser.uid != REVIEWER_ACCOUNT){
         console.log("true")

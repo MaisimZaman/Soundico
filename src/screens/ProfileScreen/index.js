@@ -8,7 +8,8 @@ import {
     StyleSheet,
     ImageBackground,
     Modal,
-    Pressable
+    Pressable,
+
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -19,11 +20,12 @@ import {
     ProfileRadioButton,
     LineDivider
 } from "./ProfileComponents";
-import { device, gStyle, colors } from '../MusicPlayer/constants';
+import { device, gStyle, colors} from '../MusicPlayer/constants';
 import { COLORS, FONTS, SIZES, icons, images } from '../Authentication/constants';
 import {auth, db} from '../../../services/firebase'
 import firebase from 'firebase'
 import { BG_IMAGE } from '../../services/backgroundImage';
+import LinearGradient from '../TopicContent/LinearGradient'
 import * as ImagePicker from 'expo-image-picker';
 import TrackPlayer from 'react-native-track-player';
 
@@ -33,6 +35,7 @@ function ProfileScreen(props){
     const [newCourseNotification, setNewCourseNotification] = useState(false)
     const [studyReminder, setStudyReminder] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
+    const headerColours = ["#0327a6", "#5e0002", "#555f66", "#04631d"]
 
     async function setProfilePicture(){
     
@@ -368,6 +371,10 @@ function ProfileScreen(props){
 
     return (
         <ImageBackground style={styles.image} resizeMode="cover" source={ BG_IMAGE}>
+            <View style={styles.containerLinear}>
+    <LinearGradient fill={headerColours[Math.floor(Math.random() * (headerColours.length))]} />
+    
+    </View>
         <View
             style={{
                 flex: 1,
@@ -525,6 +532,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 22,
+      },
+      containerLinear: {
+        position: 'absolute',
+        top: 0,
+        width: '100%',
+        zIndex: device.web ? 5 : 0
       },
 
 })

@@ -65,7 +65,7 @@ export default function MoreOptions(props) {
         }
         else if (item.id == 4) {
 
-            AdMobRewarded.showAdAsync()
+            //AdMobRewarded.showAdAsync()
             downloadAudioOrVideo(false, false,  saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing, currentAudioURI)
 
             //props.navigation.goBack()
