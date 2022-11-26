@@ -43,12 +43,14 @@ export const styles = StyleSheet.create({
       },
       song: {
         ...gStyle.textSpotifyBold24,
-        color: colors.white
+        color: colors.white,
+        fontFamily: "HelveticaNeue-Italic"
       },
       artist: {
         ...gStyle.textSpotify18,
         color: colors.greyInactive,
-        marginBottom: "5%"
+        marginBottom: "5%",
+        fontFamily: "HelveticaNeue-Italic"
       },
       containerFavorite: {
         alignItems: 'flex-end',

@@ -24,6 +24,9 @@ import { AD_UNIT_ID } from '../VideoDisplayScreen/AddUnitKey';
 import TrackPlayer, {Capability, useProgress, Event, useTrackPlayerEvents, State} from 'react-native-track-player';
 
 
+
+
+
 export default function Home({navigation}) {
 
   const [recently, setRecently] = useState([]);
@@ -127,7 +130,7 @@ export default function Home({navigation}) {
 
   useEffect(() => {
 
-    const searches = ["music",  "Car BASS Music","Car BASS Music", "dupstep music"]
+    const searches = ["Car BASS Music","Car BASS Music", "dupstep music"]
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
     Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText}&key=${API_KEY}`)
       .then(res => {

@@ -102,7 +102,11 @@ export default function App(){
   return (
     <Provider store={store}>
       <NavigationContainer theme={MyTheme}>
-        <Stack.Navigator screenOptions={{headerShown: false, animationEnabled: true, cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS}} initialRouteName='Login'>
+        <Stack.Navigator screenOptions={{headerShown: false, 
+          animationEnabled: true, 
+          cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+          gestureDirection: 'vertical'
+          }} initialRouteName='Login'>
           <Stack.Screen name='Login' component={Login}></Stack.Screen>
           <Stack.Screen name='Register' component={Register}></Stack.Screen>
           <Stack.Screen name='Main' component={MainPage}></Stack.Screen>

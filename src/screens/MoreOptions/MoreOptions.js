@@ -42,7 +42,7 @@ export default function MoreOptions(props) {
     const [showMusicBar, setShowMusicBar] = useState(false);
 
     async function loadAd(){
-      const REWARD_AD_ID = "ca-app-pub-6993408177072390/9754312611"
+      const REWARD_AD_ID = "ca-app-pub-9963824300761164/6065523003"
       await AdMobRewarded.setAdUnitID(REWARD_AD_ID)
       await AdMobRewarded.requestAdAsync()
     }
@@ -65,7 +65,7 @@ export default function MoreOptions(props) {
         }
         else if (item.id == 4) {
 
-            //AdMobRewarded.showAdAsync()
+            AdMobRewarded.showAdAsync()
             downloadAudioOrVideo(false, false,  saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing, currentAudioURI)
 
             //props.navigation.goBack()

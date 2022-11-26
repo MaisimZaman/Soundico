@@ -6,7 +6,7 @@
     "slug": "musiccoapp",
     "privacy": "public",
     "entryPoint": "./index.js",
-    "version": "0.1.9",
+    "version": "0.2.1",
     "plugins": [
       [
         "expo-media-library",
@@ -66,7 +66,8 @@
         "android.permission.ACCESS_MEDIA_LOCATION"
       ],
       "config": {
-        "googleMobileAdsAppId": "ca-app-pub-8818938701145919~9770982307"
+        
+        "googleMobileAdsAppId": "ca-app-pub-5264631321138417~2778429396"
       },
       "versionCode": 2
     },

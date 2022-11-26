@@ -18,7 +18,7 @@ import ytdl from 'react-native-ytdl';
 
 //import TrackPlayer from 'react-native-track-player';
 
-import { convertTime } from './helpers';
+import { convertTime, pauseIcon, playIcon } from './helpers';
 import { auth, db } from '../../../services/firebase';
 import * as FileSystem from 'expo-file-system';
 
@@ -65,7 +65,7 @@ export default function MusicPlayer(props){
 
     const favoriteColor = favorited ? colors.brandPrimary : colors.white;
     const favoriteIcon = favorited ? 'heart' : 'heart-o';
-    const iconPlay = paused? 'play-circle' : 'pause-circle';
+    const iconPlay = paused? playIcon : pauseIcon;
 
 
 
@@ -411,7 +411,7 @@ export default function MusicPlayer(props){
           <ImageBackground style={styles.bgImage} resizeMode='cover' source={SECONDARY_BG}>
           <ModalHeader
             left={<Feather color={colors.greyLight} name="chevron-down" />}
-            leftPress={() => {navigation.goBack(); dispatch(setAudioURI(null))}}
+            leftPress={() => {navigation.goBack()}}
             right={ <Feather onPress={() => navigation.navigate('SavedMoreOptions', {albumTitle: currentTitle, 
               albumCover: currentThumbNail, 
               albumArtist: currentArtist, 
@@ -475,20 +475,20 @@ export default function MusicPlayer(props){
               <View style={gStyle.flexRowCenterAlign}>
                 <TouchIcon
                   icon={<FontAwesome color={colors.white} name="step-backward" />}
-                  iconSize={40}
+                  iconSize={50}
                   //disabled={chceckDisabled(false)}
                   onPress={async () => await TrackPlayer.skipToPrevious()}
                 />
                 <View style={gStyle.pH3}>
                   <TouchIcon
-                    icon={<FontAwesome color={colors.white} name={iconPlay} />}
+                    icon={<Image style={{width:90, height: 90}} source={{uri: iconPlay}}/>}
                     iconSize={80}
                     onPress={togglePlay}
                   />
                 </View>
                 <TouchIcon
                   icon={<FontAwesome color={colors.white} name="step-forward" />}
-                  iconSize={40}
+                  iconSize={50}
                   //disabled={chceckDisabled(true)}
                   onPress={async ()  => await TrackPlayer.skipToNext()}
                 />

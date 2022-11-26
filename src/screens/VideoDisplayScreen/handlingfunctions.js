@@ -20,6 +20,10 @@ export function msToTime(duration) {
       return ret;
 }
 
+export const pauseIcon = "https://iconsplace.com/wp-content/uploads/_icons/ffffff/256/png/pause-icon-18-256.png"
+
+export const playIcon = "https://iconsplace.com/wp-content/uploads/_icons/f0f0f0/256/png/play-icon-256.png"
+
 
 
 export function skipFowardTrack(downloadData, setNewSongData, currentID, isRecently, isPlaylist){
