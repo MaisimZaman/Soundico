@@ -29,14 +29,6 @@ function AlbumScreen(props){
   const scrollY = React.useRef(new Animated.Value(0)).current;
   const [showMusicBar, setShowMuiscBar] = useState(true)
 
-
-
-
-
-  
-
-  
-
   const stickyArray = device.web ? [] : [0];
     const headingRange = device.web ? [140, 200] : [230, 280];
     const shuffleRange = device.web ? [40, 80] : [40, 80];
@@ -129,15 +121,10 @@ function AlbumScreen(props){
 
     }
     
-
     
   }
 
-  
- 
- 
 
-  
 
   return (
         
@@ -166,6 +153,7 @@ function AlbumScreen(props){
     <Text style={styles.headerTitle}>{title}</Text>
   </Animated.View>
   <TouchIcon
+    onPress={() => props.navigation.navigate("PlaylistMoreOptions", {playlistPhoto: photoAlbum, playListName: title, playlistId: playlistId, playlistVideos: playlistVideos})}
     icon={<Feather color={colors.white} name="more-horizontal" />}
     
   />
@@ -194,7 +182,7 @@ function AlbumScreen(props){
 </View>
 <View style={styles.containerAlbum}>
   <Text style={styles.albumInfo}>
-    {`Album by ${"unknown"} · ${2022}`}
+    {`Playlist by ${auth.currentUser.displayName} · ${2023}`}
   </Text>
 </View>
 </View>
@@ -303,7 +291,8 @@ const styles = StyleSheet.create({
     marginTop: 2,
     paddingHorizontal: 8,
     textAlign: 'center',
-    width: device.width - 100
+    width: device.width - 100,
+    fontWeight: 'bold'
   },
   containerFixed: {
     alignItems: 'center',
@@ -332,14 +321,16 @@ const styles = StyleSheet.create({
   },
   containerTitle: {
     marginTop: device.web ? 8 : 0,
-    zIndex: device.web ? 20 : 0
+    zIndex: device.web ? 20 : 0,
+    fontWeight: 'bold'
   },
   title: {
     ...gStyle.textSpotifyBold20,
     color: colors.white,
     marginBottom: 8,
     paddingHorizontal: 24,
-    textAlign: 'center'
+    textAlign: 'center',
+    fontWeight: 'bold'
   },
   containerAlbum: {
     zIndex: device.web ? 20 : 0
@@ -378,7 +369,8 @@ const styles = StyleSheet.create({
     ...gStyle.textSpotifyBold16,
     color: colors.white,
     letterSpacing: 1,
-    textTransform: 'uppercase'
+    textTransform: 'uppercase',
+    fontWeight: 'bold'
   },
   containerSongs: {
     alignItems: 'center',

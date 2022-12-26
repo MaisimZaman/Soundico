@@ -20,20 +20,22 @@ import {
   Controller,
 } from './styles';
 import { useSelector } from 'react-redux';
-import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectDownloadData, selectSoundStatus, selectAuthor, selectIsAudioOnly, selectIsRecently, selectPaused, setPaused} from '../../../services/slices/navSlice';
-import { Platform, View } from 'react-native';
+import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID, selectDownloadData, selectSoundStatus, selectAuthor, selectIsAudioOnly, selectIsRecently, selectPaused, setPaused, selectAccentColour, setAccentColour, selectPlayListName} from '../../../services/slices/navSlice';
+import { Platform, View, Image } from 'react-native';
 import { setTitle,  setAuthor, setThumbNail, setAudioID} from '../../../services/slices/navSlice';
 import TrackPlayer, {Capability, useProgress, Event, useTrackPlayerEvents, State} from 'react-native-track-player';
 import { useDispatch } from 'react-redux';
-
-
+import { pickedColour } from '../../screens/Home/pickedHeaderColour';
+import { LinearGradient } from 'expo-linear-gradient';
+import ImageColors from 'react-native-image-colors'
+import color from 'color'
 export default function Player({navigation}) {
  
   const paused = useSelector(selectPaused);
   const [state, setState] = useState(null)
-
+  //const [primaryColour, setPrimaryColour] = useState(null)
   const dispatch = useDispatch()
-
+  const primaryColour = useSelector(selectAccentColour)
   const Title = useSelector(selectTitle)
   const ThumbNail = useSelector(selectThumbNail)
   const audiouURI = useSelector(selectAudioURI)
@@ -43,8 +45,39 @@ export default function Player({navigation}) {
   const Artist = useSelector(selectAuthor)
   const isAudioOnly = useSelector(selectIsAudioOnly)
   const isRecently =  useSelector(selectIsRecently)
+  const playListName = useSelector(selectPlayListName)
 
   const progress = useProgress()
+
+  //console.log(primaryColour)
+
+ 
+
+  useEffect(() => {
+
+    async function getPrimaryColors() {
+   
+      const result = await ImageColors.getColors(ThumbNail, {
+        fallback: "#3f4d63",
+        cache: false,
+        key: '1',
+        darkerColor: true,
+      })
+
+      const darkerColor = color(result.primary).darken(0.6).hex();
+
+      dispatch(setAccentColour(darkerColor))
+      //setPrimaryColour(result.secondary)
+     
+    }
+
+    getPrimaryColors()
+
+
+    
+  }, [ThumbNail])
+
+  //getPrimaryColors(ThumbNail)
 
   useEffect(() => {
     Audio.setAudioModeAsync({
@@ -119,7 +152,8 @@ export default function Player({navigation}) {
         title: Title,
         downloadData: downloadData,
         audioID: audioID,
-        artist: Artist
+        artist: Artist,
+        playListName: playListName,
         })
     }
     else {
@@ -143,9 +177,17 @@ export default function Player({navigation}) {
   
 
   return (
+   
     <TouchableOpacity style={{marginBottom: Platform.OS == 'ios' ? 80 : 50}} onPress={handleNavigation}>
-      <Container>
-        <BarStatus>
+      <LinearGradient
+        // Background Linear Gradient
+        colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 1)']}
+        //style={styles.background}
+      />
+      
+      <Container pickedColour={primaryColour}>
+      
+      <BarStatus>
           <Line progress={(progress.position / progress.duration) * 100} />
         </BarStatus>
         <PhotoAlbum
@@ -183,5 +225,6 @@ export default function Player({navigation}) {
         </Music>
       </Container>
       </TouchableOpacity>
+      
   );
 }

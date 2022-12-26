@@ -1,0 +1,35 @@
+[
+    {
+      "id": 1,
+      "icon": "heart-o",
+      "title": "Like",
+      "lib": "FontAwesome"
+    },
+      {
+        "id": 2,
+        "icon": "playlist-plus",
+        "title": "Add music",
+        "lib": "MaterialCommunityIcons"
+      },
+      
+      {
+        "id": 3,
+        "icon": "playlist-edit",
+        "title": "Sort music",
+        "lib": "MaterialCommunityIcons"
+      },
+      {
+        "id": 4,
+        "icon": "edit",
+        "title": "Edit playlist",
+        "lib": "FontAwesome5"
+      },
+      {
+        "id": 5,
+        "icon": "share",
+        "title": "Share playlist",
+        "lib": "Entypo"
+      }
+      
+      
+  ]

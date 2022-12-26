@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, StyleSheet, ImageBackground } from 'react-native';
+import { FlatList, StyleSheet, Text, ImageBackground } from 'react-native';
 
 import Playlist from '../../../../components/Playlist';
 import api from '../../../../services/api';
@@ -7,6 +7,7 @@ import {AlbumMessager} from '../Local/styles'
 import { Container } from './styles';
 import { auth, db } from '../../../../../services/firebase';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Ionicons } from '@expo/vector-icons';
 import { BG_IMAGE } from '../../../../services/backgroundImage';
 
 export default function Playlists({navigation}) {
@@ -36,6 +37,21 @@ export default function Playlists({navigation}) {
     getData();
   }, []);
 
+  function addPlaylistIcon(){
+    return (
+      <>
+      <Ionicons name="add" onPress={() => navigation.navigate('NamePlaylist')}
+      
+      style={{marginLeft: "5%"}}  
+      size={50} color="white" />
+      <Text
+      onPress={() => navigation.navigate('NamePlaylist') }
+      style={{color: "white", fontSize: 20, textAlign: 'center', fontWeight: 'bold', marginTop: '-10%', marginLeft: "-15%", marginBottom: "3%"}}>Create a Playlist?</Text>
+      </>
+      
+    )
+  }
+
   if (playlists.length == 0){
     return (
         <Container>
@@ -47,6 +63,7 @@ export default function Playlists({navigation}) {
   return (
     
     <Container>
+      {addPlaylistIcon()}
       <FlatList
         data={playlists}
         initialNumToRender={playlists.length}

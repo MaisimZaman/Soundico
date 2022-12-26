@@ -28,6 +28,9 @@ import { BG_IMAGE } from '../../services/backgroundImage';
 import LinearGradient from '../TopicContent/LinearGradient'
 import * as ImagePicker from 'expo-image-picker';
 import TrackPlayer from 'react-native-track-player';
+import { pickedColour } from '../Home/pickedHeaderColour';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectAccentColour, setAudioID, setAudioURI } from '../../../services/slices/navSlice';
 
 
 function ProfileScreen(props){
@@ -35,7 +38,8 @@ function ProfileScreen(props){
     const [newCourseNotification, setNewCourseNotification] = useState(false)
     const [studyReminder, setStudyReminder] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
-    const headerColours = ["#0327a6", "#5e0002", "#555f66", "#04631d"]
+    const dispatch = useDispatch()
+    const primaryColour = useSelector(selectAccentColour)
 
     async function setProfilePicture(){
     
@@ -48,7 +52,7 @@ function ProfileScreen(props){
             
         });
     
-        if (!result.cancelled) {
+        if (!result.canceled) {
             const image = result.uri;
             const uri = image;
             const childPath = `profile-images/${auth.currentUser.uid}/${Math.random().toString(36)}`;
@@ -290,6 +294,8 @@ function ProfileScreen(props){
             if (auth.currentUser.uid != null &&  auth.currentUser.uid != undefined){
               auth.signOut().then(() => {
                 TrackPlayer.destroy()
+                dispatch(setAudioURI(null))
+                dispatch(setAudioID(null))
                 props.navigation.replace('Login')
               })
           }}
@@ -372,7 +378,7 @@ function ProfileScreen(props){
     return (
         <ImageBackground style={styles.image} resizeMode="cover" source={ BG_IMAGE}>
             <View style={styles.containerLinear}>
-    <LinearGradient fill={headerColours[Math.floor(Math.random() * (headerColours.length))]} />
+    <LinearGradient fill={primaryColour} />
     
     </View>
         <View

@@ -21,12 +21,15 @@ const ModalHeader = ({ left, leftPress, right, rightPress, style, text, video })
     containerText: {
       alignItems: 'center',
       flex: 5,
-      justifyContent: 'center'
+      justifyContent: 'center',
+      fontWeight: 'bold'
     },
     text: {
       ...gStyle.textSpotifyBold16,
       color: colors.white,
-      textAlign: 'center'
+      textAlign: 'center',
+      fontWeight: 'bold',
+      fontSize: 18
     },
     left: {
       alignItems: 'flex-start',
@@ -48,7 +51,7 @@ const ModalHeader = ({ left, leftPress, right, rightPress, style, text, video })
 
     {text && (
       <View style={styles.containerText}>
-        <Text style={styles.text}>{text}</Text>
+        <Text  style={styles.text}>{text}</Text>
       </View>
     )}
 

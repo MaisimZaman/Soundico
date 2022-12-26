@@ -14,7 +14,6 @@ import NamePlaylist from './src/screens/CreatePlaylist/NamePlaylist';
 import AddToPlaylist from './src/screens/CreatePlaylist/AddToPlaylist';
 import AddToMadePlaylist from './src/screens/CreatePlaylist/AddToMadePlayList';
 import TopicContent from './src/screens/TopicContent/TopicContent';
-import PlaylistOptions from './src/screens/CreatePlaylist/PlaylistOptions';
 import ChannelScreen from './src/screens/AlbumScreen/ChannelScreen';
 import MoreOptions from './src/screens/MoreOptions/MoreOptions';
 import SavedMoreOptions from './src/screens/MoreOptions/SavedMoreOptions';
@@ -23,10 +22,9 @@ import {store} from './services/store'
 import { BG_IMAGE } from './src/services/backgroundImage';
 //import PictureInPicture from 'react-native-picture-in-picture';
 import TrackPlayer, { Capability } from 'react-native-track-player';
-
+import EditPlaylist from './src/screens/AlbumScreen/EditPlaylist';
+import PlaylistMoreOptions from './src/screens/MoreOptions/PlaylistMoreOptions';
 //LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
-
-
 
 const Stack = createStackNavigator();
 
@@ -77,16 +75,7 @@ async function setup() {
   })
 }
 
-var track = {
-  url: 'http://example.com/avaritia.mp3', // Load media from the network
-  title: 'Avaritia',
-  artist: 'deadmau5',
-  album: 'while(1<2)',
-  genre: 'Progressive House, Electro House',
-  date: '2014-05-20T07:00:00+00:00', // RFC 3339
-  artwork: 'http://example.com/cover.png', // Load artwork from the network
-  duration: 402 // Duration in seconds
-};
+
 
 export default function App(){
   
@@ -119,9 +108,10 @@ export default function App(){
           <Stack.Screen name='AddToPlaylist' component={AddToPlaylist}></Stack.Screen>
           <Stack.Screen name='AddToMadePlaylist' component={AddToMadePlaylist}></Stack.Screen>
           <Stack.Screen name='TopicContent' component={TopicContent}></Stack.Screen>
-          <Stack.Screen name='PlayListOptions' component={PlaylistOptions}></Stack.Screen>
           <Stack.Screen name='MoreOptions' component={MoreOptions}></Stack.Screen>
           <Stack.Screen name='SavedMoreOptions' component={SavedMoreOptions}></Stack.Screen>
+          <Stack.Screen name='EditPlaylist' component={EditPlaylist}></Stack.Screen>
+          <Stack.Screen name='PlaylistMoreOptions' component={PlaylistMoreOptions}></Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

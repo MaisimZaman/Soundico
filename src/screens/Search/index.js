@@ -11,17 +11,18 @@ import PodcastShow from '../../components/PodcastShow';
 import { TextButton } from '../../components/AuthComponents';
 
 import { Container, Title } from './styles';
-import { BG_IMAGE } from '../../services/backgroundImage';
+import { BG_IMAGE, SECONDARY_BG } from '../../services/backgroundImage';
 
 import {useSelector} from 'react-redux'
 import { AlbumMessager } from '../Libary/Music/Local/styles';
 
-import { selectAudioURI } from '../../../services/slices/navSlice';
+import { selectAccentColour, selectAudioURI } from '../../../services/slices/navSlice';
 import Artist from '../../components/Artist';
 
 import LineItemSong from '../TopicContent/LineItemSong';
 import LinearGradient from '../TopicContent/LinearGradient'
 import { auth, db } from '../../../services/firebase';
+import { pickedColour } from '../Home/pickedHeaderColour';
 
 
 
@@ -40,7 +41,10 @@ export default function Search({navigation}) {
   const [recordList, setRecordList] = useState([])
   const [searchHit, setSearchHit] = useState(false)
   const audioURI = useSelector(selectAudioURI)
-  const headerColours = ["#0327a6", "#5e0002", "#555f66", "#04631d"]
+  const primaryColour = useSelector(selectAccentColour)
+
+
+
 
   //console.log(allYTData.length)
 
@@ -56,6 +60,8 @@ export default function Search({navigation}) {
 
     
   }, [searchText])
+
+  
 
 
   useEffect(() => {
@@ -374,11 +380,8 @@ export default function Search({navigation}) {
   
 
   return (
-    <ImageBackground style={styles.image} source={ BG_IMAGE}>
-     <View style={styles.containerLinear}>
-    <LinearGradient fill={headerColours[Math.floor(Math.random() * (headerColours.length))]} />
+    <ImageBackground style={styles.image} source={  SECONDARY_BG                                                                                                                                                                                                                                                                                                                                                                                                                                 }>
     
-    </View>
     <Container playerOn={audioURI == null ? false : true}>
     
       <Title   search={true}>
@@ -473,7 +476,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     width: '100%',
-    zIndex:  0
+    zIndex:  0,
+    
   },
  
 });

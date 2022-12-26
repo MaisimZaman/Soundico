@@ -44,13 +44,15 @@ export const styles = StyleSheet.create({
       song: {
         ...gStyle.textSpotifyBold24,
         color: colors.white,
-        fontFamily: "HelveticaNeue-Italic"
+        fontFamily: "HelveticaNeue-Italic",
+        fontWeight: "bold"
       },
       artist: {
         ...gStyle.textSpotify18,
         color: colors.greyInactive,
         marginBottom: "5%",
-        fontFamily: "HelveticaNeue-Italic"
+        fontFamily: "HelveticaNeue-Italic",
+        fontWeight: 'bold'
       },
       containerFavorite: {
         alignItems: 'flex-end',
@@ -70,7 +72,8 @@ export const styles = StyleSheet.create({
       },
       containerBottom: {
         ...gStyle.flexRowSpace,
-        marginTop: device.iPhoneNotch ? 32 : 8
+        marginTop: device.iPhoneNotch ? 32 : 8,
+        marginBottom: "10%"
       },
       bgImage: {
         flex: 1,
@@ -136,5 +139,12 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 22,
+      },
+      containerLinear: {
+        position: 'absolute',
+        top: 0,
+        width: '100%',
+        height: "100%",
+        zIndex: device.web ? 5 : 0
       },
 })

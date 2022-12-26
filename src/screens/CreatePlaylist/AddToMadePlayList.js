@@ -111,22 +111,24 @@ export default function AddToMadePlaylist(props){
     
 
     return (
-        <ImageBackground style={styles.image} source={ SECONDARY_BG}>
-            <Text style={{color: "white", fontSize: 24, marginBottom: 15, marginTop: "15%"}}>Chosse playlists to add to</Text>
+        <ImageBackground style={styles.image} source={SECONDARY_BG}>
+            <Text style={{color: "white", fontSize: 25, marginBottom: 15, marginTop: "15%", fontWeight: 'bold', marginLeft: "8%"}}>Chosse playlists to add to</Text>
             <TextInput 
-                style={{flexDirection: "row", 
-                alignItems: 'center', 
-                fontSize: 15,
-                fontWeight: 'bold',
-                fontStyle: 'normal',
-                justifyContent: 'space-evenly', 
-                backgroundColor: "#2a2a2b", 
-                color: "white",
-                height: 45, 
-                width: "94%", 
-                borderRadius: 20, 
-                marginLeft: "3%"}}
+               style={{flexDirection: "row", 
+               alignItems: 'center', 
+               fontSize: 15,
+               fontWeight: 'bold',
+               fontStyle: 'normal',
+               justifyContent: 'space-evenly', 
+               backgroundColor: "#2a2a2b", 
+               color: "white",
+               height: 45, 
+               width: "94%", 
+               borderRadius: 15, 
+               marginLeft: "3%",
+               paddingLeft: 15}}
                 placeholder={'Search your playlists'}
+                placeholderTextColor={"#adacb0"}
                 onChangeText={(text) => setSearchText(text)}
                 value={searchText}
                 //onSubmitEditing={() => fetchPlaylists(searchText)}

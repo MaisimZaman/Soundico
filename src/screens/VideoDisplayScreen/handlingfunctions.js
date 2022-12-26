@@ -1,6 +1,29 @@
 import ytdl from "react-native-ytdl"
 import {db, auth} from '../../../services/firebase'
 import firebase from 'firebase'
+import TrackPlayer from "react-native-track-player";
+
+export async function transcribeAudio(audioFile) {
+    const apiKey = 'YOUR_API_KEY';
+    const response = await fetch('https://speech.googleapis.com/v1/speech:recognize?key=' + apiKey, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        'config': {
+          'encoding': 'LINEAR16',
+          'sampleRateHertz': 44100,
+          'languageCode': 'en-US',
+        },
+        'audio': {
+          'content': audioFile,
+        },
+      }),
+    });
+    const data = await response.json();
+    return data.results[0].alternatives[0].transcript;
+  }
 
 
 export function msToTime(duration) {
@@ -26,28 +49,30 @@ export const playIcon = "https://iconsplace.com/wp-content/uploads/_icons/f0f0f0
 
 
 
-export function skipFowardTrack(downloadData, setNewSongData, currentID, isRecently, isPlaylist){
+export function skipFowardTrack(downloadData, setNewSongData, currentID, isRecently, isPlaylist, thisIndex){
     const index = downloadData.findIndex(object => {
       return object.id === currentID[0];
     });
+
+    //TrackPlayer.reset()
     
 
-    if (index < downloadData.length){
+    if (thisIndex < downloadData.length){
 
        if (isRecently){
-        const forwardThumbNail =  downloadData[index + 1].data.videoThumbNail
+        const forwardThumbNail =  downloadData[thisIndex + 1].data.videoThumbNail
         const forwardAudioURI = null
-        const forwardTitle = downloadData[index + 1].data.videoTitle
-        const forwardID = [downloadData[index + 1].id,  downloadData[index + 1].data.videoId]
-        const forwardArtist = downloadData[index + 1].data.videoArtist
+        const forwardTitle = downloadData[thisIndex + 1].data.videoTitle
+        const forwardID = [downloadData[thisIndex + 1].id,  downloadData[thisIndex + 1].data.videoId]
+        const forwardArtist = downloadData[thisIndex + 1].data.videoArtist
         setNewSongData(forwardThumbNail, forwardAudioURI, forwardTitle, forwardID, forwardArtist)
        }
        else {
-        const forwardThumbNail =  downloadData[index + 1].snippet.thumbnails.high.url
+        const forwardThumbNail =  downloadData[thisIndex + 1].snippet.thumbnails.high.url
         const forwardAudioURI = null
-        const forwardTitle = downloadData[index + 1].snippet.title
-        const forwardID = [downloadData[index + 1].id, isPlaylist ? downloadData[index + 1].snippet.resourceId.videoId : downloadData[index + 1].id.videoId]
-        const forwardArtist = downloadData[index + 1].snippet.channelTitle
+        const forwardTitle = downloadData[thisIndex + 1].snippet.title
+        const forwardID = [downloadData[thisIndex + 1].id, isPlaylist ? downloadData[thisIndex + 1].snippet.resourceId.videoId : downloadData[thisIndex + 1].id.videoId]
+        const forwardArtist = downloadData[thisIndex + 1].snippet.channelTitle
         setNewSongData(forwardThumbNail, forwardAudioURI, forwardTitle, forwardID, forwardArtist)
        }
     
@@ -62,27 +87,31 @@ export function skipFowardTrack(downloadData, setNewSongData, currentID, isRecen
   }
 
 
-export function skipBackwardTrack(downloadData, setNewSongData, currentID, isRecently, isPlaylist){
+export function skipBackwardTrack(downloadData, setNewSongData, currentID, isRecently, isPlaylist, thisIndex){
     const index = downloadData.findIndex(object => {
         return object.id === currentID[0];
     });
+
+    console.log(thisIndex)
+
+    //TrackPlayer.reset()
     
-    if (index >= 0){
+    if (thisIndex >= 0){
         if (isRecently){
-            const backwardThumbNail =  downloadData[index - 1].data.videoThumbNail
+            const backwardThumbNail =  downloadData[thisIndex - 1].data.videoThumbNail
             const backwardAudioURI = null
-            const backwardTitle = downloadData[index - 1].data.videoTitle
-            const backwardID = [downloadData[index - 1].id, downloadData[index - 1].data.videoId]
-            const backwardArtist = downloadData[index - 1].data.videoArtist
+            const backwardTitle = downloadData[thisIndex - 1].data.videoTitle
+            const backwardID = [downloadData[thisIndex - 1].id, downloadData[thisIndex - 1].data.videoId]
+            const backwardArtist = downloadData[thisIndex - 1].data.videoArtist
             setNewSongData(backwardThumbNail, backwardAudioURI, backwardTitle, backwardID, backwardArtist)
         
         }
            else {
-            const backwardThumbNail =  downloadData[index - 1].snippet.thumbnails.high.url
+            const backwardThumbNail =  downloadData[thisIndex - 1].snippet.thumbnails.high.url
             const backwardAudioURI = null
-            const backwardTitle = downloadData[index - 1].snippet.title
-            const backwardID = [downloadData[index - 1].id, isPlaylist ? downloadData[index - 1].snippet.resourceId.videoId : downloadData[index - 1].id.videoId]
-            const backwardArtist = downloadData[index - 1].snippet.channelTitle
+            const backwardTitle = downloadData[thisIndex - 1].snippet.title
+            const backwardID = [downloadData[thisIndex - 1].id, isPlaylist ? downloadData[thisIndex - 1].snippet.resourceId.videoId : downloadData[thisIndex - 1].id.videoId]
+            const backwardArtist = downloadData[thisIndex - 1].snippet.channelTitle
             setNewSongData(backwardThumbNail, backwardAudioURI, backwardTitle, backwardID, backwardArtist)
            }
         
@@ -92,73 +121,69 @@ export function skipBackwardTrack(downloadData, setNewSongData, currentID, isRec
 }
 
 export async function downloadAudioOrVideo(isVideo=false, isPodCast=false, saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing, currentAudioURI){
-   if (!downloadProcessing){
-        let childPath;
-        let theDownload = currentAudioURI;
 
+    let childPath;
+    let theDownload = currentAudioURI;
+
+   
+
+    if (isVideo){
+
+        console.log(theDownload)
+        childPath = `videoDownloads/${auth.currentUser.uid}/${Math.random().toString(36)}`;
+    }
+    else {
         
-        if (isVideo){
-
-            console.log(theDownload)
-            childPath = `videoDownloads/${auth.currentUser.uid}/${Math.random().toString(36)}`;
-        }
-        else {
-            
-            console.log(theDownload)
-            childPath = `audio/${auth.currentUser.uid}/${Math.random().toString(36)}`;
-        }
-
-        //saveAudioData(theDownload);
-
-      
+        console.log(theDownload)
+        childPath = `audio/${auth.currentUser.uid}/${Math.random().toString(36)}`;
+    }
 
     
-      
-        const response = await fetch(theDownload);
-        const blob = await response.blob();
 
-        
+    const response = await fetch(theDownload);
+    const blob = await response.blob();
 
-        const task = firebase
-            .storage()
-            .ref()
-            .child(childPath)
-            .put(blob);
+    const task = firebase
+        .storage()
+        .ref()
+        .child(childPath)
+        .put(blob);
 
-        const taskProgress = snapshot => {
-            console.log(`transferred: ${snapshot.bytesTransferred}`)
-        }
-        const taskCompleted = () => {
-            task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                    console.log("This happened")
+    const taskProgress = snapshot => {
+        console.log(`transferred: ${snapshot.bytesTransferred}`)
+    }
+    const taskCompleted = () => {
+        task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                console.log("This happened")
 
-                    if (isVideo){
-                        setDownloadProcessing(true)
-                        saveVideoData(snapshot)
-                
+                if (isVideo){
+                    setDownloadProcessing(true)
+                    saveVideoData(snapshot)
             
+        
+                } else {
+                    if (isPodCast){
+                        setDownloadProcessing(true)
+                        saveAudioPodCastData(snapshot)
+                        setModalVisible(false)
                     } else {
-                        if (isPodCast){
-                            setDownloadProcessing(true)
-                            saveAudioPodCastData(snapshot)
-                            setModalVisible(false)
-                        } else {
-                            setDownloadProcessing(true)
-                            saveAudioData(snapshot);
-                            
-                        }
+                        setDownloadProcessing(true)
+                        saveAudioData(snapshot);
                         
-                    }  
-                
-            })
-        }
-        const taskError = snapshot => {
-            console.log(snapshot)
-        }
+                    }
+                    
+                }  
+            
+        })
+    }
+    const taskError = snapshot => {
+        console.log(snapshot)
+    }
 
-        task.on("state_changed", taskProgress, taskError, taskCompleted);
+    task.on("state_changed", taskProgress, taskError, taskCompleted);
+
        
-   }
+   
         
 }
 

@@ -10,12 +10,12 @@ import firebase from 'firebase';
 
 export default function AddToPlaylist(props) {
 
-    const {playListTitle} = props.route.params;
+    const {playListTitle, playlistId, allPlayListVideos=[]} = props.route.params;
     const [searchText, setSearchText] = useState('')
     const [allMusic, setAllMusic] = useState([])
     const [selectedDownloads, setSelectedDownloads] = useState([])
     
-    console.log(allMusic.length)
+    console.log(allPlayListVideos)
 
     useEffect(() => {
         let unsubscribe = db.collection('audioDownloads')
@@ -52,6 +52,20 @@ export default function AddToPlaylist(props) {
             setSelectedDownloads(selectedDownloads => [...selectedDownloads, item])
         }
         
+    }
+
+    function addToPlaylist(){
+        db.collection('playlists')
+            .doc(auth.currentUser.uid)
+            .collection("userPlaylists")
+            .doc(playlistId)
+            .update({
+                playlistVideos: [...allPlayListVideos, ...selectedDownloads]
+
+            })
+        
+        props.navigation.goBack()
+            
     }
 
 
@@ -124,12 +138,10 @@ export default function AddToPlaylist(props) {
     return (
         <ImageBackground style={styles.image} source={ SECONDARY_BG}>
             <View style={{marginTop: 120, marginBottom: 100}}>
-            <Text style={{color: "white", fontSize: 24, marginBottom: 15, marginTop: 15}}>Add songs to {playListTitle}</Text>
+            <Text style={{color: "white", fontSize: 24, marginBottom: 15, marginTop: "-5%", marginLeft: "5%", fontWeight: 'bold'}}>Add songs to {playListTitle}</Text>
             <TextInput 
                 style={{flexDirection: "row", 
                 alignItems: 'center', 
-                
-                
                 fontSize: 15,
                 fontWeight: 'bold',
                 fontStyle: 'normal',
@@ -138,8 +150,10 @@ export default function AddToPlaylist(props) {
                 color: "white",
                 height: 45, 
                 width: "94%", 
-                borderRadius: 20, 
-                marginLeft: "3%"}}
+                borderRadius: 15, 
+                marginLeft: "3%",
+                paddingLeft: 15}}
+                placeholderTextColor={"#adacb0"}
                 placeholder={'Search for Music to add'}
                 onChangeText={(text) => setSearchText(text)}
                 value={searchText}
@@ -170,8 +184,8 @@ export default function AddToPlaylist(props) {
                         borderRadius: 30,
                         backgroundColor: "#054c85"
                     }}
-                    label="Create this playlist"
-                    onPress={buildPlaylist}
+                    label={allPlayListVideos == [] ? "Create this playlist" : `add to ${playListTitle}`}
+                    onPress={allPlayListVideos == [] ? buildPlaylist : addToPlaylist}
                     disabled={selectedDownloads.length == 0}
                     
                 />

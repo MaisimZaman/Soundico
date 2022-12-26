@@ -10,7 +10,7 @@ import { colors, device, func, gStyle } from './constants/index';
 import ModalHeader from './ModalHeader';
 import TouchIcon from './TouchIcon';
 import { useDispatch } from 'react-redux';
-import { setThumbNail,  setAudioURI, setTitle, setAudioID, setDownloadData,  setSoundStatus, setIsAudioOnly, setAuthor, selectAuthor, selectPaused, setPaused} from '../../../services/slices/navSlice';
+import { setThumbNail,  setAudioURI, setTitle, setAudioID, setDownloadData,  setSoundStatus, setIsAudioOnly, setAuthor, selectAuthor, selectPaused, setPaused, setPlaylistName} from '../../../services/slices/navSlice';
 import { useSelector } from 'react-redux';
 import { selectThumbNail, selectAudioURI, selectTitle, selectAudioID,  selectSoundStatus, selectDownloadData} from '../../../services/slices/navSlice';
 import { BG_IMAGE, SECONDARY_BG } from '../../services/backgroundImage';
@@ -90,13 +90,6 @@ export default function MusicPlayer(props){
     const timePast = msToTime(progress.position != 0 ? progress.position : 0);
     const timeLeft = msToTime(progress.position != 0 ? progress.duration - progress.position : 0);
 
-  
-
-   
-   
-    
-
-
     useEffect(() => {
       async function fetchFunc(){
       
@@ -137,6 +130,7 @@ export default function MusicPlayer(props){
       console.log(paused)
 
       useEffect(() => {
+        dispatch(setPlaylistName(playListName))
         if (state != null){
           if (state == State.Playing && paused == true){
            
@@ -210,9 +204,7 @@ export default function MusicPlayer(props){
   });
 
 
-    
- 
-
+  
     useEffect(() => { 
       setup()
       setUpTrackPlayer()
@@ -220,14 +212,7 @@ export default function MusicPlayer(props){
       //return () => TrackPlayer.destroy()
     }, [currentDownloadData])
   
-  
 
-
-   
-    
-    
-
-  
     useEffect(() => {
       async function run(){
       if (progress.duration != undefined){
@@ -277,13 +262,7 @@ export default function MusicPlayer(props){
       async function main(){
         
         if (paused == false){
-          
   
-  
-           //await sound.playAsync();
-           
-          
-          //await TrackPlayer.seekTo(progress.position); 
           await  TrackPlayer.play();
         }
         else if (paused == true){
@@ -546,11 +525,13 @@ const styles = StyleSheet.create({
   },
   song: {
     ...gStyle.textSpotifyBold24,
-    color: colors.white
+    color: colors.white,
+    fontWeight: 'bold'
   },
   artist: {
     ...gStyle.textSpotify18,
-    color: colors.greyInactive
+    color: colors.greyInactive,
+    fontWeight: 'bold'
   },
   containerFavorite: {
     alignItems: 'flex-end',

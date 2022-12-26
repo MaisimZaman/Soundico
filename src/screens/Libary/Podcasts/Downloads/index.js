@@ -14,23 +14,22 @@ import {
 import {  AlbumMessager } from '../../Music/Local/styles';
 import { TextButton } from '../../../ProfileScreen/ProfileComponents';
 import { auth, db } from '../../../../../services/firebase';
+import TouchIcon from '../../../MusicPlayer/TouchIcon';
+import {  Ionicons } from '@expo/vector-icons';
 import { BG_IMAGE } from '../../../../services/backgroundImage';
 import { selectAudioURI } from '../../../../../services/slices/navSlice';
+import { pickedColour } from '../../../Home/pickedHeaderColour';
 
 
 
 export default function Downloads({navigation}) {
 
   const [downloadData, setDownloadData] = useState([]);
-  const [page, setPage] = useState(downloadData.length+20)
+  const [page, setPage] = useState(downloadData.length-1)
   //const [modalVisible, setModalVisible] = useState(false);
 
  
   //console.warn(downloadData.length)
-
-  
-
-  
 
   useEffect(() => {
     function maindownloadLoad(){
@@ -60,6 +59,22 @@ export default function Downloads({navigation}) {
 
 
   //console.warn(downloadData.length)
+
+
+  function addPlaylistIcon(){
+    return (
+      <>
+      <Ionicons name="add" onPress={() => navigation.navigate('NamePlaylist')}
+      
+      style={{marginLeft: "5%"}}  
+      size={50} color="white" />
+      <Text
+      onPress={() => navigation.navigate('NamePlaylist') }
+      style={{color: "white", fontSize: 20, textAlign: 'center', fontWeight: 'bold', marginTop: '-10%', marginLeft: "-15%", marginBottom: "3%"}}>Create a Playlist?</Text>
+      </>
+      
+    )
+  }
 
   function renderBody(){
 
@@ -123,17 +138,7 @@ export default function Downloads({navigation}) {
   
   return (
     <>
-      <TextButton
-          contentContainerStyle={{
-              height: 40,
-              marginTop: 10,
-              borderRadius: 30,
-              backgroundColor: "#054c85"
-          }}
-          label="Create a playlist?"
-        
-          onPress={() => navigation.navigate('NamePlaylist')}
-        />
+      {addPlaylistIcon()}
       {renderBody()}
      
     </>

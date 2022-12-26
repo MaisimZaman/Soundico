@@ -10,6 +10,7 @@ export default {
     backgroundColor: "#1c1c26",
     flex: 1,
     
+    
   },
   containerAbsolute: {
     position: 'absolute',

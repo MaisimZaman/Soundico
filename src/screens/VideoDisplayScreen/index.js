@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, Button, TouchableOpacity, Modal, Alert, Pressable, ImageBackground, Image, ScrollView, Linking, Platform} from 'react-native'
+import { StyleSheet, Text, View, Dimensions, Button, TouchableOpacity, Modal, Alert, Pressable, ImageBackground, Image, ScrollView, Vibration} from 'react-native'
 import React, {useState, useEffect, useRef} from 'react';
 import ytdl from "react-native-ytdl"
 import {db, auth} from '../../../services/firebase'
@@ -24,6 +24,8 @@ import { API_KEY } from '../Search/YoutubeApi';
 import Axios from 'axios';
 import TrackPlayer, {Capability, useProgress, Event, useTrackPlayerEvents, State} from 'react-native-track-player';
 // components
+
+import LinearGradient from '../TopicContent/LinearGradient'
 import { 
   setIsAudioOnly, 
   setAudioID, 
@@ -45,7 +47,10 @@ import {
   setPaused,
   selectPaused,
   setQueueList,
-  selectQueueList
+  selectQueueList,
+  setTheIndex,
+  selectIndex,
+  selectAccentColour
 } from '../../../services/slices/navSlice';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -75,6 +80,7 @@ export default function VideoDisplay(props) {
     
     } = props.route.params;
     //const currentVideoID = useSelector(selectAudioID)
+    const accentColour = useSelector(selectAccentColour)
     const [currentVideoID, setCurrentVideoID] = useState([])
     const currentThumbnail = useSelector(selectThumbNail)
     const currentTitle = useSelector(selectTitle)
@@ -94,7 +100,8 @@ export default function VideoDisplay(props) {
     const [favorited, setFavourited] = useState(false)
     const isPlaying = useSelector(selectPaused)
     const iconPlay = !isPlaying ?   pauseIcon : playIcon;
-    const REVIEWER_ACCOUNT = "13WiiEF5wRRlKwpMEHx5hCFTlPq1"
+    const thisIndex = useSelector(selectIndex)
+    const REVIEWER_ACCOUNT = "fV4VqIJRb8MkjgXoqEyBsbamLBk2"
     const [video, setVideoRef] = useState(null)
     const progress = useProgress()
     const timePast = msToTime(progress.position != 0 ? progress.position : 0);
@@ -107,21 +114,16 @@ export default function VideoDisplay(props) {
     
   
     if (downloadData != "VideoLink"){
-      index = downloadData.findIndex(object => {
+       index = downloadData.findIndex(object => {
           return object.id === currentVideoID[0];
         
       });
     }
 
-   
     
 
-
-    //console.log(progress.position)
-    //console.log(status.positionMillis)
-
    
-
+  
 
     useEffect(() => {
       async function checkIsPlaying(){
@@ -171,14 +173,6 @@ export default function VideoDisplay(props) {
       //console.log(progress.position - seekTime < 1)
     }, [progress])
 
-    //console.log(downloadData)
-
-
-    //console.log(currentThumbnail)
-
-    //console.log(currentQueueList)
-
-
 
     useEffect(() => {
       async function findThis(){
@@ -196,14 +190,10 @@ export default function VideoDisplay(props) {
       findThis()
     },[])
 
-    
-
-  
-
- 
 
     const setUpTrackPlayer = async () => {
       await TrackPlayer.reset()
+      dispatch(setTheIndex(index))
       var track = {
 
         url: playingVideo, // Load media from the network
@@ -212,6 +202,8 @@ export default function VideoDisplay(props) {
         artwork: currentThumbnail, // Load artwork from the network
         duration: progress.duration // Duration in seconds
       };
+
+      
 
       //}
       try {
@@ -251,13 +243,23 @@ export default function VideoDisplay(props) {
     //console.log(currentQueueList)
     //console.log(playingVideo == currentQueueList[currentQueueList.length-1])
 
+    
+
     useEffect(() => { 
 
-      if (currentQueueList.length > 1){
+      if (playingVideo != null){
+        dispatch(setQueueList([...currentQueueList, playingVideo]))
+       }
+
+      if (currentQueueList.length > 0){
         if (playingVideo != currentQueueList[currentQueueList.length-1]){
           setup()
           setUpTrackPlayer()
-        }
+        } 
+      } else {
+        setup()
+        setUpTrackPlayer()
+        
       }
 
     
@@ -303,11 +305,10 @@ export default function VideoDisplay(props) {
      dispatch(setDownloadData(downloadData))
      dispatch(setChannelId(channelId))
      dispatch(setIsRecently(isRecently))
-     if (playingVideo != null){
-      dispatch(setQueueList([...currentQueueList, playingVideo]))
-     }
      
-   }, [videoTitle, playingVideo])
+   }, [])
+
+   
 
     useEffect(() => {
       Axios.get(`https://youtube.googleapis.com/youtube/v3/channels?part=snippet&id=${currentChannelId}&key=${API_KEY}`)
@@ -319,6 +320,8 @@ export default function VideoDisplay(props) {
       })
     }, [currentVideoID, currentTitle, videoId])
 
+
+    
 
     useEffect(() => {
 
@@ -333,11 +336,11 @@ export default function VideoDisplay(props) {
 
             let info = await ytdl.getInfo(currentVideoID[1]);
             let audioFormats = ytdl.filterFormats(info.formats, 'audioandvideo');
-            //setPlayingVideo(audioFormats[0].url);
+          
 
-            //console.log("audio formats under here")
-            //console.log(audioFormats)
             dispatch(setAudioURI(audioFormats[0].url))
+     
+           
             video.current.setStatusAsync({isMuted: true})
           
       
@@ -353,6 +356,9 @@ export default function VideoDisplay(props) {
         //main()
         
     }, [currentVideoID, currentTitle, videoId, playingVideo])
+
+
+
 
    
     
@@ -375,12 +381,16 @@ export default function VideoDisplay(props) {
         
     },[])
 
+    async function showAirplayOptions() {
+      
+    }
 
-    
+
+
     
 
     function renderVideoPlayer(){
-      const REVIEWER_ACCOUNT = "13WiiEF5wRRlKwpMEHx5hCFTlPq1"
+      const REVIEWER_ACCOUNT = "fV4VqIJRb8MkjgXoqEyBsbamLBk2"
       if (auth.currentUser.uid == REVIEWER_ACCOUNT){
         return (
           <>
@@ -403,6 +413,27 @@ export default function VideoDisplay(props) {
         return (
           <Image style={styles.video} source={{uri: currentThumbnail}}></Image>
         )
+      } else if (progress.duration == 0){
+        return (
+          <>
+            <Video
+          ref={ref => setVideoRef(ref)}
+          style={styles.video}
+          //playInBackground={true}
+          pictureInPicture={false}
+          allowsExternalPlayback={false}
+          muted={true}
+          //paused={isPlaying}
+          source={require('./../../../assets/loading.mp4')}
+          //useNativeControls
+          resizeMode="contain"
+          isLooping={true}
+      
+          
+        />
+        
+        </>
+        )
       }
 
       
@@ -416,6 +447,7 @@ export default function VideoDisplay(props) {
           //onSeek={data => setSeekTime(data.currentTime)}
           onProgress={data => setSeekTime(data.currentTime)}
           allowsExternalPlayback={true}
+          pictureInPicture={true}
           muted={true}
           paused={isPlaying}
           source={{uri: playingVideo}}
@@ -539,6 +571,7 @@ export default function VideoDisplay(props) {
 
     async function togglePlayVideo(){
       dispatch(setPaused(!isPlaying))
+      
     
     }
 
@@ -547,11 +580,17 @@ export default function VideoDisplay(props) {
 
      return (
         <View style={gStyle.container}>
-        <ImageBackground source={SECONDARY_BG}  style={styles.bgImage}>
+        <ImageBackground source={BG_IMAGE}  style={styles.bgImage}>
+
+        <View style={styles.containerLinear}>
+    <LinearGradient fill={accentColour} isVideo={true}/>
+    
+    </View>
         <ModalHeader
         video={true}
           left={<Feather  color={"white"} name="chevron-down" />}
           leftPress={() => {props.navigation.goBack()}}
+          style={{marginTop: 25}}
           right={ <Feather   onPress={() => props.navigation.navigate('MoreOptions', {
             albumTitle: currentTitle,
             albumCover: currentThumbnail,
@@ -621,8 +660,8 @@ export default function VideoDisplay(props) {
               <TouchIcon
                 icon={<FontAwesome color={colors.white} name="step-backward" />}
                 iconSize={50}
-                disabled={index == 0}
-                onPress={() => skipBackwardTrack(downloadData, setNewSongData, currentVideoID, isRecently, isPlaylist)}
+                disabled={thisIndex == 0}
+                onPress={() => skipBackwardTrack(downloadData, setNewSongData, currentVideoID, isRecently, isPlaylist, thisIndex)}
               />
               
               <View style={gStyle.pH3}>
@@ -639,8 +678,8 @@ export default function VideoDisplay(props) {
               <TouchIcon
                 icon={<FontAwesome color={colors.white} name="step-forward" />}
                 iconSize={50}
-                disabled={index == downloadData.length-1}
-                onPress={() => skipFowardTrack(downloadData,setNewSongData, currentVideoID, isRecently, isPlaylist)}
+                disabled={thisIndex == downloadData.length-1}
+                onPress={() => skipFowardTrack(downloadData,setNewSongData, currentVideoID, isRecently, isPlaylist, thisIndex)}
               />
              
             </View>
@@ -653,7 +692,7 @@ export default function VideoDisplay(props) {
           <View style={styles.containerBottom}>
             <TouchIcon
               icon={<Feather color={colors.greyLight} name="speaker" />}
-              onPress={() => null}
+              onPress={showAirplayOptions}
             />
             <TouchIcon
               icon={

@@ -21,10 +21,11 @@ import { COLORS, FONTS, SIZES, images, icons } from "./constants";
 import * as firebase from 'firebase';
 import {auth, db} from '../../../services/firebase'
 import { BG_IMAGE, SECONDARY_BG } from '../../services/backgroundImage';
-//import * as Google from 'expo-auth-session/providers/google';
-
+//import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import * as Crypto from 'expo-crypto';
+
+
 
 
 
@@ -40,8 +41,6 @@ function Login({ navigation }){
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [showPass, setShowPass] = useState(false)
-    const [userInfo, setUserInfo] = useState(null)
-    
     
     useEffect(() => {
 
@@ -59,12 +58,6 @@ function Login({ navigation }){
     }, [])
 
     
-
-    
-
-    
-    
-
     function signIn(){
        auth.signInWithEmailAndPassword(username, password)
         .catch(error => alert(error))
@@ -74,11 +67,10 @@ function Login({ navigation }){
     }
 
     async function googleSignIn(){
-        
-  
+       
     }
 
-    console.log(userInfo)
+  
 
     async function appleSignIn(){
         const nonce = Math.random().toString(36).substring(2, 10);
@@ -174,7 +166,7 @@ function Login({ navigation }){
             {/* Social Logins */}
                     <View
                     style={{
-                        flexDirection: 'row',
+                        //flexDirection: '',
                         height: 60,
                         marginTop: SIZES.radius
                     }}
@@ -190,14 +182,17 @@ function Login({ navigation }){
                             marginRight: SIZES.padding,
                             marginLeft: SIZES.padding,
                             borderRadius: 30,
-                            backgroundColor: COLORS.additionalColor9
+                            backgroundColor: COLORS.additionalColor9,
+                          
                         }}
                         iconStyle={{
                             width: 30,
                             height: 30,
                         }}
                     />
+                    
                 </View>
+                
                 </>
                 )
             }
@@ -224,7 +219,7 @@ function Login({ navigation }){
                     style={{
                         flexDirection: 'row',
                         justifyContent: 'center',
-                        marginTop: SIZES.padding
+                        marginTop: SIZES.padding,
                     }}
                 >
                     <Text

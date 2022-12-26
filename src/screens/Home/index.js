@@ -22,7 +22,9 @@ import {
 } from 'expo-ads-admob';
 import { AD_UNIT_ID } from '../VideoDisplayScreen/AddUnitKey';
 import TrackPlayer, {Capability, useProgress, Event, useTrackPlayerEvents, State} from 'react-native-track-player';
-
+import { pickedColour } from './pickedHeaderColour';
+import { useSelector } from 'react-redux';
+import { selectAccentColour } from '../../../services/slices/navSlice';
 
 
 
@@ -35,7 +37,7 @@ export default function Home({navigation}) {
   const [popularPlaylists, setPopularPlaylists] = useState([]);
   const [yourPlaylists, setYourPlaylists] = useState([]);
   const [recordList, setRecordList] = useState([])
-  const headerColours = ["#0327a6", "#5e0002", "#555f66", "#04631d"]
+  const accentColour = useSelector(selectAccentColour)
 
   useEffect(() => {
     async function run(){
@@ -76,7 +78,7 @@ export default function Home({navigation}) {
 
   useEffect(() => {
     async function showAd(){
-      const REVIEWER_ACCOUNT = "13WiiEF5wRRlKwpMEHx5hCFTlPq1"
+      const REVIEWER_ACCOUNT = "fV4VqIJRb8MkjgXoqEyBsbamLBk2"
 
 
       
@@ -125,20 +127,42 @@ export default function Home({navigation}) {
 
 
   
-
+  async function getTrendingSongs() {
+    // Set the API key as a query parameter
+    const params = {
+      key: API_KEY,
+      chart: 'mostPopular',
+      part: 'snippet',
+      maxResults: 10,  // Set the maximum number of results you want to retrieve
+      regionCode: 'US', 
+      videoCategoryId: '10', 
+      videoDefinition: 'high',  // Set the video definition to high to retrieve shorter videos
+      videoDuration: 'short',
+    };
+  
+    try {
+      // Use the `get` method of the Axios instance to make the API request
+      const response = await Axios.get('https://www.googleapis.com/youtube/v3/videos', { params });
+      console.log(response.data.items);
+      setPodcasts(response.data.items)
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
 
   useEffect(() => {
 
-    const searches = ["Car BASS Music","Car BASS Music", "dupstep music"]
+    const searches = ["Car BASS Music","Car BASS Music",  "tiktok music"]
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
-    Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText}&key=${API_KEY}`)
+    Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=15&q=${searchText}&key=${API_KEY}`)
       .then(res => {
         const podCastData = res.data.items;
         setPodcasts(podCastData)
         
         
     })
+    //getTrendingSongs()
 
   }, [navigation])
 
@@ -146,7 +170,7 @@ export default function Home({navigation}) {
     let searches;
 
     if (recordList.length == 0){
-      searches = ["Space", "Car bass", "aviation short", "clasical", "Adventure"]
+      searches = ["Study Music", "Car bass", "beethoven", "clasical", "Adventure"]
     } else {
       searches = recordList
     }
@@ -261,7 +285,7 @@ export default function Home({navigation}) {
     <Container>
   
     <View style={styles.containerLinear}>
-    <LinearGradient fill={headerColours[Math.floor(Math.random() * (headerColours.length))]} />
+    <LinearGradient fill={accentColour} isVideo={false}/>
     
     </View>
     
@@ -272,7 +296,7 @@ export default function Home({navigation}) {
             name="cog"
             size={25}
             color="#acacac"
-            style={{ alignSelf: 'flex-end', marginTop: 20, marginRight: 10 }}
+            style={{ alignSelf: 'flex-end', marginTop: "10%", marginRight: 10 }}
           />
         
        

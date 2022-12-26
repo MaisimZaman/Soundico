@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   text: {
       fontSize: 12,
       color: 'white',
-      fontWeight: '600',
+      fontWeight: 'bold',
       alignSelf: 'center',
       marginTop: 8,
       flex: 1,

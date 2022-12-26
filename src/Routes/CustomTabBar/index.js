@@ -6,9 +6,12 @@ import Player from '../../components/Player';
 import { useSelector } from 'react-redux';
 import { selectAudioURI } from '../../../services/slices/navSlice';
 
+
 export default function CustomTabBar(props) {
   audioExists = useSelector(selectAudioURI)
+  
 
+ 
   function renderPlayer(){
     if (audioExists != null){
       return (

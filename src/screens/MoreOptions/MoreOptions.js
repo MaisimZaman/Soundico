@@ -8,7 +8,8 @@ import {
     ScrollView,
     StyleSheet,
     Image,
-    ImageBackground
+    ImageBackground,
+    Vibration
   } from 'react-native';
 import { BG_IMAGE, SECONDARY_BG } from '../../services/backgroundImage'
 import PropTypes from 'prop-types'
@@ -25,7 +26,7 @@ import {
 
 export default function MoreOptions(props) {
 
-  const REVIEWER_ACCOUNT = "13WiiEF5wRRlKwpMEHx5hCFTlPq1"
+  const REVIEWER_ACCOUNT = "fV4VqIJRb8MkjgXoqEyBsbamLBk2"
 
    const SAVED_AD_UNIT_ID = Platform.OS == 'android' ?  'ca-app-pub-1719409113112551/1535251716' : 'ca-app-pub-1719409113112551/3969843367'
 
@@ -40,14 +41,24 @@ export default function MoreOptions(props) {
     } = props.route.params;
 
     const [showMusicBar, setShowMusicBar] = useState(false);
+    const [isAdReady, setIsAdReady] = useState(false);
 
-    async function loadAd(){
-      const REWARD_AD_ID = "ca-app-pub-9963824300761164/6065523003"
-      await AdMobRewarded.setAdUnitID(REWARD_AD_ID)
-      await AdMobRewarded.requestAdAsync()
-    }
+    console.log(isAdReady)
 
-    loadAd()
+    useEffect(() => {
+      const REWARD_AD_ID = "ca-app-pub-1782248976042834/5893029939"
+      AdMobRewarded.setAdUnitID(REWARD_AD_ID);
+    }, [isAdReady])
+
+    AdMobRewarded.addEventListener('rewardedVideoDidLoad', () => {
+      console.log("This happened")
+      setIsAdReady(true);
+    });
+
+    const showAd = () => {
+      AdMobRewarded.showAdAsync();
+    };
+
 
     
 
@@ -65,9 +76,9 @@ export default function MoreOptions(props) {
         }
         else if (item.id == 4) {
 
-            AdMobRewarded.showAdAsync()
+            showAd()
             downloadAudioOrVideo(false, false,  saveVideoData,saveAudioData, saveAudioPodCastData, currentVideoID, downloadProcessing, setDownloadProcessing, currentAudioURI)
-
+            Vibration.vibrate(20); 
             //props.navigation.goBack()
             //saveAudioData()
         }

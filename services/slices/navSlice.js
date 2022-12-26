@@ -13,6 +13,9 @@ const initialState = {
     isRecently: false,
     paused: false,
     queueList: [],
+    theIndex: 0,
+    accentColour: "#3f4d63",
+    playListName: "Saved"
 
 
 }
@@ -57,6 +60,15 @@ export const navSlice = createSlice({
         setQueueList: (state, action) => {
             state.queueList = action.payload;
         },
+        setTheIndex: (state, action) => {
+            state.theIndex = action.payload;
+        },
+        setAccentColour: (state, action) => {
+            state.accentColour = action.payload;
+        },
+        setPlaylistName: (state, action) => {
+            state.playListName = action.payload;
+        },
        
         
     },
@@ -75,8 +87,10 @@ export const {
     setChannelId,
     setIsRecently,
     setPaused,
-    setQueueList
- 
+    setQueueList,
+    setTheIndex,
+    setAccentColour,
+    setPlaylistName
 
 } = navSlice.actions;
 
@@ -104,6 +118,12 @@ export const selectIsRecently = (state) => state.nav.isRecently
 export const selectPaused = (state) => state.nav.paused
 
 export const selectQueueList = (state) => state.nav.queueList
+
+export const selectIndex = (state) => state.nav.theIndex
+
+export const selectAccentColour = (state) => state.nav.accentColour
+
+export const selectPlayListName = (state) => state.nav.playListName
 
 const navReducer = navSlice.reducer
 
