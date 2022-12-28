@@ -4,6 +4,9 @@ import React, {useState, useEffect} from 'react'
 import { BG_IMAGE, SECONDARY_BG } from '../../services/backgroundImage';
 import { auth, db } from '../../../services/firebase';
 import { TextButton } from '../ProfileScreen/ProfileComponents';
+import { Feather } from '@expo/vector-icons' 
+import {colors, device, func, gStyle} from '../MusicPlayer/constants'
+import TouchIcon from "../MusicPlayer/TouchIcon";
 import firebase from 'firebase';
 
 
@@ -137,8 +140,15 @@ export default function AddToPlaylist(props) {
 
     return (
         <ImageBackground style={styles.image} source={ SECONDARY_BG}>
+            <View style={styles.header}>
+                <TouchIcon
+                    icon={<Feather color={colors.white} name="chevron-left" />}
+                    onPress={() => props.navigation.goBack()}
+                />
+
+            </View>
             <View style={{marginTop: 120, marginBottom: 100}}>
-            <Text style={{color: "white", fontSize: 24, marginBottom: 15, marginTop: "-5%", marginLeft: "5%", fontWeight: 'bold'}}>Add songs to {playListTitle}</Text>
+            <Text style={{color: "white", fontSize: 24, marginBottom: 15, marginTop: "15%", marginLeft: "15%", fontWeight: 'bold'}}>Add Songs to {playListTitle}</Text>
             <TextInput 
                 style={{flexDirection: "row", 
                 alignItems: 'center', 
@@ -179,12 +189,15 @@ export default function AddToPlaylist(props) {
         />
         <TextButton
                     contentContainerStyle={{
-                        height: 40,
+                        height: 55,
                         marginBottom: 20,
                         borderRadius: 30,
-                        backgroundColor: "#054c85"
+                        backgroundColor: "#054c85",
+                        marginBottom: "15%",
+                        marginLeft: 30,
+                        marginRight: 30
                     }}
-                    label={allPlayListVideos == [] ? "Create this playlist" : `add to ${playListTitle}`}
+                    label={allPlayListVideos == [] ? "Create this playlist" : `Add to ${playListTitle}`}
                     onPress={allPlayListVideos == [] ? buildPlaylist : addToPlaylist}
                     disabled={selectedDownloads.length == 0}
                     
@@ -198,5 +211,16 @@ const styles = StyleSheet.create({
     image: {
         flex: 1,
         justifyContent: "center"
+      },
+      header: {
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: 24,
+        paddingTop: device.iPhoneNotch ? 48 : 24,
+        position: 'absolute',
+        top: 0,
+        width: '200%',
+       
       },
 })

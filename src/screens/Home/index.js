@@ -153,7 +153,7 @@ export default function Home({navigation}) {
 
   useEffect(() => {
 
-    const searches = ["Car BASS Music","Car BASS Music",  "tiktok music"]
+    const searches = ["tiktok music", "Car BASS Music","Car BASS Music"]
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
     Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=15&q=${searchText}&key=${API_KEY}`)
       .then(res => {

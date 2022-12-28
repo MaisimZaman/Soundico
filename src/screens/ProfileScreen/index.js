@@ -9,6 +9,7 @@ import {
     ImageBackground,
     Modal,
     Pressable,
+    Vibration,
 
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -53,7 +54,7 @@ function ProfileScreen(props){
         });
     
         if (!result.canceled) {
-            const image = result.uri;
+            const image = result.assets[0].uri;
             const uri = image;
             const childPath = `profile-images/${auth.currentUser.uid}/${Math.random().toString(36)}`;
         
@@ -108,6 +109,7 @@ function ProfileScreen(props){
     }
 
     function deleteMyAccount(){
+        Vibration.vibrate(50)
         const user = firebase.auth().currentUser;
 
         user.delete().then(() => {
@@ -118,6 +120,8 @@ function ProfileScreen(props){
     }
 
     function RenderModal(){
+
+        Vibration.vibrate(50)
         
         return (
             <View style={styles.centeredView}>
@@ -291,6 +295,7 @@ function ProfileScreen(props){
 
     function renderProfileSection1() {
         function signOutUser(){
+            Vibration.vibrate(50)
             if (auth.currentUser.uid != null &&  auth.currentUser.uid != undefined){
               auth.signOut().then(() => {
                 TrackPlayer.destroy()

@@ -153,10 +153,13 @@ export default function AddToMadePlaylist(props){
         />
         <TextButton
                     contentContainerStyle={{
-                        height: 40,
+                        height: 50,
                         marginBottom: 20,
                         borderRadius: 30,
-                        backgroundColor: "#054c85"
+                        backgroundColor: "#054c85",
+                        marginBottom: "10%",
+                        marginLeft: 30,
+                        marginRight: 30
                     }}
                     label="Add Music to this playlist"
                     onPress={addToPlaylist}

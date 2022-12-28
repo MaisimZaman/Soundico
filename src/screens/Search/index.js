@@ -380,8 +380,11 @@ export default function Search({navigation}) {
   
 
   return (
-    <ImageBackground style={styles.image} source={  SECONDARY_BG                                                                                                                                                                                                                                                                                                                                                                                                                                 }>
+    <ImageBackground style={styles.image} source={BG_IMAGE                                                                                                                                                                                                                                                                                                                                                                                                                                 }>
+    <View style={styles.containerLinear}>
+    <LinearGradient fill={primaryColour} isVideo={false}/>
     
+    </View>
     <Container playerOn={audioURI == null ? false : true}>
     
       <Title   search={true}>
