@@ -208,6 +208,7 @@ function Login({ navigation }){
                         backgroundColor: "#177aeb"
                     }}
                     label="LOGIN"
+                    labelStyle={{fontWeight: 'bold'}}
                     onPress={signIn}
                 />
 
@@ -278,7 +279,8 @@ function Login({ navigation }){
                     marginBottom: 20,
                     textAlign: 'center',
                     ...FONTS.h1,
-                    color: "white"
+                    color: "white",
+                    fontWeight: 'bold'
                 }}
             >
                 Soundico 

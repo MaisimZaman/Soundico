@@ -18,8 +18,8 @@ export default function AddToPlaylist(props) {
     const [allMusic, setAllMusic] = useState([])
     const [selectedDownloads, setSelectedDownloads] = useState([])
     
-    console.log(allPlayListVideos)
-
+    console.log(allPlayListVideos.length)
+  
     useEffect(() => {
         let unsubscribe = db.collection('audioDownloads')
                           .doc(auth.currentUser.uid)
@@ -197,8 +197,8 @@ export default function AddToPlaylist(props) {
                         marginLeft: 30,
                         marginRight: 30
                     }}
-                    label={allPlayListVideos == [] ? "Create this playlist" : `Add to ${playListTitle}`}
-                    onPress={allPlayListVideos == [] ? buildPlaylist : addToPlaylist}
+                    label={allPlayListVideos.length == 0 ? "Create this playlist" : `Add to ${playListTitle}`}
+                    onPress={allPlayListVideos.length == 0 ? buildPlaylist : addToPlaylist}
                     disabled={selectedDownloads.length == 0}
                     
                 />

@@ -1,8 +1,8 @@
 import styled from 'styled-components/native';
 
 export const Container = styled.View`
-  width: ${(props) => (props.recentPlayed ? 140 : 135)}px;
-  height: ${(props) => (props.recentPlayed ? 150 : 160)}px;
+  width: ${(props) => (props.recentPlayed ? 140 :  165)}px;
+  height: ${(props) => (props.recentPlayed ? 150 : 165)}px;
  
   margin: 0px 10px 8px;
 `;
@@ -10,9 +10,9 @@ export const Container = styled.View`
 export const Image = styled.Image.attrs({
   resizeMode: 'cover',
 })`
-  height: 85%;
-  width: 100%;
-  border-radius: 15px;
+  height: ${(props) => (props.channel ? 10 : 85)}%;
+  width: 85%;
+  border-radius: ${(props) => (props.channel ? 100 : 15)}px;
   background: #80808055;
   align-self: center;
 `;

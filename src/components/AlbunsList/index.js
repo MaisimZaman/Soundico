@@ -13,7 +13,46 @@ export default function AlbunsList({
   photoAlbum,
   recentPlayed = false,
   podcast = false,
+  channel = false
 }) {
+
+  const styles = StyleSheet.create({
+    container: {
+        margin: 8,
+        marginLeft: 10
+    },
+  
+    album: {
+        width: D.width * (channel ? 4.2/13.5 : 4.2/11),
+        height: D.width *   4.2/14,
+        backgroundColor: 'white'
+    },
+  
+    img: {
+        flex: 1,
+        height: null,
+        width: null
+    },
+  
+    text: {
+        fontSize: 12,
+        color: 'white',
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        marginTop: 8,
+        flex: 1,
+        flexWrap: 'wrap'
+    },
+  
+    followers: {
+        fontSize: 8,
+        color: 'gray',
+        alignSelf: 'center',
+        fontWeight: '600',
+        marginTop: 4
+    }
+  
+  });
 
   function renderSpacedString(title){
 
@@ -32,11 +71,13 @@ export default function AlbunsList({
 
 
 
+
+ 
  
 
   return (
     <View style={styles.container}>
-            <Image source={{uri: photoAlbum}} style={[styles.album]} />
+            <Image channel={channel} source={{uri: photoAlbum}} style={[styles.album]} />
 
             <Text style={styles.text}>{renderSpacedString(name.slice(0, 40))}</Text>
           
@@ -46,62 +87,10 @@ export default function AlbunsList({
 
   
   
-  return (
-    <Container recentPlayed={recentPlayed}>
-     <View>
-      <Image  source={{ uri: photoAlbum }} />
-      </View>
-
   
 
 
-      <AlbumInformation>
-      {!podcast && <FontAwesome name="random" size={15} color="#acacac" />}
-    
-       
-        <Title podcast={podcast}>{name.length <= 17 ? name :  `${name.slice(0, 40)}________________`}</Title>
-        
-      
-        </AlbumInformation>
-      
-    </Container>
-  );
+  
+  
 }
 
-const styles = StyleSheet.create({
-  container: {
-      margin: 8,
-      marginLeft: 10
-  },
-
-  album: {
-      width: D.width * 4.2/11,
-      height: D.width * 4.2/14,
-      backgroundColor: 'white'
-  },
-
-  img: {
-      flex: 1,
-      height: null,
-      width: null
-  },
-
-  text: {
-      fontSize: 12,
-      color: 'white',
-      fontWeight: 'bold',
-      alignSelf: 'center',
-      marginTop: 8,
-      flex: 1,
-      flexWrap: 'wrap'
-  },
-
-  followers: {
-      fontSize: 8,
-      color: 'gray',
-      alignSelf: 'center',
-      fontWeight: '600',
-      marginTop: 4
-  }
-
-});

@@ -165,7 +165,7 @@ export default function Search({navigation}) {
       color: "#510eed"
     },
     {
-      name: "Clasical",
+      name: "Classical",
       color: "#e0501b"
     },
     {
@@ -440,6 +440,7 @@ export default function Search({navigation}) {
                                 marginRight: index == searchTypes.length - 1 ? 14 : 0,
                                 borderRadius: 60,
                                 height: 40,
+                                fontWeight: 'bold',
                                 //height: "45%",
                                 //shadowOffset: { height: 8, width: 0 },
                               //shadowOpacity: 1.8,
@@ -449,7 +450,8 @@ export default function Search({navigation}) {
                             }}
                             labelStyle={{
                                 color:  "#e1e1e3",
-                                fontSize: 16, lineHeight: 22 
+                                fontSize: 16, lineHeight: 22,
+                                fontWeight: 'bold' 
                             }}
                         />
                     )}

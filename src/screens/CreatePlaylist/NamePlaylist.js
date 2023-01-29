@@ -11,7 +11,7 @@ export default function NamePlaylist({navigation}) {
 
   return (
     <ImageBackground style={styles.image} source={SECONDARY_BG}>
-      <Text style={{textAlign: 'center', color: "white", fontSize: 24, marginBottom: 30, fontStyle: 'italic'}}>Give your Playlist a name</Text>
+      <Text style={{textAlign: 'center', color: "white", fontSize: 24, marginBottom: 30, fontStyle: 'italic', fontWeight: 'bold'}}>Give your Playlist a name</Text>
       <TextInput
         style={styles.input}
         onChangeText={(text) => setTitleText(text)}
@@ -21,7 +21,7 @@ export default function NamePlaylist({navigation}) {
         placeholder="Enter your playlist title.."
         
       />
-      <TouchableOpacity disabled={titleText == ''} onPress={() => navigation.navigate('AddToPlaylist', {playListTitle: titleText})}>
+      <TouchableOpacity disabled={titleText == ''} onPress={() => navigation.navigate('AddToPlaylist', {playListTitle: titleText, allPlayListVideos: []})}>
         <Text style={{color: "white", fontSize: 22,  textAlign: 'center', marginTop: "10%",  marginBottom: "5%", color: "#177aeb"}}>Next</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.goBack()}>

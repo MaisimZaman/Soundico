@@ -75,7 +75,7 @@ export default function VideoDisplay(props) {
       rId, videoId, videoThumbNail, 
       videoTitle, Search, isPlaylist, isRecently,  
       artist, downloadData, plInfo, 
-      playlistVideos, channelId,
+      playlistVideos, channelId, isLive
       
     
     } = props.route.params;
@@ -309,6 +309,7 @@ export default function VideoDisplay(props) {
    }, [])
 
    
+   
 
     useEffect(() => {
       Axios.get(`https://youtube.googleapis.com/youtube/v3/channels?part=snippet&id=${currentChannelId}&key=${API_KEY}`)
@@ -373,7 +374,7 @@ export default function VideoDisplay(props) {
                 videoTitle: videoTitle,
                 videoArtist: artist,
                 creation: firebase.firestore.FieldValue.serverTimestamp(),
-                channelId: ''
+                channelId: channelId
             })
 
         } 
@@ -382,7 +383,12 @@ export default function VideoDisplay(props) {
     },[])
 
     async function showAirplayOptions() {
-      
+      try {
+        const currentState = await TrackPlayer.s;
+        await TrackPlayer.setAirplayActive(!currentState);
+    } catch (err) {
+        console.log(err);
+    }
     }
 
 
@@ -685,7 +691,7 @@ export default function VideoDisplay(props) {
             </View>
             <TouchIcon
               icon={<Feather color={colors.greyLight} name="repeat" />}
-              onPress={() => video.current.setPositionAsync(0)}
+              onPress={() => TrackPlayer.seekTo(0)}
             />
           </View>
 

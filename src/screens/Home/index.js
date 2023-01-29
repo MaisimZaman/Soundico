@@ -16,6 +16,7 @@ import { BG_IMAGE, SECONDARY_BG } from '../../services/backgroundImage';
 import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 import LinearGradient from '../TopicContent/LinearGradient'
 import {device, colors} from '../MusicPlayer/constants'
+import Artist from '../../components/Artist';
 import {
   AdMobInterstitial,
  
@@ -34,6 +35,7 @@ export default function Home({navigation}) {
   const [recently, setRecently] = useState([]);
   const [podcasts, setPodcasts] = useState([]);
   const [madeForYou, setMadeForYou] = useState([]);
+  const [myArtists, setMyArtists] = useState([])
   const [popularPlaylists, setPopularPlaylists] = useState([]);
   const [yourPlaylists, setYourPlaylists] = useState([]);
   const [recordList, setRecordList] = useState([])
@@ -80,9 +82,6 @@ export default function Home({navigation}) {
     async function showAd(){
       const REVIEWER_ACCOUNT = "fV4VqIJRb8MkjgXoqEyBsbamLBk2"
 
-
-      
-
       if (auth.currentUser.uid != REVIEWER_ACCOUNT){
         console.log("true")
         await AdMobInterstitial.setAdUnitID(AD_UNIT_ID); // Test ID, Replace with your-admob-unit-id
@@ -92,9 +91,6 @@ export default function Home({navigation}) {
         console.log("false")
       }
  
-      
-      
-
       
     }
     
@@ -109,8 +105,6 @@ export default function Home({navigation}) {
 
     docRef.get().then((doc) => {
       if (doc.exists) {
-
-        
 
         if (doc.data().recordList!= undefined){
           setRecordList(doc.data().recordList)
@@ -127,35 +121,15 @@ export default function Home({navigation}) {
 
 
   
-  async function getTrendingSongs() {
-    // Set the API key as a query parameter
-    const params = {
-      key: API_KEY,
-      chart: 'mostPopular',
-      part: 'snippet',
-      maxResults: 10,  // Set the maximum number of results you want to retrieve
-      regionCode: 'US', 
-      videoCategoryId: '10', 
-      videoDefinition: 'high',  // Set the video definition to high to retrieve shorter videos
-      videoDuration: 'short',
-    };
-  
-    try {
-      // Use the `get` method of the Axios instance to make the API request
-      const response = await Axios.get('https://www.googleapis.com/youtube/v3/videos', { params });
-      console.log(response.data.items);
-      setPodcasts(response.data.items)
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
 
   useEffect(() => {
-
-    const searches = ["tiktok music", "Car BASS Music","Car BASS Music"]
+      searches = ["CarMusic","Car BASS Music", "Classical Music"]
+    
+    
+    console.log(searchText)
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
-    Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=15&q=${searchText}&key=${API_KEY}`)
+    Axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&eventType=live&maxResults=15&q=${searchText}&type=video&key=${API_KEY}`)
       .then(res => {
         const podCastData = res.data.items;
         setPodcasts(podCastData)
@@ -165,6 +139,40 @@ export default function Home({navigation}) {
     //getTrendingSongs()
 
   }, [navigation])
+
+
+  useEffect(() => {
+    if (recently.length == 0){
+      searches = [{data: {videoArtist: 'car music'}}, {data: {videoArtist: 'Drake'}}, {data: {videoArtist: 'The Weekend'}}]
+    } else {
+      searches = recently
+    }
+    
+    
+    const searchText = searches[Math.floor(Math.random() * (searches.length))].data.videoArtist
+   
+    console.log("This prints under here")
+    //console.log(searchText)
+    if (searchText != undefined){
+      
+      Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText}&type=channel&key=${API_KEY}`)
+      .then(res => {
+        const artists = res.data.items;
+        setMyArtists(artists)
+      })
+      
+
+    }
+    
+   
+    //getTrendingSongs()
+
+  }, [])
+
+  console.log(myArtists)
+
+
+  
 
   useEffect(() => {
     let searches;
@@ -190,13 +198,13 @@ export default function Home({navigation}) {
   useEffect(() => {
     let searches;
     if (recordList.length == 0){
-       searches = ["Car Music",   "Relaxing Music", "Adventure Music", "Study Music"]
+       searches = ["Car music",   "Relaxing Music", "Adventure", "Study"]
     } else {
       searches = recordList
     }
     
     const searchText = searches[Math.floor(Math.random() * (searches.length))]
-    Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText}&type=playlist&key=${API_KEY}`)
+    Axios.get(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchText + 'albums'}&type=playlist&key=${API_KEY}`)
       .then(res => {
         const popularPlaylists = res.data.items;
         setPopularPlaylists(popularPlaylists)
@@ -261,11 +269,6 @@ export default function Home({navigation}) {
 
     
 
-   
-    
-    
-
-    
 
   }
 
@@ -276,6 +279,14 @@ export default function Home({navigation}) {
           navigation.replace('Login')
       })
   }
+  }
+
+  async function getChannelData(item, channelId){
+    console.warn(channelId)
+    const response = await Axios.get(`https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet,id&order=date&maxResults=20`)
+    const channelVideos = response.data.items
+    //setCurrentPlaylistData(channelVideos)
+    navigation.navigate("ChannelScreen", {title:item.snippet.title, photoAlbum: item.snippet.thumbnails.high.url, playlistVideos: channelVideos, isCustom: false, searchedVideo: true, channelId: item.snippet.channelId })
   }
 
   
@@ -325,14 +336,14 @@ export default function Home({navigation}) {
         </View>
 
         <View>
-          <Title>Trending</Title>
+          <Title>Live Trending</Title>
           <FlatList
             data={podcasts}
             keyExtractor={(item) => `${item.id}`}
             horizontal
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {rId: item.id,videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: false, downloadData: podcasts, isRecently: false, channelId: item.snippet.channelId })}>
+              <TouchableOpacity onPress={() => navigation.navigate('VideoScreen', {rId: item.id,videoId: item.id.videoId, videoThumbNail:item.snippet.thumbnails.high.url, videoTitle: item.snippet.title, artist: item.snippet.channelTitle, Search: false, downloadData: podcasts, isRecently: false, channelId: item.snippet.channelId, isLive: true })}>
                 <View style={styles.ContainerImage}>
                 <AlbunsList name={item.snippet.title} photoAlbum={item.snippet.thumbnails.high.url} podcast={true} />
                 </View>
@@ -340,6 +351,8 @@ export default function Home({navigation}) {
             )}
           />
         </View>
+
+        
 
         <View>
           <Title>Made For you</Title>
@@ -357,6 +370,24 @@ export default function Home({navigation}) {
             )}
           />
         </View>
+
+        <View>
+          <Title>More Channels</Title>
+          <FlatList
+            data={myArtists}
+            keyExtractor={(item) => `${item.id}`}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => getChannelData(item, item.snippet.channelId)}>
+               <View style={styles.ContainerImage}>
+               <AlbunsList channel={true} name={item.snippet.channelTitle} photoAlbum={item.snippet.thumbnails.high.url} podcast={true} />
+                
+                </View>
+              </TouchableOpacity>
+            )}
+          />
+        </View> 
 
         <View>
           <Title>Most Popular Playlists</Title>
